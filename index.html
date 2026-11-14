@@ -134,80 +134,156 @@
     <!-- ========================================== -->
     <section id="dashboardView" class="space-y-6">
 
-      <!-- Ingestion & AI Settings Card -->
-      <div class="glass-panel rounded-2xl p-5 lg:p-6 border border-violet-500/20 neon-border relative overflow-hidden">
+      <!-- Ingestion, Compact Center Video Monitor & AI Settings Card (3 Columns) -->
+      <div class="glass-panel rounded-2xl p-4 lg:p-5 border border-violet-500/20 neon-border relative overflow-hidden">
         <div class="absolute -right-20 -top-20 w-72 h-72 bg-violet-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <!-- Left: Link & Upload -->
-          <div class="lg:col-span-7 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <h1 class="text-lg sm:text-xl font-extrabold text-white flex items-center gap-2">
-                <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
-                Importar Video Largo o Enlace para Crear Reels Virales
-              </h1>
-              <span class="text-xs text-violet-300 bg-violet-500/15 border border-violet-500/30 px-2.5 py-0.5 rounded-full font-medium">
-                Soporta YouTube, Twitch, Kick, Facebook, Vimeo, MP4/MOV/WebM
-              </span>
-            </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
 
-            <!-- URL Input Bar -->
-            <div class="flex flex-col sm:flex-row gap-2.5">
-              <div class="relative flex-1">
-                <i data-lucide="link" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                <input id="videoUrlInput" type="text" placeholder="Pega aquí el link de YouTube, Twitch, Kick, Facebook o sube un video desde tu PC..." value="" class="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0B0D14] border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-violet-500">
+          <!-- COL 1 (LEFT - 4 cols): Link & File Upload -->
+          <div class="lg:col-span-4 bg-[#0D1018] rounded-xl p-4 border border-white/10 flex flex-col justify-between gap-3">
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+                <h1 class="text-xs sm:text-sm font-extrabold text-white flex items-center gap-1.5">
+                  <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                  1. Cargar Video o Pegar Link
+                </h1>
+                <span class="text-[10px] text-violet-300 bg-violet-500/15 border border-violet-500/30 px-2 py-0.5 rounded-full font-semibold">
+                  MP4 / WebM / YouTube
+                </span>
               </div>
-              <button id="analyzeVideoBtn" class="px-5 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-violet-600 via-fuchsia-600 to-amber-500 hover:opacity-95 text-white shadow-lg shadow-violet-600/30 flex items-center justify-center gap-2 whitespace-nowrap transition-all">
-                <i data-lucide="wand-2" class="w-4 h-4"></i>
-                <span>Generar Clips con IA</span>
-              </button>
-            </div>
 
-            <!-- Upload local file + Prompt Search Moments -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <label for="localVideoInput" class="cursor-pointer group flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#131622] hover:bg-[#191D2D] border border-dashed border-violet-400/40 transition-all">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-violet-600/20 flex items-center justify-center text-violet-300 group-hover:scale-105 transition-transform">
-                    <i data-lucide="upload" class="w-4 h-4"></i>
+              <!-- URL Input Bar (Strictly blank by default) -->
+              <div class="space-y-2">
+                <div class="relative">
+                  <i data-lucide="link" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                  <input id="videoUrlInput" type="text" placeholder="Pega aquí el link del video..." value="" class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#080A10] border border-white/15 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button id="loadUrlIntoMonitorBtn" type="button" class="px-2.5 py-2 rounded-xl bg-violet-600/25 hover:bg-violet-600/40 text-violet-200 border border-violet-500/40 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all">
+                    <i data-lucide="tv" class="w-3.5 h-3.5"></i>
+                    <span>Cargar Link en el Visor</span>
+                  </button>
+                  <button id="analyzeVideoBtn" type="button" class="px-2.5 py-2 rounded-xl font-bold text-[11px] bg-gradient-to-r from-violet-600 via-fuchsia-600 to-amber-500 hover:opacity-95 text-white shadow-lg shadow-violet-600/30 flex items-center justify-center gap-1.5 transition-all">
+                    <i data-lucide="wand-2" class="w-3.5 h-3.5"></i>
+                    <span>Generar Clips con IA</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Upload local file -->
+              <label for="localVideoInput" class="cursor-pointer group flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#131622] hover:bg-[#191D2D] border border-dashed border-violet-400/40 transition-all">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg bg-violet-600/20 flex items-center justify-center text-violet-300 group-hover:scale-105 transition-transform">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                   </div>
                   <div>
-                    <div id="uploadedFileName" class="text-xs font-bold text-white truncate max-w-[180px]">Subir Video desde tu PC/Móvil</div>
-                    <div class="text-[10px] text-slate-400">MP4, WebM, MOV • Sin límite de peso</div>
+                    <div id="uploadedFileName" class="text-xs font-bold text-white truncate max-w-[165px]">Subir Video desde tu PC/Móvil</div>
+                    <div class="text-[10px] text-slate-400">MP4, WebM, MOV • Sin límite</div>
                   </div>
                 </div>
-                <span class="text-[11px] font-semibold text-violet-400 group-hover:underline">Explorar</span>
+                <span class="text-[10px] font-semibold text-violet-400 group-hover:underline">Explorar</span>
                 <input id="localVideoInput" type="file" accept="video/*" class="hidden">
               </label>
+            </div>
 
-              <div class="flex items-center bg-[#131622] px-3.5 py-2 rounded-xl border border-white/10">
-                <i data-lucide="radar" class="w-4 h-4 text-amber-400 mr-2.5 shrink-0"></i>
-                <div class="flex-1">
-                  <label for="aiMomentPrompt" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">ClipAnything™ Buscador IA</label>
-                  <input id="aiMomentPrompt" type="text" placeholder="Ej: momentos de debate, risas, frases clave, enojo..." value="Momentos más picantes, frases virales y cruces" class="w-full bg-transparent text-xs text-white focus:outline-none">
-                </div>
+            <!-- Prompt Search Moments -->
+            <div class="flex items-center bg-[#131622] px-3 py-2 rounded-xl border border-white/10">
+              <i data-lucide="radar" class="w-3.5 h-3.5 text-amber-400 mr-2 shrink-0"></i>
+              <div class="flex-1">
+                <label for="aiMomentPrompt" class="block text-[9px] uppercase tracking-wider text-slate-400 font-semibold">ClipAnything™ Buscador de Momentos</label>
+                <input id="aiMomentPrompt" type="text" placeholder="Ej: momentos clave, debate, risas..." value="" class="w-full bg-transparent text-[11px] text-white placeholder-slate-500 focus:outline-none">
               </div>
             </div>
           </div>
 
-          <!-- Right: Clipping Parameters (10-20 clips, 30s-3m, Format, Reframe) -->
-          <div class="lg:col-span-5 bg-[#0D1018] rounded-xl p-4 border border-white/10 space-y-3.5">
-            <div class="flex items-center justify-between border-b border-white/10 pb-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-violet-300 flex items-center gap-1.5">
-                <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
-                Parámetros de Recorte IA
+          <!-- COL 2 (CENTER - 4 cols): Compact Source Video Preview Monitor (Paused + Play/Pause/Stop) -->
+          <div id="sourcePreviewContainer" class="lg:col-span-4 bg-[#0B0D14] rounded-xl p-3 border border-violet-500/30 flex flex-col justify-between gap-2">
+            <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-violet-300 flex items-center gap-1.5">
+                <i data-lucide="monitor-play" class="w-3.5 h-3.5 text-emerald-400"></i>
+                2. Visor de Video (Preview)
               </span>
-              <span class="text-[11px] text-emerald-400 font-semibold">Auto-Reframe Facial Activo</span>
+              <span id="sourceStateBadge" class="px-2 py-0.5 rounded bg-amber-500/90 text-black font-extrabold text-[9px] uppercase tracking-wider">
+                ⏸ PAUSADO
+              </span>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <!-- Compact Video Stage (Height constrained so it stays neat and compact in the middle) -->
+            <div class="relative rounded-lg overflow-hidden bg-black border border-white/15 h-40 sm:h-44 flex items-center justify-center shadow-inner">
+              <video id="sourceMonitorVideo" class="hidden w-full h-full object-contain bg-black" preload="metadata" playsinline></video>
+              <iframe id="sourceMonitorIframe" class="hidden w-full h-full bg-black" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+
+              <div id="sourceMonitorPlaceholder" class="flex flex-col items-center justify-center text-center p-3 space-y-1">
+                <div class="w-8 h-8 rounded-xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-300">
+                  <i data-lucide="video" class="w-4 h-4"></i>
+                </div>
+                <div id="sourceMonitorStatusTitle" class="text-[11px] font-bold text-white">Visor en Pausa</div>
+                <p id="sourceMonitorStatusDesc" class="text-[10px] text-slate-400 leading-tight max-w-[220px]">
+                  Carga tu video o link a la izquierda. Queda en pausa hasta que pulses Play.
+                </p>
+              </div>
+
+              <!-- Live Recognized Subtitle Overlay inside Source Monitor (Only shows real recognized text, hidden when empty) -->
+              <div id="sourceMonitorSubOverlay" class="absolute bottom-2 inset-x-2 text-center pointer-events-none flex flex-col items-center justify-center z-10">
+                <div id="sourceMonitorSubBox" class="hidden px-2.5 py-1 rounded-lg bg-black/85 border border-violet-500/40 font-montserrat font-black text-[10px] text-white uppercase tracking-tight shadow-xl caption-stroke"></div>
+              </div>
+
+              <span id="sourceDurationBadge" class="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-white font-mono text-[9px] border border-white/10 pointer-events-none">
+                00:00 / 00:00
+              </span>
+            </div>
+
+            <!-- Compact Play / Pause / Stop Toolbar Embedded Below the Compact Preview -->
+            <div class="space-y-1.5 pt-0.5">
+              <input id="sourceMonitorScrubber" type="range" min="0" max="100" value="0" step="0.1" class="w-full h-1 bg-slate-700 rounded-lg cursor-pointer">
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1">
+                  <button id="sourcePlayBtn" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-extrabold flex items-center gap-1 shadow">
+                    <i data-lucide="play" class="w-3 h-3"></i>
+                    <span id="sourcePlayBtnText">Play</span>
+                  </button>
+                  <button id="sourcePauseBtn" type="button" class="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-bold flex items-center gap-1">
+                    <i data-lucide="pause" class="w-3 h-3"></i>
+                    <span>Pausa</span>
+                  </button>
+                  <button id="sourceStopBtn" type="button" class="px-2 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 text-rose-300 border border-rose-500/40 text-[10px] font-bold flex items-center gap-1">
+                    <i data-lucide="square" class="w-3 h-3"></i>
+                    <span>Stop</span>
+                  </button>
+                  <button id="sourceMuteBtn" type="button" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-[10px] font-semibold">
+                    <span id="sourceMuteBtnText">Audio ON</span>
+                  </button>
+                </div>
+                <button id="syncClipsWithVideoBtn" type="button" class="px-2 py-1 rounded-lg bg-violet-600/20 hover:bg-violet-600/35 text-violet-300 border border-violet-500/30 text-[10px] font-bold" title="Sincronizar recortes de Reels">
+                  Actualizar Previews de Reels
+                </button>
+              </div>
+              <div id="sourceFileInfoLabel" class="text-[10px] text-slate-400 font-mono truncate text-center">
+                Esperando archivo de video o enlace...
+              </div>
+            </div>
+          </div>
+
+          <!-- COL 3 (RIGHT - 4 cols): Clipping Parameters (10-20 clips, 30s-3m, Format, Resolution) -->
+          <div class="lg:col-span-4 bg-[#0D1018] rounded-xl p-4 border border-white/10 flex flex-col justify-between gap-3">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-violet-300 flex items-center gap-1.5">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                3. Parámetros de Recorte IA
+              </span>
+              <span class="text-[10px] text-emerald-400 font-semibold">Auto-Reframe Activo</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
               <!-- Clip Quantity Slider (10 to 20) -->
               <div class="bg-[#141824] p-2.5 rounded-lg border border-white/5">
-                <div class="flex justify-between text-xs mb-1">
-                  <span class="text-slate-400">Cantidad de Clips:</span>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400">Clips:</span>
                   <span id="clipTargetCountLabel" class="font-bold text-amber-400">14 clips</span>
                 </div>
                 <input id="clipTargetCountSlider" type="range" min="10" max="20" value="14" class="w-full h-1.5 bg-slate-700 rounded-lg cursor-pointer">
-                <div class="flex justify-between text-[10px] text-slate-500 mt-0.5">
+                <div class="flex justify-between text-[9px] text-slate-500 mt-0.5">
                   <span>Mín: 10</span>
                   <span>Máx: 20</span>
                 </div>
@@ -215,158 +291,38 @@
 
               <!-- Duration Range Preset (30s to 3 min) -->
               <div class="bg-[#141824] p-2.5 rounded-lg border border-white/5">
-                <label for="durationPresetSelect" class="block text-xs text-slate-400 mb-1">Rango de Recorte:</label>
-                <select id="durationPresetSelect" class="w-full bg-[#0B0D14] border border-white/10 rounded-md px-2 py-1 text-xs font-semibold text-white focus:outline-none focus:border-violet-500">
-                  <option value="all">Automático (30s a 3 min)</option>
-                  <option value="short">Cortos Virales (30s - 60s)</option>
-                  <option value="mid">Medio / Análisis (1m - 2m)</option>
-                  <option value="long">Extendido (2m - 3 min)</option>
+                <label for="durationPresetSelect" class="block text-[11px] text-slate-400 mb-1">Duración:</label>
+                <select id="durationPresetSelect" class="w-full bg-[#0B0D14] border border-white/10 rounded-md px-1.5 py-1 text-[11px] font-semibold text-white focus:outline-none focus:border-violet-500">
+                  <option value="all">Auto (30s a 3m)</option>
+                  <option value="short">Cortos (30s - 60s)</option>
+                  <option value="mid">Medio (1m - 2m)</option>
+                  <option value="long">Largo (2m - 3m)</option>
                 </select>
-                <div class="text-[10px] text-slate-500 mt-1">Recorte manual disponible</div>
+                <div class="text-[9px] text-slate-500 mt-1">Ajuste manual en Editor</div>
               </div>
             </div>
 
             <!-- Default Aspect Ratio & Resolution -->
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2.5">
               <div>
-                <span class="block text-[11px] text-slate-400 mb-1">Formato de Salida Global:</span>
+                <span class="block text-[10px] text-slate-400 mb-1">Formato Global:</span>
                 <div class="grid grid-cols-3 gap-1 bg-[#141824] p-1 rounded-lg border border-white/5">
-                  <button data-global-ratio="9:16" class="global-ratio-btn py-1 rounded text-[11px] font-bold bg-violet-600 text-white">9:16</button>
-                  <button data-global-ratio="16:9" class="global-ratio-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white">16:9</button>
-                  <button data-global-ratio="1:1" class="global-ratio-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white">1:1</button>
+                  <button data-global-ratio="9:16" class="global-ratio-btn py-1 rounded text-[10px] font-bold bg-violet-600 text-white">9:16</button>
+                  <button data-global-ratio="16:9" class="global-ratio-btn py-1 rounded text-[10px] font-bold text-slate-400 hover:text-white">16:9</button>
+                  <button data-global-ratio="1:1" class="global-ratio-btn py-1 rounded text-[10px] font-bold text-slate-400 hover:text-white">1:1</button>
                 </div>
               </div>
 
               <div>
-                <span class="block text-[11px] text-slate-400 mb-1">Calidad de Descarga:</span>
+                <span class="block text-[10px] text-slate-400 mb-1">Resolución Video:</span>
                 <div class="grid grid-cols-2 gap-1 bg-[#141824] p-1 rounded-lg border border-white/5">
-                  <button data-global-res="1080p" class="global-res-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white">1080p FHD</button>
-                  <button data-global-res="2K" class="global-res-btn py-1 rounded text-[11px] font-bold bg-emerald-600 text-white">2K QHD Pro</button>
+                  <button data-global-res="1080p" class="global-res-btn py-1 rounded text-[10px] font-bold text-slate-400 hover:text-white">1080p FHD</button>
+                  <button data-global-res="2K" class="global-res-btn py-1 rounded text-[10px] font-bold bg-emerald-600 text-white">2K QHD Pro</button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- SOURCE VIDEO PREVIEW MONITOR (PAUSED BY DEFAULT + PLAY/STOP TOOLBAR) -->
-        <div id="sourcePreviewContainer" class="mt-5 pt-5 border-t border-white/10">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center bg-[#0B0D14] p-4 rounded-2xl border border-violet-500/30">
-            <div class="lg:col-span-7">
-              <div class="relative rounded-xl overflow-hidden bg-black border border-white/15 aspect-video flex items-center justify-center group shadow-2xl">
-                <!-- HTML5 Source Video (Paused on load, never autoplays audio in background) -->
-                <video id="sourceMonitorVideo" class="hidden w-full h-full object-contain bg-black" preload="metadata" playsinline></video>
-                <!-- YouTube / External Embed Preview Container -->
-                <iframe id="sourceMonitorIframe" class="hidden w-full h-full bg-black" allow=" encrypted-media; picture-in-picture" allowfullscreen></iframe>
-                <!-- Default / Standby Visual Screen when no local video is loaded yet -->
-                <div id="sourceMonitorPlaceholder" class="flex flex-col items-center justify-center text-center p-6 space-y-2">
-                  <div class="w-12 h-12 rounded-2xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-300">
-                    <i data-lucide="video" class="w-6 h-6"></i>
-                  </div>
-                  <div id="sourceMonitorStatusTitle" class="text-sm font-bold text-white">Visor de Video Fuente (En Pausa)</div>
-                  <p id="sourceMonitorStatusDesc" class="text-xs text-slate-400 max-w-md">
-                    Sube un archivo de video desde tu PC o pega un enlace arriba para previsualizarlo aquí. El video se carga en pausa para no reproducir audio automáticamente.
-                  </p>
-                </div>
-
-                <!-- Live Recognized Subtitle Overlay inside Source Monitor -->
-                <div id="sourceMonitorSubOverlay" class="absolute bottom-20 inset-x-4 text-center pointer-events-none flex flex-col items-center justify-center z-10">
-                  <div id="sourceMonitorSubBox" class="hidden px-3.5 py-1.5 rounded-xl bg-black/85 border border-violet-500/40 font-montserrat font-black text-xs sm:text-sm text-white uppercase tracking-tight shadow-2xl caption-stroke">
-                  </div>
-                </div>
-
-                <!-- Status Badge Top-Left -->
-                <div class="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
-                  <span id="sourceStateBadge" class="px-2.5 py-1 rounded-md bg-amber-500/90 text-black font-extrabold text-[10px] uppercase tracking-wider shadow">
-                    ⏸ PAUSADO (LISTO PARA EDITAR)
-                  </span>
-                  <span id="sourceDurationBadge" class="px-2 py-0.5 rounded-md bg-black/80 text-white font-mono text-[11px] border border-white/10">
-                    00:00 / 00:00
-                  </span>
-                </div>
-
-                <!-- Embedded Play / Pause / Stop / Mute Control Bar Inside the Preview -->
-                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/80 to-transparent p-3 pt-6 flex flex-col gap-2">
-                  <input id="sourceMonitorScrubber" type="range" min="0" max="100" value="0" step="0.1" class="w-full h-1.5 bg-slate-700 rounded-lg cursor-pointer">
-                  <div class="flex flex-wrap items-center justify-between gap-2">
-                    <div class="flex items-center gap-2">
-                      <button id="sourcePlayBtn" type="button" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow transition-all">
-                        <i data-lucide="play" class="w-3.5 h-3.5"></i>
-                        <span id="sourcePlayBtnText">Play</span>
-                      </button>
-                      <button id="sourcePauseBtn" type="button" class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 transition-all">
-                        <i data-lucide="pause" class="w-3.5 h-3.5"></i>
-                        <span>Pausa</span>
-                      </button>
-                      <button id="sourceStopBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1.5 transition-all">
-                        <i data-lucide="square" class="w-3.5 h-3.5"></i>
-                        <span>Stop</span>
-                      </button>
-                      <button id="sourceMuteBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-semibold flex items-center gap-1">
-                        <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-                        <span id="sourceMuteBtnText">Audio ON</span>
-                      </button>
-                    </div>
-                    <span id="sourceFileInfoLabel" class="text-[11px] text-slate-300 font-mono truncate max-w-[220px]">
-                      Sin archivo local cargado
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right info & quick actions for loaded source video -->
-            <div class="lg:col-span-5 space-y-3">
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-violet-400"></span>
-                <h3 class="text-sm font-extrabold text-white">Control de Video Base y Previews de Reels</h3>
-              </div>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                Tu video queda cargado en este monitor **en pausa** para que nunca suene el audio solo en segundo plano. Usa los botones **Play**, **Pausa** y **Stop** integrados en el visor cuando quieras revisarlo, y cada tarjeta de los **10 a 20 Reels generados** abajo mostrará el fragmento de video recortado correspondiente.
-              </p>
-              <!-- Real Audio-to-Text AI Engine Status & Controls -->
-              <div class="bg-[#121624] p-3 rounded-xl border border-emerald-500/30 space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
-                    <i data-lucide="mic" class="w-3.5 h-3.5"></i>
-                    Motor IA Reconocimiento de Voz (Audio Real → Texto)
-                  </span>
-                  <span id="asrEngineStatusBadge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold">
-                    LISTO (ES-AR)
-                  </span>
-                </div>
-                <div id="asrProgressBox" class="hidden space-y-1">
-                  <div class="flex justify-between text-[10px] text-violet-300">
-                    <span id="asrProgressText">Decodificando pista de audio del video...</span>
-                    <span id="asrProgressPct" class="font-mono font-bold">0%</span>
-                  </div>
-                  <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                    <div id="asrProgressBar" class="h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 transition-all duration-200" style="width: 0%"></div>
-                  </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2 pt-0.5">
-                  <button id="autoTranscribeVideoBtn" type="button" class="px-3 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-lg">
-                    <i data-lucide="AudioWaveform" class="w-3.5 h-3.5"></i>
-                    <span>Transcribir Audio del Video (IA)</span>
-                  </button>
-                  <button id="liveVoiceDictationBtn" type="button" class="px-3 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center justify-center gap-1.5">
-                    <i data-lucide="radio" class="w-3.5 h-3.5"></i>
-                    <span id="liveVoiceDictationText">Capturar Audio en Vivo</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-2 pt-1">
-                <button id="loadUrlIntoMonitorBtn" type="button" class="px-3 py-2 rounded-xl bg-violet-600/25 hover:bg-violet-600/40 text-violet-200 border border-violet-500/40 text-xs font-bold flex items-center justify-center gap-1.5">
-                  <i data-lucide="tv" class="w-3.5 h-3.5"></i>
-                  <span>Cargar Link en el Visor</span>
-                </button>
-                <button id="syncClipsWithVideoBtn" type="button" class="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center justify-center gap-1.5">
-                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                  <span>Actualizar Previews de Reels</span>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Progress Bar (Hidden unless analyzing) -->
@@ -514,28 +470,60 @@
             </button>
           </div>
 
-          <!-- Sub-panel 1: Interactive Editable Transcript -->
+          <!-- Sub-panel 1: Interactive Editable Transcript & Real Audio Recognition Engine inside Pro Editor -->
           <div id="panelTranscript" class="space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2 bg-[#0B0D14] p-2.5 rounded-xl border border-emerald-500/30">
-              <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="editorTranscriptOriginBadge" class="text-[11px] font-bold text-emerald-300">Subtítulos Sincronizados con el Video</span>
+
+            <!-- Motor IA Reconocimiento de Voz (Audio Real → Texto) inside Pro Editor -->
+            <div class="bg-[#0B0D14] p-3 rounded-xl border border-emerald-500/40 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+                  <i data-lucide="mic" class="w-3.5 h-3.5"></i>
+                  Motor IA Reconocimiento de Voz (Audio Real → Texto)
+                </span>
+                <span id="asrEngineStatusBadge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold">
+                  LISTO (ES-AR)
+                </span>
               </div>
+
+              <div id="asrProgressBox" class="hidden space-y-1">
+                <div class="flex justify-between text-[10px] text-violet-300">
+                  <span id="asrProgressText">Reconociendo audio real de este Reel...</span>
+                  <span id="asrProgressPct" class="font-mono font-bold">0%</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div id="asrProgressBar" class="h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 transition-all duration-200" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <button id="autoTranscribeVideoBtn" type="button" class="px-2.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-[11px] font-extrabold flex items-center justify-center gap-1.5 shadow-lg transition-all">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                  <span>Transcribir Audio del Video (IA)</span>
+                </button>
+                <button id="liveVoiceDictationBtn" type="button" class="px-2.5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all">
+                  <i data-lucide="radio" class="w-3.5 h-3.5"></i>
+                  <span id="liveVoiceDictationText">Capturar Audio en Vivo</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Header for Editable Real Subtitles of this Reel -->
+            <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+              <span id="editorTranscriptOriginBadge" class="text-[11px] font-bold text-slate-300">
+                Subtítulos reales sincronizados de este Reel:
+              </span>
               <div class="flex items-center gap-1.5">
-                <button id="editorRetranscribeBtn" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold flex items-center gap-1 shadow">
-                  <i data-lucide="sparkles" class="w-3 h-3"></i> Reconocer Audio IA
+                <button id="editorRetranscribeBtn" type="button" class="px-2 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
+                  Reconocer Audio IA
                 </button>
                 <button id="addSubtitleLineBtn" type="button" class="px-2.5 py-1 rounded-lg bg-violet-600/25 hover:bg-violet-600/40 text-violet-200 border border-violet-500/30 text-[11px] font-bold flex items-center gap-1">
                   <i data-lucide="plus" class="w-3 h-3"></i> Añadir línea
                 </button>
               </div>
             </div>
-            <div class="text-[11px] text-slate-400 px-1">
-              El texto reconocido aparece automáticamente en el video y en cada reel. Edita cualquier palabra o tiempo abajo:
-            </div>
 
-            <div id="transcriptLinesContainer" class="space-y-2 max-h-[380px] overflow-y-auto pr-1">
-              <!-- Populated by JS -->
+            <div id="transcriptLinesContainer" class="space-y-2 max-h-[340px] overflow-y-auto pr-1">
+              <!-- Populated only with the real recognized or user-edited subtitles of this Reel -->
             </div>
           </div>
 
@@ -650,11 +638,9 @@
                 <div class="text-[8px] text-emerald-300 font-mono bg-black/60 px-1 rounded self-start">Auto-Reframe 99.4%</div>
               </div>
 
-              <!-- Dynamic Live Subtitle Overlay -->
-              <div id="liveSubtitleOverlay" class="absolute inset-x-3 text-center pointer-events-none transition-all duration-150 flex flex-col items-center justify-center" style="top: 76%;">
-                <div id="liveSubtitleBox" class="px-3 py-1.5 rounded-xl font-montserrat font-black uppercase tracking-tight leading-tight caption-stroke" style="font-size: 22px; color: #FFFFFF;">
-                  ¡ESTE RECORTE AUTOMÁTICO DE <span style="color: #FACC15;">REEL CLIP</span> ROMPE EL ALGORITMO! 🔥
-                </div>
+              <!-- Dynamic Live Subtitle Overlay (Strictly shows ONLY real synchronized subtitles of the current Reel) -->
+              <div id="liveSubtitleOverlay" class="hidden absolute inset-x-3 text-center pointer-events-none transition-all duration-150 flex flex-col items-center justify-center" style="top: 76%;">
+                <div id="liveSubtitleBox" class="px-3 py-1.5 rounded-xl font-montserrat font-black uppercase tracking-tight leading-tight caption-stroke" style="font-size: 22px; color: #FFFFFF;"></div>
               </div>
 
               <!-- Top Right Social Safe Zone & Speaker Indicator -->
@@ -899,306 +885,20 @@
     // INITIAL STATE & REALISTIC VIRAL CLIPS DATA
     // ==========================================
     const INITIAL_CLIPS = [
-      {
-        id: 'clip-1',
-        title: 'El cruce más picante en vivo: ¿Quién paga realmente el ajuste?',
-        score: 99,
-        category: 'debate',
-        categoryLabel: '⚡ Debate Picante',
-        startSec: 142,
-        durationSec: 58,
-        ratio: '9:16',
-        speaker: 'auto',
-        speakerLabel: 'IA Dinámico (2 Voces)',
-        zoom: 105,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: '¡NADIE SE ANIMÓ A DECIR ESTO EN CÁMARA!',
-        subtitles: [
-          { time: '00:00', text: '¡Nadie se animó a decir esto en cámara hasta hoy!', highlight: 'cámara' },
-          { time: '00:14', text: 'Cuando analizamos los números reales del presupuesto público,', highlight: 'números reales' },
-          { time: '00:29', text: 'queda clarísimo dónde se iban los recursos de la gente.', highlight: 'recursos' },
-          { time: '00:44', text: '¡Este momento en vivo explotó todas las redes sociales!', highlight: 'explotó' }
-        ]
-      },
-      {
-        id: 'clip-2',
-        title: 'Gancho explosivo: La regla de los 3 segundos para retener audiencia',
-        score: 97,
-        category: 'hook',
-        categoryLabel: '🎯 Gancho Explosivo',
-        startSec: 310,
-        durationSec: 45,
-        ratio: '9:16',
-        speaker: 'p1',
-        speakerLabel: 'Personaje 1 (Centro)',
-        zoom: 110,
-        panX: -5,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'SI NO HACES ESTO EN 3 SEGUNDOS, PIERDES EL REEL',
-        subtitles: [
-          { time: '00:00', text: 'Si no capturas la atención en los primeros tres segundos,', highlight: 'tres segundos' },
-          { time: '00:15', text: 'el algoritmo descarta tu video antes de mostrarlo al público.', highlight: 'algoritmo' },
-          { time: '00:30', text: 'Usa encuadre dinámico al rostro y subtítulos de alto impacto.', highlight: 'alto impacto' }
-        ]
-      },
-      {
-        id: 'clip-3',
-        title: 'Revelación exclusiva: El dato oculto que cambió toda la entrevista',
-        score: 96,
-        category: 'revelacion',
-        categoryLabel: '💡 Dato Clave',
-        startSec: 520,
-        durationSec: 75,
-        ratio: '9:16',
-        speaker: 'split',
-        speakerLabel: 'Pantalla Dúo (Split)',
-        zoom: 100,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'MIRA LA REACCIÓN DEL INVITADO CUANDO VE EL INFORME',
-        subtitles: [
-          { time: '00:00', text: 'Mira la reacción del invitado cuando ponemos el informe en pantalla.', highlight: 'reacción' },
-          { time: '00:25', text: 'Durante meses dijeron que ese contrato no existía en ningún lado.', highlight: 'contrato' },
-          { time: '00:50', text: 'Acá está la prueba completa firmada hoja por hoja.', highlight: 'prueba completa' }
-        ]
-      },
-      {
-        id: 'clip-4',
-        title: 'Resumen de 2 minutos: Cómo monetizar contenido vertical en 2026',
-        score: 95,
-        category: 'revelacion',
-        categoryLabel: '💡 Dato Clave',
-        startSec: 780,
-        durationSec: 120,
-        ratio: '9:16',
-        speaker: 'p2',
-        speakerLabel: 'Personaje 2 (Invitado)',
-        zoom: 115,
-        panX: 8,
-        panY: -4,
-        subtitlesEnabled: true,
-        hookText: 'EL PASO A PASO REAL PARA MULTIPLICAR TUS VISTAS',
-        subtitles: [
-          { time: '00:00', text: 'Hoy un solo podcast de una hora te da quince reels virales.', highlight: 'quince reels' },
-          { time: '00:40', text: 'La clave es cortar entre 30 segundos y 3 minutos según el tema.', highlight: '3 minutos' },
-          { time: '01:20', text: 'Exporta siempre en 1080p o 2K para máxima nitidez en móviles.', highlight: '2K' }
-        ]
-      },
-      {
-        id: 'clip-5',
-        title: 'Momento de tentada y blooper en vivo entre los conductores',
-        score: 94,
-        category: 'humor',
-        categoryLabel: '😂 Reacción Viral',
-        startSec: 1040,
-        durationSec: 36,
-        ratio: '9:16',
-        speaker: 'split',
-        speakerLabel: 'Pantalla Dúo (Split)',
-        zoom: 100,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'CUANDO TE OLVIDAS QUE EL MICRÓFONO SIGUE ABIERTO 😂',
-        subtitles: [
-          { time: '00:00', text: '¡No me digas que el micrófono seguía abierto en el corte!', highlight: 'micrófono' },
-          { time: '00:18', text: 'La cara de todo el equipo de producción detrás de cámara no tiene precio.', highlight: 'producción' }
-        ]
-      },
-      {
-        id: 'clip-6',
-        title: 'Debate económico a fondo: Inflación, tasas y salarios reales (Recorte 3 min)',
-        score: 93,
-        category: 'debate',
-        categoryLabel: '⚡ Debate Picante',
-        startSec: 1290,
-        durationSec: 180,
-        ratio: '16:9',
-        speaker: 'auto',
-        speakerLabel: 'IA Dinámico',
-        zoom: 100,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'ANÁLISIS COMPLETO EN 3 MINUTOS SIN FILTROS',
-        subtitles: [
-          { time: '00:00', text: 'Vamos a explicar en tres minutos exactos qué pasa con el crédito.', highlight: 'tres minutos' },
-          { time: '01:00', text: 'Cuando baja el gasto estatal, el capital vuelve al sector privado.', highlight: 'sector privado' },
-          { time: '02:10', text: 'Esa es la diferencia entre emisión artificial y crecimiento genuino.', highlight: 'crecimiento' }
-        ]
-      },
-      {
-        id: 'clip-7',
-        title: 'Frase demoledora en 30 segundos para TikTok y Shorts',
-        score: 92,
-        category: 'hook',
-        categoryLabel: '🎯 Gancho Explosivo',
-        startSec: 1540,
-        durationSec: 30,
-        ratio: '9:16',
-        speaker: 'p1',
-        speakerLabel: 'Personaje 1 (Centro)',
-        zoom: 125,
-        panX: 0,
-        panY: -5,
-        subtitlesEnabled: true,
-        hookText: '30 SEGUNDOS QUE RESUMEN TODA LA SEMANA',
-        subtitles: [
-          { time: '00:00', text: 'En treinta segundos te resumo por qué cambió el escenario político.', highlight: 'treinta segundos' },
-          { time: '00:15', text: 'La gente ya no consume discursos armados, busca autenticidad total.', highlight: 'autenticidad' }
-        ]
-      },
-      {
-        id: 'clip-8',
-        title: 'Comparativa en vivo: Medios tradicionales vs Streaming independiente',
-        score: 91,
-        category: 'debate',
-        categoryLabel: '⚡ Debate Picante',
-        startSec: 1720,
-        durationSec: 88,
-        ratio: '1:1',
-        speaker: 'split',
-        speakerLabel: 'Pantalla Dúo (Split)',
-        zoom: 105,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'EL STREAMING YA SUPERÓ EN AUDIENCIA A LA TV TRADICIONAL',
-        subtitles: [
-          { time: '00:00', text: 'Hoy cualquier canal de streaming bien producido compite de igual a igual.', highlight: 'streaming' },
-          { time: '00:45', text: 'La libertad de opinar sin pauta oficial cambia las reglas del juego.', highlight: 'libertad' }
-        ]
-      },
-      {
-        id: 'clip-9',
-        title: 'Respuesta viral a un comentario de la audiencia en vivo',
-        score: 90,
-        category: 'humor',
-        categoryLabel: '😂 Reacción Viral',
-        startSec: 1950,
-        durationSec: 52,
-        ratio: '9:16',
-        speaker: 'p1',
-        speakerLabel: 'Personaje 1 (Centro)',
-        zoom: 110,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'LEYENDO LOS MENSAJES MÁS PICANTES DEL CHAT EN VIVO',
-        subtitles: [
-          { time: '00:00', text: 'Miren lo que acaba de mandar un oyente al chat de la transmisión.', highlight: 'chat' },
-          { time: '00:26', text: '¡Se tenía que decir y se dijo en horario central!', highlight: 'horario central' }
-        ]
-      },
-      {
-        id: 'clip-10',
-        title: 'Las 3 claves técnicas para iluminar y encuadrar un set profesional',
-        score: 89,
-        category: 'revelacion',
-        categoryLabel: '💡 Dato Clave',
-        startSec: 2110,
-        durationSec: 95,
-        ratio: '9:16',
-        speaker: 'p2',
-        speakerLabel: 'Personaje 2 (Invitado)',
-        zoom: 100,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'CÓMO LOGRAR CALIDAD DE ESTUDIO DE TV CON VMIX Y CÁMARAS 2K',
-        subtitles: [
-          { time: '00:00', text: 'Una buena iluminación clave y recorte en 2K levanta cualquier set.', highlight: 'iluminación' },
-          { time: '00:48', text: 'Combina planos cortos en 9:16 para Instagram y 16:9 para YouTube.', highlight: '9:16' }
-        ]
-      },
-      {
-        id: 'clip-11',
-        title: 'Pregunta incómoda al cierre del bloque: Silencio en el estudio',
-        score: 88,
-        category: 'debate',
-        categoryLabel: '⚡ Debate Picante',
-        startSec: 2340,
-        durationSec: 64,
-        ratio: '9:16',
-        speaker: 'auto',
-        speakerLabel: 'IA Dinámico',
-        zoom: 115,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'EL SILENCIO DE 5 SEGUNDOS QUE LO DIJO TODO',
-        subtitles: [
-          { time: '00:00', text: 'Cuando le preguntamos por los fondos provinciales, se hizo un silencio total.', highlight: 'silencio total' },
-          { time: '00:32', text: 'Los datos oficiales muestran una realidad imposible de tapar.', highlight: 'datos oficiales' }
-        ]
-      },
-      {
-        id: 'clip-12',
-        title: 'Anécdota inédita detrás de escena antes de salir al aire',
-        score: 87,
-        category: 'humor',
-        categoryLabel: '😂 Reacción Viral',
-        startSec: 2510,
-        durationSec: 48,
-        ratio: '9:16',
-        speaker: 'p2',
-        speakerLabel: 'Personaje 2 (Invitado)',
-        zoom: 100,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'LO QUE PASÓ 2 MINUTOS ANTES DE PRENDER LAS CÁMARAS',
-        subtitles: [
-          { time: '00:00', text: 'Dos minutos antes de salir al aire se cortó todo el retorno del estudio.', highlight: 'salir al aire' },
-          { time: '00:24', text: 'Tuvimos que improvisar toda la apertura en vivo sin guion.', highlight: 'improvisar' }
-        ]
-      },
-      {
-        id: 'clip-13',
-        title: 'Pronóstico electoral y económico para los próximos 6 meses',
-        score: 86,
-        category: 'revelacion',
-        categoryLabel: '💡 Dato Clave',
-        startSec: 2700,
-        durationSec: 150,
-        ratio: '16:9',
-        speaker: 'split',
-        speakerLabel: 'Pantalla Dúo (Split)',
-        zoom: 100,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'GUARDA ESTE VIDEO: QUÉ VA A PASAR EN LOS PRÓXIMOS 6 MESES',
-        subtitles: [
-          { time: '00:00', text: 'Guarda este clip porque en seis meses vamos a revisar cada punto.', highlight: 'seis meses' },
-          { time: '01:15', text: 'Las inversiones en minería y energía van a liderar el cambio.', highlight: 'inversiones' }
-        ]
-      },
-      {
-        id: 'clip-14',
-        title: 'Cierre explosivo del programa: Mensaje directo a la audiencia',
-        score: 95,
-        category: 'hook',
-        categoryLabel: '🎯 Gancho Explosivo',
-        startSec: 2980,
-        durationSec: 42,
-        ratio: '9:16',
-        speaker: 'p1',
-        speakerLabel: 'Personaje 1 (Centro)',
-        zoom: 112,
-        panX: 0,
-        panY: 0,
-        subtitlesEnabled: true,
-        hookText: 'COMPARTÍ ESTE REEL SI BANCÁS EL PERIODISMO SIN FILTROS',
-        subtitles: [
-          { time: '00:00', text: 'Gracias por estar del otro lado bancando un espacio 100% libre.', highlight: '100% libre' },
-          { time: '00:21', text: '¡Descarga y comparte este reel en todas tus redes ahora mismo!', highlight: 'comparte' }
-        ]
-      }
+      { id: 'clip-1', title: 'Reel Destacado #1 (00:00 a 00:30)', score: 99, category: 'hook', categoryLabel: '🎯 Gancho Principal', startSec: 0, durationSec: 30, ratio: '9:16', speaker: 'auto', speakerLabel: 'IA Dinámico', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-2', title: 'Reel Destacado #2 (00:30 a 01:15)', score: 98, category: 'debate', categoryLabel: '⚡ Momento Clave', startSec: 30, durationSec: 45, ratio: '9:16', speaker: 'p1', speakerLabel: 'Personaje 1 (Centro)', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-3', title: 'Reel Destacado #3 (01:15 a 02:10)', score: 97, category: 'revelacion', categoryLabel: '💡 Destacado IA', startSec: 75, durationSec: 55, ratio: '9:16', speaker: 'p2', speakerLabel: 'Personaje 2', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-4', title: 'Reel Destacado #4 (02:10 a 03:10)', score: 96, category: 'humor', categoryLabel: '🔥 Reacción Viral', startSec: 130, durationSec: 60, ratio: '9:16', speaker: 'split', speakerLabel: 'Pantalla Dúo (Split)', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-5', title: 'Reel Destacado #5 (03:10 a 04:25)', score: 95, category: 'hook', categoryLabel: '🎯 Gancho Principal', startSec: 190, durationSec: 75, ratio: '9:16', speaker: 'auto', speakerLabel: 'IA Dinámico', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-6', title: 'Reel Destacado #6 (04:25 a 05:55)', score: 94, category: 'debate', categoryLabel: '⚡ Momento Clave', startSec: 265, durationSec: 90, ratio: '9:16', speaker: 'p1', speakerLabel: 'Personaje 1 (Centro)', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-7', title: 'Reel Destacado #7 (05:55 a 07:55)', score: 93, category: 'revelacion', categoryLabel: '💡 Destacado IA', startSec: 355, durationSec: 120, ratio: '9:16', speaker: 'p2', speakerLabel: 'Personaje 2', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-8', title: 'Reel Destacado #8 (07:55 a 10:25)', score: 92, category: 'humor', categoryLabel: '🔥 Reacción Viral', startSec: 475, durationSec: 150, ratio: '9:16', speaker: 'split', speakerLabel: 'Pantalla Dúo (Split)', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-9', title: 'Reel Destacado #9 (10:25 a 13:25)', score: 91, category: 'hook', categoryLabel: '🎯 Gancho Principal', startSec: 625, durationSec: 180, ratio: '9:16', speaker: 'auto', speakerLabel: 'IA Dinámico', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-10', title: 'Reel Destacado #10 (13:25 a 14:05)', score: 90, category: 'debate', categoryLabel: '⚡ Momento Clave', startSec: 805, durationSec: 40, ratio: '9:16', speaker: 'p1', speakerLabel: 'Personaje 1 (Centro)', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-11', title: 'Reel Destacado #11 (14:05 a 14:55)', score: 89, category: 'revelacion', categoryLabel: '💡 Destacado IA', startSec: 845, durationSec: 50, ratio: '9:16', speaker: 'p2', speakerLabel: 'Personaje 2', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-12', title: 'Reel Destacado #12 (14:55 a 15:40)', score: 88, category: 'humor', categoryLabel: '🔥 Reacción Viral', startSec: 895, durationSec: 45, ratio: '9:16', speaker: 'split', speakerLabel: 'Pantalla Dúo (Split)', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-13', title: 'Reel Destacado #13 (15:40 a 16:40)', score: 87, category: 'hook', categoryLabel: '🎯 Gancho Principal', startSec: 940, durationSec: 60, ratio: '9:16', speaker: 'auto', speakerLabel: 'IA Dinámico', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] },
+      { id: 'clip-14', title: 'Reel Destacado #14 (16:40 a 17:15)', score: 86, category: 'debate', categoryLabel: '⚡ Momento Clave', startSec: 1000, durationSec: 35, ratio: '9:16', speaker: 'p1', speakerLabel: 'Personaje 1 (Centro)', zoom: 100, panX: 0, panY: 0, subtitlesEnabled: true, transcribed: false, hookText: '', subtitles: [] }
     ];
 
     const state = {
@@ -1374,10 +1074,10 @@
                     `
                 }
 
-                <!-- Burned-in Recognized Subtitle Preview inside Card -->
-                <div class="${subsOn ? 'block' : 'hidden'} absolute bottom-2 inset-x-1.5 text-center px-1.5 py-1 bg-black/85 rounded-lg border border-amber-400/40 shadow-lg pointer-events-none">
+                <!-- Burned-in Recognized Subtitle Preview inside Card (Shown ONLY when real subtitles exist for this Reel) -->
+                <div data-card-sub-wrap="${clip.id}" class="${subsOn && clip.subtitles && clip.subtitles.length > 0 ? 'block' : 'hidden'} absolute bottom-2 inset-x-1.5 text-center px-1.5 py-1 bg-black/85 rounded-lg border border-amber-400/40 shadow-lg pointer-events-none">
                   <p data-card-sub-text="${clip.id}" class="text-[10px] font-montserrat font-black uppercase leading-snug text-white caption-stroke line-clamp-2">
-                    ${(clip.subtitles && clip.subtitles[0] ? clip.subtitles[0].text : clip.hookText)}
+                    ${clip.subtitles && clip.subtitles.length > 0 ? clip.subtitles[0].text : ''}
                   </p>
                 </div>
               </div>
@@ -1676,6 +1376,11 @@
       renderTranscriptEditor(clip);
       updateFaceTrackingBox(clip);
       updateLiveSubtitlePreview();
+
+      // Automatically transcribe this specific Reel's audio when entering the Pro Editor if a video is loaded and this Reel has no subtitles yet
+      if ((state.uploadedFileObject || state.uploadedVideoUrl) && (!clip.subtitles || clip.subtitles.length === 0) && !clip.transcribed) {
+        runAutomaticVideoAudioTranscription(clip);
+      }
     }
 
     function updateEditorMetaText() {
@@ -1705,16 +1410,42 @@
 
     function renderTranscriptEditor(clip) {
       const container = document.getElementById('transcriptLinesContainer');
+      const originBadge = document.getElementById('editorTranscriptOriginBadge');
+
+      if (!clip.subtitles || clip.subtitles.length === 0) {
+        if (originBadge) {
+          originBadge.textContent = state.hasUploadedVideo
+            ? 'Reconociendo audio del Reel... o pulsa Transcribir Audio IA'
+            : 'Sin subtítulos aún (carga un video o captura audio en vivo)';
+        }
+        container.innerHTML = `
+          <div class="bg-[#0B0D14] p-4 rounded-xl border border-dashed border-white/15 text-center space-y-2">
+            <div class="text-xs font-bold text-slate-200">Este Reel aún no tiene subtítulos cargados</div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              Pulsa <strong>"Transcribir Audio del Video (IA)"</strong> arriba para extraer automáticamente la voz de este recorte (${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)}), usa <strong>"Capturar Audio en Vivo"</strong> mientras suena, o pulsa <strong>"Añadir línea"</strong>.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      if (originBadge) {
+        originBadge.textContent = `Subtítulos del Reel (${clip.subtitles.length} líneas sincronizadas de ${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)})`;
+      }
+
       container.innerHTML = clip.subtitles.map((line, index) => `
         <div class="bg-[#0B0D14] p-2.5 rounded-xl border border-white/10 hover:border-violet-500/40 transition-all space-y-1.5">
-          <div class="flex items-center justify-between text-[11px]">
-            <span class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-mono font-bold">${line.time}</span>
-            <div class="flex items-center gap-2">
-              <span class="text-slate-400">Palabra destacada:</span>
-              <input data-sub-hl="${index}" type="text" value="${line.highlight || ''}" class="w-24 bg-[#141824] border border-white/10 rounded px-1.5 py-0.5 text-[11px] text-amber-300 font-semibold focus:outline-none focus:border-violet-500">
+          <div class="flex items-center justify-between text-[11px] gap-1">
+            <span class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-mono font-bold">
+              ${line.time || formatSeconds(line.relStart || index * 4)}
+            </span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-400 text-[10px]">Destacar:</span>
+              <input data-sub-hl="${index}" type="text" value="${line.highlight || ''}" placeholder="palabra..." class="w-24 bg-[#141824] border border-white/10 rounded px-1.5 py-0.5 text-[11px] text-amber-300 font-semibold focus:outline-none focus:border-violet-500">
+              <button data-sub-del="${index}" type="button" class="px-1.5 py-0.5 rounded bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 text-[10px] font-bold" title="Borrar línea">✕</button>
             </div>
           </div>
-          <input data-sub-text="${index}" type="text" value="${line.text}" class="w-full bg-[#141824] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-violet-500">
+          <input data-sub-text="${index}" type="text" value="${line.text.replace(/"/g, '&quot;')}" class="w-full bg-[#141824] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-violet-500">
         </div>
       `).join('');
 
@@ -1722,7 +1453,7 @@
         inp.addEventListener('input', () => {
           const idx = parseInt(inp.getAttribute('data-sub-text'), 10);
           clip.subtitles[idx].text = inp.value;
-          if (idx === 0) clip.hookText = inp.value.toUpperCase();
+          clip.hookText = clip.subtitles[0] ? clip.subtitles[0].text.toUpperCase() : '';
           updateLiveSubtitlePreview();
         });
       });
@@ -1731,6 +1462,16 @@
         inp.addEventListener('input', () => {
           const idx = parseInt(inp.getAttribute('data-sub-hl'), 10);
           clip.subtitles[idx].highlight = inp.value;
+          updateLiveSubtitlePreview();
+        });
+      });
+
+      container.querySelectorAll('button[data-sub-del]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-sub-del'), 10);
+          clip.subtitles.splice(idx, 1);
+          clip.hookText = clip.subtitles[0] ? clip.subtitles[0].text.toUpperCase() : '';
+          renderTranscriptEditor(clip);
           updateLiveSubtitlePreview();
         });
       });
@@ -1778,27 +1519,42 @@
       }
     }
 
+    function getActiveSubtitleLineForClip(clip, progressPct) {
+      if (!clip || !Array.isArray(clip.subtitles) || clip.subtitles.length === 0) return null;
+      const clipDur = Math.max(1, clip.durationSec || 45);
+      const elapsedSec = (progressPct / 100) * clipDur;
+
+      // First try exact timestamp match if relStart / relEnd are present on the subtitle lines
+      const timedMatch = clip.subtitles.find(
+        s => typeof s.relStart === 'number' && typeof s.relEnd === 'number' && elapsedSec >= s.relStart && elapsedSec <= s.relEnd + 0.4
+      );
+      if (timedMatch && timedMatch.text && timedMatch.text.trim() !== '') return timedMatch;
+
+      // Fallback to proportional index across clip.subtitles
+      const idx = Math.min(clip.subtitles.length - 1, Math.max(0, Math.floor((progressPct / 100) * clip.subtitles.length)));
+      const candidate = clip.subtitles[idx];
+      return candidate && candidate.text && candidate.text.trim() !== '' ? candidate : null;
+    }
+
     function updateLiveSubtitlePreview() {
       const clip = getSelectedClip();
-      if (!clip) return;
-
       const overlay = document.getElementById('liveSubtitleOverlay');
       const box = document.getElementById('liveSubtitleBox');
-      const subsVisible = state.globalSubtitles && clip.subtitlesEnabled;
+      if (!clip || !overlay || !box) return;
 
-      if (!subsVisible) {
+      const subsVisible = state.globalSubtitles && clip.subtitlesEnabled;
+      const activeLine = getActiveSubtitleLineForClip(clip, state.playheadProgress);
+
+      if (!subsVisible || !activeLine || !activeLine.text || activeLine.text.trim() === '') {
         overlay.classList.add('hidden');
+        box.innerHTML = '';
         return;
       }
+
       overlay.classList.remove('hidden');
       overlay.style.top = `${state.posY}%`;
 
-      // Pick current subtitle line according to playhead progress
-      const lineCount = clip.subtitles.length || 1;
-      const lineIndex = Math.min(lineCount - 1, Math.floor((state.playheadProgress / 100) * lineCount));
-      const activeLine = clip.subtitles[lineIndex] || { text: clip.hookText, highlight: '' };
-
-      let rawText = activeLine.text;
+      let rawText = activeLine.text.trim();
       if (state.uppercase) rawText = rawText.toUpperCase();
 
       // Highlight word
@@ -2046,11 +1802,10 @@
       const subsVisible = state.globalSubtitles && clip.subtitlesEnabled;
       if (!subsVisible) return;
 
-      const lineCount = clip.subtitles.length || 1;
-      const lineIndex = Math.min(lineCount - 1, Math.floor((progressPct / 100) * lineCount));
-      const activeLine = clip.subtitles[lineIndex] || { text: clip.hookText, highlight: '' };
+      const activeLine = getActiveSubtitleLineForClip(clip, progressPct);
+      if (!activeLine || !activeLine.text || activeLine.text.trim() === '') return;
 
-      let rawText = activeLine.text || clip.hookText;
+      let rawText = activeLine.text.trim();
       if (state.uppercase) rawText = rawText.toUpperCase();
       if (state.autoEmoji) rawText += ' 🔥';
 
@@ -2415,68 +2170,56 @@
     function updateSourceMonitorLiveSubtitle(currentTimeSec) {
       const box = document.getElementById('sourceMonitorSubBox');
       if (!box) return;
-      if (!state.globalSubtitles) {
+      if (!state.globalSubtitles || !state.fullTranscriptSegments || state.fullTranscriptSegments.length === 0) {
         box.classList.add('hidden');
+        box.textContent = '';
         return;
       }
 
-      // Find matching segment in state.fullTranscriptSegments or fallback to active clip subtitles
-      let textToShow = '';
-      if (state.fullTranscriptSegments && state.fullTranscriptSegments.length > 0) {
-        const seg = state.fullTranscriptSegments.find(
-          s => currentTimeSec >= s.start && currentTimeSec <= s.end + 0.6
-        ) || state.fullTranscriptSegments[Math.min(state.fullTranscriptSegments.length - 1, Math.floor(currentTimeSec / 5))];
-        if (seg) textToShow = seg.text;
-      } else {
-        const clip = state.clips[0];
-        if (clip && clip.subtitles && clip.subtitles.length > 0) {
-          const idx = Math.floor(currentTimeSec / 4) % clip.subtitles.length;
-          textToShow = clip.subtitles[idx].text;
-        }
-      }
-
-      if (textToShow) {
+      const seg = state.fullTranscriptSegments.find(
+        s => currentTimeSec >= s.start && currentTimeSec <= s.end + 0.5
+      );
+      if (seg && seg.text && seg.text.trim() !== '') {
         box.classList.remove('hidden');
-        box.textContent = state.uppercase ? textToShow.toUpperCase() : textToShow;
+        box.textContent = state.uppercase ? seg.text.trim().toUpperCase() : seg.text.trim();
       } else {
         box.classList.add('hidden');
+        box.textContent = '';
       }
     }
 
+    function assignRecognizedSegmentsToClip(clip, rawSegments, isClipRelative = true) {
+      if (!clip || !Array.isArray(rawSegments)) return;
+      const valid = rawSegments.filter(s => s && s.text && s.text.trim().length > 0);
+      clip.subtitles = valid.map((seg, idx) => {
+        const relStart = isClipRelative
+          ? Math.max(0, typeof seg.start === 'number' ? seg.start : idx * 4)
+          : Math.max(0, (typeof seg.start === 'number' ? seg.start : clip.startSec) - clip.startSec);
+        const relEnd = isClipRelative
+          ? Math.max(relStart + 1.5, typeof seg.end === 'number' ? seg.end : relStart + 4)
+          : Math.max(relStart + 1.5, (typeof seg.end === 'number' ? seg.end : clip.startSec + relStart + 4) - clip.startSec);
+        return {
+          time: formatSeconds(Math.round(relStart)),
+          relStart: relStart,
+          relEnd: relEnd,
+          text: seg.text.trim(),
+          highlight: pickHighlightWord(seg.text)
+        };
+      });
+      clip.transcribed = clip.subtitles.length > 0;
+      clip.hookText = clip.subtitles.length > 0 ? clip.subtitles[0].text.toUpperCase().slice(0, 68) : '';
+    }
+
     function mapTranscriptSegmentsToAllClips(segments) {
-      if (!segments || segments.length === 0) return;
+      if (!Array.isArray(segments) || segments.length === 0) return;
       state.fullTranscriptSegments = segments;
 
-      state.clips.forEach((clip, cIdx) => {
+      state.clips.forEach((clip) => {
         const cStart = clip.startSec || 0;
         const cEnd = cStart + (clip.durationSec || 45);
-
-        // Find segments falling inside this clip's time window
-        let matching = segments.filter(s => s.end >= cStart && s.start <= cEnd);
-
-        // If the video is short or segments are concentrated at the start, distribute segments proportionally across every clip
-        if (matching.length === 0) {
-          const chunkSize = Math.max(2, Math.ceil(segments.length / Math.max(1, state.clips.length)));
-          const startIndex = (cIdx * chunkSize) % segments.length;
-          matching = segments.slice(startIndex, startIndex + Math.max(3, chunkSize));
-          if (matching.length === 0) matching = segments.slice(0, 4);
-        }
-
-        clip.subtitles = matching.map((seg, sIdx) => {
-          const relSec = Math.max(0, Math.round(seg.start >= cStart ? seg.start - cStart : sIdx * 6));
-          return {
-            time: formatSeconds(relSec),
-            text: seg.text.trim(),
-            highlight: pickHighlightWord(seg.text)
-          };
-        });
-
-        if (clip.subtitles.length > 0) {
-          clip.hookText = clip.subtitles[0].text.toUpperCase().slice(0, 68);
-          // Also enrich clip title with the recognized spoken hook so user sees their actual video speech
-          if (clip.subtitles[0].text.length > 10) {
-            clip.title = `Clip #${cIdx + 1}: "${clip.subtitles[0].text.slice(0, 52)}..."`;
-          }
+        const matching = segments.filter(s => s.end >= cStart && s.start <= cEnd && s.text && s.text.trim().length > 0);
+        if (matching.length > 0) {
+          assignRecognizedSegmentsToClip(clip, matching, false);
         }
       });
 
@@ -2486,181 +2229,170 @@
         renderTranscriptEditor(currentClip);
         updateLiveSubtitlePreview();
       }
-      const originBadge = document.getElementById('editorTranscriptOriginBadge');
-      if (originBadge) {
-        originBadge.textContent = `Audio Reconocido (${segments.length} líneas sincronizadas)`;
-      }
     }
 
-    async function extractPCM16kFromVideoFile(fileOrUrl, maxSeconds = 180) {
-      let arrayBuffer = null;
-      if (fileOrUrl instanceof File || fileOrUrl instanceof Blob) {
-        arrayBuffer = await fileOrUrl.arrayBuffer();
-      } else if (typeof fileOrUrl === 'string' && fileOrUrl.startsWith('http')) {
-        const resp = await fetch(fileOrUrl);
-        arrayBuffer = await resp.arrayBuffer();
-      } else {
-        throw new Error('No local video buffer available');
-      }
+    // Extract 16kHz mono PCM for a specific time window [startSec, startSec + durationSec]
+    let cachedAudioBuffer = null;
+    let cachedAudioFileRef = null;
 
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      const tempCtx = new AudioCtx({ sampleRate: 16000 });
-      const decoded = await tempCtx.decodeAudioData(arrayBuffer);
-      const totalSamples = Math.min(decoded.length, Math.floor(maxSeconds * decoded.sampleRate));
-      const ch0 = decoded.getChannelData(0);
-      const pcm = new Float32Array(totalSamples);
-      for (let i = 0; i < totalSamples; i++) {
-        pcm[i] = ch0[i];
-      }
-      try { await tempCtx.close(); } catch (_) {}
-      return { pcm, duration: decoded.duration, sampleRate: decoded.sampleRate };
-    }
-
-    function analyzeAudioSpeechEnvelopeSegments(pcm, sampleRate, fileNameLabel) {
-      // Fallback acoustic speech activity segmenter when browser blocks external AI model weights or video has music/noise
-      const windowSec = 4;
-      const samplesPerWin = sampleRate * windowSec;
-      const totalWindows = Math.max(1, Math.floor(pcm.length / samplesPerWin));
-      const detectedSegments = [];
-
-      for (let w = 0; w < totalWindows; w++) {
-        let sumSq = 0;
-        const startSample = w * samplesPerWin;
-        const endSample = Math.min(pcm.length, startSample + samplesPerWin);
-        for (let i = startSample; i < endSample; i += 16) {
-          sumSq += pcm[i] * pcm[i];
+    async function getDecodedAudioSlicePCM16k(fileOrUrl, startSec = 0, durationSec = 60) {
+      if (!cachedAudioBuffer || cachedAudioFileRef !== fileOrUrl) {
+        let arrayBuffer = null;
+        if (fileOrUrl instanceof File || fileOrUrl instanceof Blob) {
+          arrayBuffer = await fileOrUrl.arrayBuffer();
+        } else if (typeof fileOrUrl === 'string' && (fileOrUrl.startsWith('http') || fileOrUrl.startsWith('blob:'))) {
+          const resp = await fetch(fileOrUrl);
+          arrayBuffer = await resp.arrayBuffer();
+        } else {
+          throw new Error('No hay archivo de video cargado para extraer audio');
         }
-        const rms = Math.sqrt(sumSq / ((endSample - startSample) / 16));
-        const startSec = w * windowSec;
-        const endSec = startSec + windowSec;
-
-        if (rms > 0.004 || w < 6) {
-          const cleanName = (fileNameLabel || 'Video').replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
-          const sampleLines = [
-            `Audio detectado en "${cleanName}" (${formatSeconds(startSec)}): haz clic para editar este subtítulo o usa Captura de Voz`,
-            `Segmento de voz activa reconocido entre ${formatSeconds(startSec)} y ${formatSeconds(endSec)}`,
-            `Momento destacado del audio en ${formatSeconds(startSec)} listo para personalizar en vivo`,
-            `Frase clave detectada en la pista de sonido a los ${formatSeconds(startSec)}`
-          ];
-          detectedSegments.push({
-            start: startSec,
-            end: endSec,
-            text: sampleLines[w % sampleLines.length]
-          });
-        }
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const tempCtx = new AudioCtx({ sampleRate: 16000 });
+        cachedAudioBuffer = await tempCtx.decodeAudioData(arrayBuffer);
+        cachedAudioFileRef = fileOrUrl;
+        try { await tempCtx.close(); } catch (_) {}
       }
-      return detectedSegments;
+
+      const sr = cachedAudioBuffer.sampleRate;
+      const ch0 = cachedAudioBuffer.getChannelData(0);
+      const safeStart = Math.max(0, Math.min(startSec, Math.max(0, cachedAudioBuffer.duration - 1)));
+      const safeDur = Math.max(1, Math.min(durationSec, cachedAudioBuffer.duration - safeStart));
+      const startSample = Math.floor(safeStart * sr);
+      const endSample = Math.min(cachedAudioBuffer.length, startSample + Math.floor(safeDur * sr));
+      const pcmSlice = new Float32Array(endSample - startSample);
+      for (let i = startSample; i < endSample; i++) {
+        pcmSlice[i - startSample] = ch0[i];
+      }
+      return { pcm: pcmSlice, duration: safeDur, totalDuration: cachedAudioBuffer.duration };
     }
 
-    async function runAutomaticVideoAudioTranscription() {
+    // Transcribe ONLY the active Reel's exact audio segment [clip.startSec, clip.startSec + clip.durationSec] inside Pro Editor
+    let isTranscribingNow = false;
+
+    async function runAutomaticVideoAudioTranscription(targetClipOverride = null) {
+      const clip = targetClipOverride || getSelectedClip();
       const badge = document.getElementById('asrEngineStatusBadge');
       const progBox = document.getElementById('asrProgressBox');
       const progText = document.getElementById('asrProgressText');
       const progPct = document.getElementById('asrProgressPct');
       const progBar = document.getElementById('asrProgressBar');
 
+      if (!clip) return;
       if (!state.uploadedFileObject && !state.uploadedVideoUrl) {
-        showToast('Sube primero tu video', 'Selecciona un archivo de video desde tu PC para reconocer su audio automáticamente.', 'warn');
+        showToast('Sube un video o usa Captura en Vivo', 'Carga un archivo de video o pulsa "Capturar Audio en Vivo" para subtitular este Reel.', 'warn');
         return;
       }
+      if (isTranscribingNow) return;
+      isTranscribingNow = true;
 
-      progBox.classList.remove('hidden');
-      badge.textContent = 'PROCESANDO AUDIO...';
-      badge.className = 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold';
-      progText.textContent = 'Extrayendo y decodificando pista de voz del video (16 kHz)...';
-      progPct.textContent = '15%';
-      progBar.style.width = '15%';
+      if (progBox) progBox.classList.remove('hidden');
+      if (badge) {
+        badge.textContent = 'PROCESANDO REEL...';
+        badge.className = 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold';
+      }
+      if (progText) progText.textContent = `Extrayendo audio del Reel (${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)})...`;
+      if (progPct) progPct.textContent = '15%';
+      if (progBar) progBar.style.width = '15%';
 
       try {
         const sourceInput = state.uploadedFileObject || state.uploadedVideoUrl;
-        const { pcm, duration, sampleRate } = await extractPCM16kFromVideoFile(sourceInput, 180);
+        const { pcm } = await getDecodedAudioSlicePCM16k(sourceInput, clip.startSec, clip.durationSec);
 
-        progText.textContent = 'Cargando motor neuronal Whisper IA en español para transcribir audio...';
-        progPct.textContent = '40%';
-        progBar.style.width = '40%';
+        if (progText) progText.textContent = 'Cargando motor neuronal Whisper IA (Español)...';
+        if (progPct) progPct.textContent = '40%';
+        if (progBar) progBar.style.width = '40%';
 
-        // Dynamically load Transformers.js Whisper WebAssembly pipeline in browser
-        let segments = [];
-        try {
-          if (!whisperPipeline) {
-            const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
-            env.allowLocalModels = false;
-            whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
-              progress_callback: (info) => {
-                if (info && typeof info.progress === 'number') {
-                  const p = Math.min(82, 40 + Math.round(info.progress * 0.42));
-                  progPct.textContent = `${p}%`;
-                  progBar.style.width = `${p}%`;
-                }
+        if (!whisperPipeline) {
+          const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+          env.allowLocalModels = false;
+          whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+            progress_callback: (info) => {
+              if (info && typeof info.progress === 'number') {
+                const p = Math.min(82, 40 + Math.round(info.progress * 0.42));
+                if (progPct) progPct.textContent = `${p}%`;
+                if (progBar) progBar.style.width = `${p}%`;
               }
-            });
-          }
-
-          progText.textContent = 'Transcribiendo palabras pronunciadas en el video...';
-          progPct.textContent = '85%';
-          progBar.style.width = '85%';
-
-          const output = await whisperPipeline(pcm, {
-            language: 'spanish',
-            task: 'transcribe',
-            chunk_length_s: 25,
-            stride_length_s: 5,
-            return_timestamps: true
+            }
           });
+        }
 
-          if (output && Array.isArray(output.chunks) && output.chunks.length > 0) {
-            segments = output.chunks
-              .filter(c => c.text && c.text.trim().length > 1)
-              .map((c, idx) => ({
-                start: Array.isArray(c.timestamp) && typeof c.timestamp[0] === 'number' ? c.timestamp[0] : idx * 5,
-                end: Array.isArray(c.timestamp) && typeof c.timestamp[1] === 'number' ? c.timestamp[1] : (idx + 1) * 5,
-                text: c.text.trim()
-              }));
-          } else if (output && output.text && output.text.trim().length > 0) {
-            const sentences = output.text.trim().split(/(?<=[.!?])\s+/);
-            segments = sentences.map((s, idx) => ({
-              start: idx * 5,
-              end: (idx + 1) * 5,
-              text: s.trim()
+        if (progText) progText.textContent = `Reconociendo voz en el recorte ${formatSeconds(clip.startSec)} - ${formatSeconds(clip.startSec + clip.durationSec)}...`;
+        if (progPct) progPct.textContent = '88%';
+        if (progBar) progBar.style.width = '88%';
+
+        const output = await whisperPipeline(pcm, {
+          language: 'spanish',
+          task: 'transcribe',
+          chunk_length_s: 25,
+          stride_length_s: 5,
+          return_timestamps: true
+        });
+
+        let segments = [];
+        if (output && Array.isArray(output.chunks) && output.chunks.length > 0) {
+          segments = output.chunks
+            .filter(c => c.text && c.text.trim().length > 1)
+            .map((c, idx) => ({
+              start: Array.isArray(c.timestamp) && typeof c.timestamp[0] === 'number' ? c.timestamp[0] : idx * 4,
+              end: Array.isArray(c.timestamp) && typeof c.timestamp[1] === 'number' ? c.timestamp[1] : (idx + 1) * 4,
+              text: c.text.trim()
             }));
-          }
-        } catch (whisperErr) {
-          // If offline or CDN blocked, fall back to acoustic envelope + Web Speech live recognition
-          const fname = state.uploadedFileObject ? state.uploadedFileObject.name : 'Video';
-          segments = analyzeAudioSpeechEnvelopeSegments(pcm, sampleRate, fname);
+        } else if (output && output.text && output.text.trim().length > 1) {
+          const sentences = output.text.trim().split(/(?<=[.!?])\s+/);
+          segments = sentences.map((s, idx) => ({
+            start: idx * 4,
+            end: (idx + 1) * 4,
+            text: s.trim()
+          }));
         }
 
-        if (!segments || segments.length === 0) {
-          const fname = state.uploadedFileObject ? state.uploadedFileObject.name : 'Video';
-          segments = analyzeAudioSpeechEnvelopeSegments(pcm, sampleRate, fname);
+        assignRecognizedSegmentsToClip(clip, segments, true);
+
+        // Also store in global fullTranscriptSegments with absolute offsets so Source Monitor and Cards stay synced
+        segments.forEach(seg => {
+          state.fullTranscriptSegments.push({
+            start: clip.startSec + seg.start,
+            end: clip.startSec + seg.end,
+            text: seg.text
+          });
+        });
+
+        if (progPct) progPct.textContent = '100%';
+        if (progBar) progBar.style.width = '100%';
+        if (progText) {
+          progText.textContent = segments.length > 0
+            ? `¡Listo! ${segments.length} subtítulos reales sincronizados en este Reel.`
+            : 'No se detectó voz hablada clara en este segmento. Puedes usar Capturar Audio en Vivo o Añadir línea.';
+        }
+        if (badge) {
+          badge.textContent = segments.length > 0 ? `SINCRONIZADO (${segments.length})` : 'SIN VOZ DETECTADA';
+          badge.className = 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold';
         }
 
-        progPct.textContent = '100%';
-        progBar.style.width = '100%';
-        progText.textContent = `¡Transcripción completada! ${segments.length} bloques de subtítulos generados.`;
-
-        mapTranscriptSegmentsToAllClips(segments);
-        updateSourceMonitorLiveSubtitle(0);
-
-        badge.textContent = `TRANSCRIPTO (${segments.length} LÍNEAS)`;
-        badge.className = 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold';
+        renderTranscriptEditor(clip);
+        updateLiveSubtitlePreview();
+        renderClipsGrid();
 
         setTimeout(() => {
-          progBox.classList.add('hidden');
-        }, 2500);
+          if (progBox) progBox.classList.add('hidden');
+        }, 2200);
 
-        showToast(
-          '¡Audio del Video Reconocido y Subtitulado!',
-          `Se transcribieron ${segments.length} frases del audio y se aplicaron a todos los Reels y al Editor Pro.`
-        );
+        if (segments.length > 0) {
+          showToast(
+            'Subtítulos del Reel sincronizados',
+            `Se reconocieron ${segments.length} líneas de voz reales para este Reel.`
+          );
+        }
       } catch (err) {
-        progBox.classList.add('hidden');
-        badge.textContent = 'MODO EN VIVO ACTIVO';
+        if (progBox) progBox.classList.add('hidden');
+        if (badge) badge.textContent = 'USAR CAPTURA EN VIVO';
         showToast(
-          'Usa "Capturar Audio en Vivo" o edita las líneas',
-          'Para enlaces externos con bloqueo CORS, pulsa "Capturar Audio en Vivo" mientras suena el video.',
+          'Pulsa "Capturar Audio en Vivo"',
+          'Para transcribir mientras reproduces el Reel en tiempo real, usa el botón "Capturar Audio en Vivo".',
           'warn'
         );
+      } finally {
+        isTranscribingNow = false;
       }
     }
 
@@ -2668,14 +2400,10 @@
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       const btnText = document.getElementById('liveVoiceDictationText');
       const badge = document.getElementById('asrEngineStatusBadge');
+      const clip = getSelectedClip();
 
       if (!SpeechRec) {
-        showToast(
-          'Usa el botón "Transcribir Audio del Video (IA)"',
-          'Tu navegador actual usa el decodificador directo de archivo IA en lugar de Web Speech API.',
-          'warn'
-        );
-        runAutomaticVideoAudioTranscription();
+        runAutomaticVideoAudioTranscription(clip);
         return;
       }
 
@@ -2684,7 +2412,7 @@
         try { activeSpeechRec.stop(); } catch (_) {}
         if (btnText) btnText.textContent = 'Capturar Audio en Vivo';
         if (badge) badge.textContent = 'LISTO (ES-AR)';
-        showToast('Captura en vivo detenida', 'Los subtítulos capturados quedaron guardados y listos para editar.');
+        showToast('Captura en vivo finalizada', 'Los subtítulos reales de este Reel están listos para editar.');
         return;
       }
 
@@ -2694,36 +2422,54 @@
       activeSpeechRec.interimResults = true;
 
       state.isLiveDictating = true;
-      if (btnText) btnText.textContent = '🔴 Escuchando Audio... (Parar)';
+      if (btnText) btnText.textContent = '🔴 Escuchando Reel... (Parar)';
       if (badge) {
-        badge.textContent = '🔴 ESCUCHANDO EN VIVO';
+        badge.textContent = '🔴 CAPTURANDO AUDIO';
         badge.className = 'px-2 py-0.5 rounded bg-rose-500/25 text-rose-300 font-mono text-[10px] font-bold animate-pulse';
       }
 
-      // Clear placeholder subtitles on current clip if starting fresh dictation
-      const liveSegments = [];
-      const srcVid = document.getElementById('sourceMonitorVideo');
+      // Start playing the current Reel in the Pro Editor so its audio is captured and synchronized
+      if (!state.isPlaying) {
+        setEditorPlaybackState(true);
+      }
+
+      const edVid = document.getElementById('realHtmlVideo');
 
       activeSpeechRec.onresult = (event) => {
+        const activeClip = getSelectedClip();
+        if (!activeClip) return;
+
         let interimText = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript.trim();
           if (event.results[i].isFinal && transcript.length > 0) {
-            const curSec = srcVid && srcVid.currentTime ? Math.floor(srcVid.currentTime) : liveSegments.length * 5;
-            liveSegments.push({
-              start: curSec,
-              end: curSec + 5,
-              text: transcript
+            const relSec = edVid && state.hasUploadedVideo
+              ? Math.max(0, Math.round(edVid.currentTime - activeClip.startSec))
+              : Math.round((state.playheadProgress / 100) * activeClip.durationSec);
+
+            activeClip.subtitles.push({
+              time: formatSeconds(relSec),
+              relStart: Math.max(0, relSec - 1),
+              relEnd: relSec + 3.5,
+              text: transcript,
+              highlight: pickHighlightWord(transcript)
             });
-            mapTranscriptSegmentsToAllClips(liveSegments);
+            activeClip.transcribed = true;
+            activeClip.hookText = activeClip.subtitles[0].text.toUpperCase().slice(0, 68);
+            renderTranscriptEditor(activeClip);
+            updateLiveSubtitlePreview();
+            renderClipsGrid();
           } else {
             interimText += transcript + ' ';
           }
         }
+
+        // Show live interim recognized speech directly on the Reel preview
         if (interimText.trim().length > 0) {
-          const box = document.getElementById('sourceMonitorSubBox');
-          if (box && state.globalSubtitles) {
-            box.classList.remove('hidden');
+          const overlay = document.getElementById('liveSubtitleOverlay');
+          const box = document.getElementById('liveSubtitleBox');
+          if (overlay && box && state.globalSubtitles && activeClip.subtitlesEnabled) {
+            overlay.classList.remove('hidden');
             box.textContent = state.uppercase ? interimText.trim().toUpperCase() : interimText.trim();
           }
         }
@@ -2743,8 +2489,8 @@
       try {
         activeSpeechRec.start();
         showToast(
-          'Escuchando audio en tiempo real (ES-AR)',
-          'Dale Play a tu video o habla al micrófono: cada frase que suene se escribirá sola en los subtítulos.'
+          'Capturando audio del Reel en vivo',
+          'A medida que suena el Reel, cada frase reconocida se agrega automáticamente a los subtítulos para que la edites.'
         );
       } catch (_) {}
     }
@@ -2952,6 +2698,14 @@
           URL.revokeObjectURL(state.uploadedVideoUrl);
         }
         state.uploadedFileObject = file;
+        cachedAudioBuffer = null;
+        cachedAudioFileRef = null;
+        state.fullTranscriptSegments = [];
+        state.clips.forEach(c => {
+          c.subtitles = [];
+          c.hookText = '';
+          c.transcribed = false;
+        });
         state.uploadedVideoUrl = URL.createObjectURL(file);
         state.hasUploadedVideo = true;
         state.loadedYoutubeId = null;
@@ -2979,8 +2733,6 @@
           document.getElementById('sourceDurationBadge').textContent = `00:00 / ${formatSeconds(state.sourceVideoDuration)}`;
           distributeClipsAcrossDuration(state.sourceVideoDuration);
           renderClipsGrid();
-          // Automatically transcribe the uploaded video's real audio into subtitles
-          runAutomaticVideoAudioTranscription();
         }, { once: true });
 
         updateSourceMonitorUIState('⏸ PAUSADO (LISTO PARA DAR PLAY O EDITAR)', false);
@@ -3145,11 +2897,9 @@
           panX: 0,
           panY: 0,
           subtitlesEnabled: true,
-          hookText: 'NUEVO RECORTE MANUAL CREADO EN REEL CLIP PRO',
-          subtitles: [
-            { time: '00:00', text: 'Nuevo recorte manual listo para ajustar de 30 segundos a 3 minutos.', highlight: '3 minutos' },
-            { time: '00:25', text: 'Edita la fuente, mueve el encuadre y exporta en 2K sin marcas de agua.', highlight: '2K' }
-          ]
+          transcribed: false,
+          hookText: '',
+          subtitles: []
         };
         state.clips.unshift(newClip);
         state.selectedClipId = newId;
@@ -3242,17 +2992,25 @@
         tabTrans.className = 'py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white';
       });
 
-      // Add Subtitle Line
+      // Add Subtitle Line synchronized to current Reel playhead
       document.getElementById('addSubtitleLineBtn').addEventListener('click', () => {
         const clip = getSelectedClip();
         if (!clip) return;
+        const edVid = document.getElementById('realHtmlVideo');
+        const relSec = (state.hasUploadedVideo && edVid && edVid.currentTime >= clip.startSec)
+          ? Math.max(0, Math.round(edVid.currentTime - clip.startSec))
+          : Math.round((state.playheadProgress / 100) * clip.durationSec);
         clip.subtitles.push({
-          time: formatSeconds(clip.subtitles.length * 12),
-          text: 'Nueva línea de subtítulo editable en vivo',
-          highlight: 'editable'
+          time: formatSeconds(relSec),
+          relStart: relSec,
+          relEnd: relSec + 4,
+          text: '',
+          highlight: ''
         });
         renderTranscriptEditor(clip);
         updateLiveSubtitlePreview();
+        const inputs = document.querySelectorAll('#transcriptLinesContainer input[data-sub-text]');
+        if (inputs.length > 0) inputs[inputs.length - 1].focus();
       });
 
       // Style Presets (Hormozi, MrBeast, Iman)
@@ -3503,9 +3261,9 @@
           copy.score = Math.max(85, 99 - i);
           copy.startSec = (i + 1) * 165;
         }
-        if (promptTopic) {
-          copy.hookText = `🔥 ${promptTopic.toUpperCase().slice(0, 36)} - CLIP #${i + 1}`;
-        }
+        copy.hookText = '';
+        copy.subtitles = [];
+        copy.transcribed = false;
         result.push(copy);
       }
 
@@ -3521,10 +3279,6 @@
       state.selectedClipId = result[0].id;
       if (state.fullTranscriptSegments && state.fullTranscriptSegments.length > 0) {
         mapTranscriptSegmentsToAllClips(state.fullTranscriptSegments);
-      } else if (state.uploadedFileObject) {
-        renderClipsGrid();
-        runAutomaticVideoAudioTranscription();
-        return;
       } else {
         renderClipsGrid();
       }
