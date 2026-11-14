@@ -1,0 +1,3071 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REEL CLIP — Estudio Pro de Clips e IA Sin Límites</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Montserrat:ital,wght@0,700;0,900;1,800&family=Oswald:wght@600;700&family=Poppins:wght@600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            montserrat: ['Montserrat', 'sans-serif'],
+            bebas: ['Bebas Neue', 'sans-serif'],
+            anton: ['Anton', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+            oswald: ['Oswald', 'sans-serif'],
+            space: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              900: '#2e1065'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #090A0F;
+      color: #F3F4F6;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #11131C;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2E3244;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8b5cf6;
+    }
+    .glass-panel {
+      background: rgba(17, 19, 28, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .neon-border {
+      box-shadow: 0 0 20px -5px rgba(139, 92, 246, 0.5);
+    }
+    .caption-stroke {
+      text-shadow: 
+        -2px -2px 0 #000,  
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         0px  4px 8px rgba(0,0,0,0.85);
+    }
+    input[type="range"] {
+      accent-color: #8b5cf6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-violet-600 selection:text-white">
+
+  <!-- TOP NAVBAR -->
+  <header class="sticky top-0 z-40 glass-panel border-b border-white/10 px-4 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 via-fuchsia-500 to-amber-500 flex items-center justify-center shadow-lg shadow-violet-600/30">
+        <i data-lucide="scissors" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-violet-200 to-fuchsia-300 bg-clip-text text-transparent">REEL CLIP</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">PRO ILIMITADO</span>
+        </div>
+        <p class="text-xs text-slate-400 hidden sm:block">Motor IA de Recorte Viral, Auto-Encuadre de Personajes y Subtítulos Dinámicos</p>
+      </div>
+    </div>
+
+    <!-- Main View Switcher -->
+    <nav class="flex items-center bg-[#141722] p-1 rounded-xl border border-white/10">
+      <button id="navDashboardBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 bg-violet-600 text-white shadow">
+        <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+        Panel & Generador (<span id="navClipCount">14</span>)
+      </button>
+      <button id="navEditorBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 text-slate-300 hover:text-white">
+        <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+        Estudio de Edición Pro
+      </button>
+    </nav>
+
+    <!-- Global Quick Controls -->
+    <div class="flex items-center gap-2.5">
+      <button id="globalSubToggleBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-1.5 bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25">
+        <i data-lucide="subtitles" class="w-4 h-4"></i>
+        <span id="globalSubToggleText">Subtítulos: ACTIVOS</span>
+      </button>
+
+      <div class="hidden md:flex items-center gap-1.5 bg-[#141722] px-3 py-1.5 rounded-lg border border-white/10 text-xs text-slate-300">
+        <i data-lucide="infinity" class="w-4 h-4 text-violet-400"></i>
+        <span>Créditos: <strong class="text-white">Sin Límites</strong></span>
+      </div>
+
+      <button id="batchExportBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-lg shadow-violet-600/20 flex items-center gap-1.5 transition-all">
+        <i data-lucide="download-cloud" class="w-4 h-4"></i>
+        <span>Exportar Todo</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 flex flex-col max-w-[1600px] w-full mx-auto px-4 lg:px-8 py-6 gap-6">
+
+    <!-- ========================================== -->
+    <!-- VIEW 1: DASHBOARD & AI CLIP GENERATOR      -->
+    <!-- ========================================== -->
+    <section id="dashboardView" class="space-y-6">
+
+      <!-- Ingestion & AI Settings Card -->
+      <div class="glass-panel rounded-2xl p-5 lg:p-6 border border-violet-500/20 neon-border relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-72 h-72 bg-violet-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Left: Link & Upload -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h1 class="text-lg sm:text-xl font-extrabold text-white flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
+                Importar Video Largo o Enlace para Crear Reels Virales
+              </h1>
+              <span class="text-xs text-violet-300 bg-violet-500/15 border border-violet-500/30 px-2.5 py-0.5 rounded-full font-medium">
+                Soporta YouTube, Twitch, Kick, Facebook, Vimeo, MP4/MOV/WebM
+              </span>
+            </div>
+
+            <!-- URL Input Bar -->
+            <div class="flex flex-col sm:flex-row gap-2.5">
+              <div class="relative flex-1">
+                <i data-lucide="link" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input id="videoUrlInput" type="text" placeholder="Pega aquí el link de YouTube, Twitch, Kick, Facebook o sube un video desde tu PC..." value="" class="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0B0D14] border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-violet-500">
+              </div>
+              <button id="analyzeVideoBtn" class="px-5 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-violet-600 via-fuchsia-600 to-amber-500 hover:opacity-95 text-white shadow-lg shadow-violet-600/30 flex items-center justify-center gap-2 whitespace-nowrap transition-all">
+                <i data-lucide="wand-2" class="w-4 h-4"></i>
+                <span>Generar Clips con IA</span>
+              </button>
+            </div>
+
+            <!-- Upload local file + Prompt Search Moments -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <label for="localVideoInput" class="cursor-pointer group flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#131622] hover:bg-[#191D2D] border border-dashed border-violet-400/40 transition-all">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-violet-600/20 flex items-center justify-center text-violet-300 group-hover:scale-105 transition-transform">
+                    <i data-lucide="upload" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <div id="uploadedFileName" class="text-xs font-bold text-white truncate max-w-[180px]">Subir Video desde tu PC/Móvil</div>
+                    <div class="text-[10px] text-slate-400">MP4, WebM, MOV • Sin límite de peso</div>
+                  </div>
+                </div>
+                <span class="text-[11px] font-semibold text-violet-400 group-hover:underline">Explorar</span>
+                <input id="localVideoInput" type="file" accept="video/*" class="hidden">
+              </label>
+
+              <div class="flex items-center bg-[#131622] px-3.5 py-2 rounded-xl border border-white/10">
+                <i data-lucide="radar" class="w-4 h-4 text-amber-400 mr-2.5 shrink-0"></i>
+                <div class="flex-1">
+                  <label for="aiMomentPrompt" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">ClipAnything™ Buscador IA</label>
+                  <input id="aiMomentPrompt" type="text" placeholder="Ej: momentos de debate, risas, frases clave, enojo..." value="Momentos más picantes, frases virales y cruces" class="w-full bg-transparent text-xs text-white focus:outline-none">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Clipping Parameters (10-20 clips, 30s-3m, Format, Reframe) -->
+          <div class="lg:col-span-5 bg-[#0D1018] rounded-xl p-4 border border-white/10 space-y-3.5">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-violet-300 flex items-center gap-1.5">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                Parámetros de Recorte IA
+              </span>
+              <span class="text-[11px] text-emerald-400 font-semibold">Auto-Reframe Facial Activo</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <!-- Clip Quantity Slider (10 to 20) -->
+              <div class="bg-[#141824] p-2.5 rounded-lg border border-white/5">
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Cantidad de Clips:</span>
+                  <span id="clipTargetCountLabel" class="font-bold text-amber-400">14 clips</span>
+                </div>
+                <input id="clipTargetCountSlider" type="range" min="10" max="20" value="14" class="w-full h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+                <div class="flex justify-between text-[10px] text-slate-500 mt-0.5">
+                  <span>Mín: 10</span>
+                  <span>Máx: 20</span>
+                </div>
+              </div>
+
+              <!-- Duration Range Preset (30s to 3 min) -->
+              <div class="bg-[#141824] p-2.5 rounded-lg border border-white/5">
+                <label for="durationPresetSelect" class="block text-xs text-slate-400 mb-1">Rango de Recorte:</label>
+                <select id="durationPresetSelect" class="w-full bg-[#0B0D14] border border-white/10 rounded-md px-2 py-1 text-xs font-semibold text-white focus:outline-none focus:border-violet-500">
+                  <option value="all">Automático (30s a 3 min)</option>
+                  <option value="short">Cortos Virales (30s - 60s)</option>
+                  <option value="mid">Medio / Análisis (1m - 2m)</option>
+                  <option value="long">Extendido (2m - 3 min)</option>
+                </select>
+                <div class="text-[10px] text-slate-500 mt-1">Recorte manual disponible</div>
+              </div>
+            </div>
+
+            <!-- Default Aspect Ratio & Resolution -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <span class="block text-[11px] text-slate-400 mb-1">Formato de Salida Global:</span>
+                <div class="grid grid-cols-3 gap-1 bg-[#141824] p-1 rounded-lg border border-white/5">
+                  <button data-global-ratio="9:16" class="global-ratio-btn py-1 rounded text-[11px] font-bold bg-violet-600 text-white">9:16</button>
+                  <button data-global-ratio="16:9" class="global-ratio-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white">16:9</button>
+                  <button data-global-ratio="1:1" class="global-ratio-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white">1:1</button>
+                </div>
+              </div>
+
+              <div>
+                <span class="block text-[11px] text-slate-400 mb-1">Calidad de Descarga:</span>
+                <div class="grid grid-cols-2 gap-1 bg-[#141824] p-1 rounded-lg border border-white/5">
+                  <button data-global-res="1080p" class="global-res-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white">1080p FHD</button>
+                  <button data-global-res="2K" class="global-res-btn py-1 rounded text-[11px] font-bold bg-emerald-600 text-white">2K QHD Pro</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SOURCE VIDEO PREVIEW MONITOR (PAUSED BY DEFAULT + PLAY/STOP TOOLBAR) -->
+        <div id="sourcePreviewContainer" class="mt-5 pt-5 border-t border-white/10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center bg-[#0B0D14] p-4 rounded-2xl border border-violet-500/30">
+            <div class="lg:col-span-7">
+              <div class="relative rounded-xl overflow-hidden bg-black border border-white/15 aspect-video flex items-center justify-center group shadow-2xl">
+                <!-- HTML5 Source Video (Paused on load, never autoplays audio in background) -->
+                <video id="sourceMonitorVideo" class="hidden w-full h-full object-contain bg-black" preload="metadata" playsinline></video>
+                <!-- YouTube / External Embed Preview Container -->
+                <iframe id="sourceMonitorIframe" class="hidden w-full h-full bg-black" allow=" encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <!-- Default / Standby Visual Screen when no local video is loaded yet -->
+                <div id="sourceMonitorPlaceholder" class="flex flex-col items-center justify-center text-center p-6 space-y-2">
+                  <div class="w-12 h-12 rounded-2xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-300">
+                    <i data-lucide="video" class="w-6 h-6"></i>
+                  </div>
+                  <div id="sourceMonitorStatusTitle" class="text-sm font-bold text-white">Visor de Video Fuente (En Pausa)</div>
+                  <p id="sourceMonitorStatusDesc" class="text-xs text-slate-400 max-w-md">
+                    Sube un archivo de video desde tu PC o pega un enlace arriba para previsualizarlo aquí. El video se carga en pausa para no reproducir audio automáticamente.
+                  </p>
+                </div>
+
+                <!-- Status Badge Top-Left -->
+                <div class="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
+                  <span id="sourceStateBadge" class="px-2.5 py-1 rounded-md bg-amber-500/90 text-black font-extrabold text-[10px] uppercase tracking-wider shadow">
+                    ⏸ PAUSADO (LISTO PARA EDITAR)
+                  </span>
+                  <span id="sourceDurationBadge" class="px-2 py-0.5 rounded-md bg-black/80 text-white font-mono text-[11px] border border-white/10">
+                    00:00 / 00:00
+                  </span>
+                </div>
+
+                <!-- Embedded Play / Pause / Stop / Mute Control Bar Inside the Preview -->
+                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/80 to-transparent p-3 pt-6 flex flex-col gap-2">
+                  <input id="sourceMonitorScrubber" type="range" min="0" max="100" value="0" step="0.1" class="w-full h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <button id="sourcePlayBtn" type="button" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow transition-all">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                        <span id="sourcePlayBtnText">Play</span>
+                      </button>
+                      <button id="sourcePauseBtn" type="button" class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 transition-all">
+                        <i data-lucide="pause" class="w-3.5 h-3.5"></i>
+                        <span>Pausa</span>
+                      </button>
+                      <button id="sourceStopBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1.5 transition-all">
+                        <i data-lucide="square" class="w-3.5 h-3.5"></i>
+                        <span>Stop</span>
+                      </button>
+                      <button id="sourceMuteBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-semibold flex items-center gap-1">
+                        <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                        <span id="sourceMuteBtnText">Audio ON</span>
+                      </button>
+                    </div>
+                    <span id="sourceFileInfoLabel" class="text-[11px] text-slate-300 font-mono truncate max-w-[220px]">
+                      Sin archivo local cargado
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right info & quick actions for loaded source video -->
+            <div class="lg:col-span-5 space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-violet-400"></span>
+                <h3 class="text-sm font-extrabold text-white">Control de Video Base y Previews de Reels</h3>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Tu video queda cargado en este monitor **en pausa** para que nunca suene el audio solo en segundo plano. Usa los botones **Play**, **Pausa** y **Stop** integrados en el visor cuando quieras revisarlo, y cada tarjeta de los **10 a 20 Reels generados** abajo mostrará el fragmento de video recortado correspondiente.
+              </p>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button id="loadUrlIntoMonitorBtn" type="button" class="px-3 py-2 rounded-xl bg-violet-600/25 hover:bg-violet-600/40 text-violet-200 border border-violet-500/40 text-xs font-bold flex items-center justify-center gap-1.5">
+                  <i data-lucide="tv" class="w-3.5 h-3.5"></i>
+                  <span>Cargar Link en el Visor</span>
+                </button>
+                <button id="syncClipsWithVideoBtn" type="button" class="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center justify-center gap-1.5">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Actualizar Previews de Reels</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar (Hidden unless analyzing) -->
+        <div id="aiProgressContainer" class="hidden mt-5 pt-4 border-t border-white/10">
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span id="aiProgressStage" class="font-semibold text-violet-300 flex items-center gap-2">
+              <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+              Detectando momentos virales, transcribiendo voz y encuadrando rostros...
+            </span>
+            <span id="aiProgressPercent" class="font-bold text-amber-400">0%</span>
+          </div>
+          <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div id="aiProgressBar" class="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-amber-400 transition-all duration-200" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Batch Toolbar -->
+      <div class="flex flex-wrap items-center justify-between gap-4 bg-[#11131C] p-4 rounded-xl border border-white/10">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <h2 class="text-sm font-bold text-white">Momentos Destacados Detectados (<span id="visibleClipsCounter">14</span> de máx. 20)</h2>
+          </div>
+
+          <div class="h-4 w-[1px] bg-white/10 hidden sm:block"></div>
+
+          <!-- Filter by Highlight Category -->
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-slate-400">Filtrar:</span>
+            <select id="categoryFilterSelect" class="bg-[#090A0F] border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-violet-500">
+              <option value="all">Todos los momentos</option>
+              <option value="score95">🔥 Súper Virales (Score 95+)</option>
+              <option value="debate">⚡ Debate / Cruce Picante</option>
+              <option value="hook">🎯 Gancho Explosivo (Hook)</option>
+              <option value="revelacion">💡 Revelación / Dato Clave</option>
+              <option value="humor">😂 Humor / Reacción</option>
+            </select>
+          </div>
+
+          <!-- Search inside generated clips -->
+          <div class="relative">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+            <input id="clipSearchInput" type="text" placeholder="Buscar palabra en subtítulos..." class="pl-8 pr-3 py-1.5 rounded-lg bg-[#090A0F] border border-white/15 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500">
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="addManualClipBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30 flex items-center gap-1.5 transition-all">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+            <span>+ Nuevo Recorte Manual (30s - 3m)</span>
+          </button>
+          <button id="restoreClipsBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 transition-all">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Restaurar</span>
+          </button>
+          <button id="deleteLowScoreBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 flex items-center gap-1.5 transition-all">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Borrar Score &lt; 88</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Clips Grid (10 to 20 Clips) -->
+      <div id="clipsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+        <!-- Populated dynamically by JS -->
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: PRO EDITOR STUDIO                  -->
+    <!-- ========================================== -->
+    <section id="editorView" class="hidden flex-1 flex flex-col gap-5">
+
+      <!-- Editor Top Bar -->
+      <div class="glass-panel rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <button id="backToDashboardBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition-all">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Volver a los Clips</span>
+          </button>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="editorClipBadge" class="px-2 py-0.5 rounded text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">SCORE 99</span>
+              <input id="editorClipTitleInput" type="text" value="" class="bg-transparent border-b border-transparent hover:border-white/20 focus:border-violet-500 text-sm sm:text-base font-bold text-white focus:outline-none px-1">
+            </div>
+            <p id="editorClipMeta" class="text-[11px] text-slate-400">Duración: 00:54 • Personaje encuadrado: Conductor Principal</p>
+          </div>
+        </div>
+
+        <!-- Quick Aspect Ratio + Subtitle Toggle + Resolution Export -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Aspect Ratio Selector -->
+          <div class="flex items-center bg-[#0B0D14] p-1 rounded-lg border border-white/10">
+            <button data-editor-ratio="9:16" class="editor-ratio-btn px-2.5 py-1 rounded text-xs font-bold bg-violet-600 text-white flex items-center gap-1">
+              <i data-lucide="smartphone" class="w-3.5 h-3.5"></i> 9:16
+            </button>
+            <button data-editor-ratio="16:9" class="editor-ratio-btn px-2.5 py-1 rounded text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1">
+              <i data-lucide="monitor" class="w-3.5 h-3.5"></i> 16:9
+            </button>
+            <button data-editor-ratio="1:1" class="editor-ratio-btn px-2.5 py-1 rounded text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1">
+              <i data-lucide="square" class="w-3.5 h-3.5"></i> 1:1
+            </button>
+          </div>
+
+          <!-- Toggle Subtitles inside Editor -->
+          <button id="editorSubToggleBtn" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 flex items-center gap-1.5">
+            <i data-lucide="captions" class="w-4 h-4"></i>
+            <span id="editorSubToggleLabel">Subtítulos ON</span>
+          </button>
+
+          <!-- Delete current clip -->
+          <button id="editorDeleteClipBtn" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 flex items-center gap-1.5">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span>Borrar Clip</span>
+          </button>
+
+          <!-- Download 1080p / 2K -->
+          <div class="flex items-center gap-1.5">
+            <button id="export1080Btn" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white border border-white/15 flex items-center gap-1.5">
+              <i data-lucide="download" class="w-3.5 h-3.5 text-violet-400"></i>
+              <span>Descargar 1080p</span>
+            </button>
+            <button id="export2KBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/20 flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+              <span>Descargar 2K QHD</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor Main 3-Column Workspace -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+        <!-- LEFT COLUMN: Transcript & Subtitle Styling (4 cols) -->
+        <div class="lg:col-span-4 glass-panel rounded-2xl p-4 flex flex-col gap-4 border border-white/10">
+          <!-- Sub-tabs: Transcripción vs Fuentes y Estilo -->
+          <div class="grid grid-cols-2 gap-1 bg-[#0B0D14] p-1 rounded-xl border border-white/10">
+            <button id="tabTranscriptBtn" class="py-2 rounded-lg text-xs font-bold bg-violet-600 text-white">
+              1. Subtítulos y Texto IA
+            </button>
+            <button id="tabFontStyleBtn" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white">
+              2. Fuentes, Color y Posición
+            </button>
+          </div>
+
+          <!-- Sub-panel 1: Interactive Editable Transcript -->
+          <div id="panelTranscript" class="space-y-3">
+            <div class="flex items-center justify-between text-xs text-slate-400">
+              <span>Haz clic en cualquier línea para editar el texto en vivo:</span>
+              <button id="addSubtitleLineBtn" class="text-violet-400 hover:text-violet-300 font-semibold flex items-center gap-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Añadir línea
+              </button>
+            </div>
+
+            <div id="transcriptLinesContainer" class="space-y-2 max-h-[380px] overflow-y-auto pr-1">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Sub-panel 2: Fonts, Colors, Animations, Position -->
+          <div id="panelFontStyle" class="hidden space-y-4">
+            <!-- Creator Preset Templates -->
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-2">Plantillas Virales (Estilo OpusClip):</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button data-preset="hormozi" class="style-preset-btn p-2 rounded-lg bg-[#141824] border border-violet-500/40 text-center hover:border-violet-400">
+                  <div class="font-anton text-sm text-yellow-400 tracking-wide">HORMOZI</div>
+                  <div class="text-[10px] text-slate-400">Impacto Amarillo</div>
+                </button>
+                <button data-preset="mrbeast" class="style-preset-btn p-2 rounded-lg bg-[#141824] border border-white/10 text-center hover:border-violet-400">
+                  <div class="font-bebas text-sm text-cyan-400 tracking-wider">BEAST PRO</div>
+                  <div class="text-[10px] text-slate-400">Neón Celeste</div>
+                </button>
+                <button data-preset="iman" class="style-preset-btn p-2 rounded-lg bg-[#141824] border border-white/10 text-center hover:border-violet-400">
+                  <div class="font-montserrat font-black text-xs text-emerald-400">MINIMAL</div>
+                  <div class="text-[10px] text-slate-400">Caja Limpia</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Font Family Selector -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="fontFamilySelect" class="block text-xs text-slate-400 mb-1">Fuente de Texto:</label>
+                <select id="fontFamilySelect" class="w-full bg-[#0B0D14] border border-white/15 rounded-lg px-2.5 py-2 text-xs font-semibold text-white">
+                  <option value="font-montserrat">Montserrat Black (Viral)</option>
+                  <option value="font-anton">Anton (Impacto Pesado)</option>
+                  <option value="font-bebas">Bebas Neue (Alto Reel)</option>
+                  <option value="font-poppins">Poppins ExtraBold</option>
+                  <option value="font-oswald">Oswald Bold</option>
+                  <option value="font-space">Space Grotesk Modern</option>
+                  <option value="font-sans">Inter Clean Pro</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="fontSizeSlider" class="block text-xs text-slate-400 mb-1">Tamaño: <span id="fontSizeValue" class="text-white font-bold">24px</span></label>
+                <input id="fontSizeSlider" type="range" min="16" max="38" value="24" class="w-full mt-2">
+              </div>
+            </div>
+
+            <!-- Colors: Primary Text + Active Word Highlight + Background Box -->
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="bg-[#0B0D14] p-2.5 rounded-lg border border-white/10">
+                <label class="block text-[10px] text-slate-400 mb-1">Color Texto</label>
+                <input id="subTextColorInput" type="color" value="#FFFFFF" class="w-full h-7 rounded cursor-pointer bg-transparent">
+              </div>
+              <div class="bg-[#0B0D14] p-2.5 rounded-lg border border-white/10">
+                <label class="block text-[10px] text-slate-400 mb-1">Palabra Clave</label>
+                <input id="subHighlightColorInput" type="color" value="#FACC15" class="w-full h-7 rounded cursor-pointer bg-transparent">
+              </div>
+              <div class="bg-[#0B0D14] p-2.5 rounded-lg border border-white/10">
+                <label class="block text-[10px] text-slate-400 mb-1">Fondo Caja</label>
+                <select id="subBgStyleSelect" class="w-full bg-[#141824] text-white text-[11px] rounded py-1 px-1 border border-white/10">
+                  <option value="stroke">Borde Negro Pro</option>
+                  <option value="box">Caja Sólida</option>
+                  <option value="glass">Cristal Neón</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Vertical Position Y & Uppercase/Emojis -->
+            <div class="space-y-2 pt-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-400">Posición Vertical de Subtítulos:</span>
+                <span id="subPosYLabel" class="text-violet-300 font-bold">78% (Inferior)</span>
+              </div>
+              <input id="subPosYSlider" type="range" min="15" max="88" value="78" class="w-full">
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input id="subUppercaseCheck" type="checkbox" checked class="rounded text-violet-600">
+                <span>MAYÚSCULAS AUTOMÁTICAS</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input id="subAutoEmojiCheck" type="checkbox" checked class="rounded text-violet-600">
+                <span>Emojis IA Dinámicos 🔥</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: Interactive Video Canvas Preview (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col items-center justify-center glass-panel rounded-2xl p-4 border border-white/10 min-h-[520px]">
+          <div class="w-full flex items-center justify-between text-xs text-slate-400 mb-3 px-1">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="move" class="w-3.5 h-3.5 text-violet-400"></i>
+              <span>Arrastra el video o usa los controles para mover y encuadrar</span>
+            </span>
+            <span id="canvasFormatBadge" class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-bold">9:16 Vertical Reel</span>
+          </div>
+
+          <!-- Aspect-Ratio Stage Container -->
+          <div class="relative flex items-center justify-center w-full py-2">
+            <div id="videoStageWrapper" class="relative overflow-hidden rounded-2xl bg-black border-2 border-violet-500/40 shadow-2xl transition-all duration-300 select-none cursor-grab active:cursor-grabbing" style="width: 290px; height: 515px;">
+
+              <!-- Actual HTML5 Video (if uploaded) OR High-Frame-Rate Interactive Studio Simulation Canvas -->
+              <video id="realHtmlVideo" class="hidden w-full h-full object-cover pointer-events-none" playsinline loop></video>
+              <canvas id="studioPreviewCanvas" width="720" height="1280" class="w-full h-full object-cover pointer-events-none"></canvas>
+
+              <!-- AI Face Tracking Detection Box Overlay -->
+              <div id="faceTrackOverlay" class="absolute border-2 border-emerald-400/80 rounded-xl pointer-events-none transition-all duration-300 flex flex-col justify-between p-1.5" style="width: 44%; height: 34%; left: 28%; top: 20%;">
+                <div class="flex items-center justify-between">
+                  <span id="faceTrackBadgeText" class="bg-emerald-500 text-black text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider">IA Rostro #1</span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                </div>
+                <div class="text-[8px] text-emerald-300 font-mono bg-black/60 px-1 rounded self-start">Auto-Reframe 99.4%</div>
+              </div>
+
+              <!-- Dynamic Live Subtitle Overlay -->
+              <div id="liveSubtitleOverlay" class="absolute inset-x-3 text-center pointer-events-none transition-all duration-150 flex flex-col items-center justify-center" style="top: 76%;">
+                <div id="liveSubtitleBox" class="px-3 py-1.5 rounded-xl font-montserrat font-black uppercase tracking-tight leading-tight caption-stroke" style="font-size: 22px; color: #FFFFFF;">
+                  ¡ESTE RECORTE AUTOMÁTICO DE <span style="color: #FACC15;">REEL CLIP</span> ROMPE EL ALGORITMO! 🔥
+                </div>
+              </div>
+
+              <!-- Top Right Social Safe Zone & Speaker Indicator -->
+              <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+                <span id="previewSpeakerBadge" class="px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-[10px] font-bold text-white flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                  Encuadre: Personaje 1
+                </span>
+                <span id="previewResolutionTag" class="px-2 py-0.5 rounded-md bg-violet-600/80 text-[10px] font-extrabold text-white">
+                  2K 60FPS
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Playback Controls Bar -->
+          <div class="w-full mt-4 bg-[#0B0D14] p-3 rounded-xl border border-white/10 flex flex-col gap-2">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <button id="playPauseBtn" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow">
+                  <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                  <span id="editorPlayPauseText">Play</span>
+                </button>
+                <button id="stopClipBtn" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1.5" title="Detener y volver al inicio del recorte">
+                  <i data-lucide="square" class="w-3.5 h-3.5"></i>
+                  <span>Stop</span>
+                </button>
+                <button id="restartClipBtn" class="p-2 rounded-lg bg-[#141824] hover:bg-slate-800 text-slate-300" title="Reiniciar clip">
+                  <i data-lucide="skip-back" class="w-4 h-4"></i>
+                </button>
+                <span id="timecodeReadout" class="text-xs font-mono font-bold text-white ml-1">00:00.0 / 00:55.0</span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
+                  <input id="toggleFaceBoxCheck" type="checkbox" checked class="rounded text-emerald-500">
+                  <span>Guía IA de Rostro</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Playhead Scrubber -->
+            <input id="playheadScrubber" type="range" min="0" max="100" value="0" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Auto-Reframe Characters, Camera Move & Manual Trim 30s-3m (3 cols) -->
+        <div class="lg:col-span-3 glass-panel rounded-2xl p-4 flex flex-col gap-4 border border-white/10">
+
+          <!-- 1. Character Face Auto-Reframe -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-violet-300 flex items-center gap-1.5">
+                <i data-lucide="scan-face" class="w-4 h-4"></i>
+                Encuadre de Personajes IA
+              </h3>
+              <span class="text-[10px] text-emerald-400 font-semibold">Auto-Track</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button data-speaker="p1" class="speaker-btn p-2.5 rounded-xl bg-violet-600/25 border border-violet-500 text-left transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">Personaje 1</span>
+                  <i data-lucide="user-check" class="w-3.5 h-3.5 text-violet-300"></i>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Conductor Izq. (Foco)</div>
+              </button>
+
+              <button data-speaker="p2" class="speaker-btn p-2.5 rounded-xl bg-[#0B0D14] border border-white/10 hover:border-violet-500/40 text-left transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">Personaje 2</span>
+                  <i data-lucide="user" class="w-3.5 h-3.5 text-slate-400"></i>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Invitado Der.</div>
+              </button>
+
+              <button data-speaker="split" class="speaker-btn p-2.5 rounded-xl bg-[#0B0D14] border border-white/10 hover:border-violet-500/40 text-left transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">Pantalla Dúo</span>
+                  <i data-lucide="columns" class="w-3.5 h-3.5 text-amber-400"></i>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Split 2 Rostros</div>
+              </button>
+
+              <button data-speaker="auto" class="speaker-btn p-2.5 rounded-xl bg-[#0B0D14] border border-white/10 hover:border-violet-500/40 text-left transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">IA Dinámico</span>
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Sigue a quien habla</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Mover y Editar Video (Pan X, Pan Y, Zoom) -->
+          <div class="space-y-3 pt-3 border-t border-white/10">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-violet-300 flex items-center gap-1.5">
+                <i data-lucide="move" class="w-4 h-4"></i>
+                Mover y Escalar Video
+              </h3>
+              <button id="resetTransformBtn" class="text-[11px] text-slate-400 hover:text-white underline">Centrar</button>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-400">Zoom de Cámara:</span>
+                <span id="zoomValueLabel" class="font-bold text-white">1.00x</span>
+              </div>
+              <input id="videoZoomSlider" type="range" min="100" max="220" value="100" class="w-full">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400">Mover X:</span>
+                  <span id="panXValueLabel" class="font-bold text-white">0%</span>
+                </div>
+                <input id="videoPanXSlider" type="range" min="-50" max="50" value="0" class="w-full">
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400">Mover Y:</span>
+                  <span id="panYValueLabel" class="font-bold text-white">0%</span>
+                </div>
+                <input id="videoPanYSlider" type="range" min="-50" max="50" value="0" class="w-full">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Recorte Manual de Duración (30 segundos hasta 3 minutos) -->
+          <div class="space-y-3 pt-3 border-t border-white/10">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                <i data-lucide="scissors" class="w-4 h-4"></i>
+                Recorte Manual (30s a 3m)
+              </h3>
+              <span id="trimDurationBadge" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold text-[11px]">55 seg</span>
+            </div>
+
+            <div class="bg-[#0B0D14] p-3 rounded-xl border border-white/10 space-y-2.5">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Inicio del Clip:</span>
+                  <span id="trimStartLabel" class="font-mono font-bold text-white">00:12</span>
+                </div>
+                <input id="trimStartSlider" type="range" min="0" max="600" value="12" class="w-full">
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Duración del Recorte:</span>
+                  <span id="trimLengthLabel" class="font-mono font-bold text-emerald-400">55s (0m 55s)</span>
+                </div>
+                <!-- Strictly 30 seconds to 180 seconds (3 minutes) as requested -->
+                <input id="trimLengthSlider" type="range" min="30" max="180" value="55" class="w-full">
+                <div class="flex justify-between text-[10px] text-slate-500 mt-0.5">
+                  <span>Mín: 30 seg</span>
+                  <span>90 seg</span>
+                  <span>Máx: 3 min (180s)</span>
+                </div>
+              </div>
+
+              <!-- Quick Trim Duration Buttons -->
+              <div class="grid grid-cols-4 gap-1 pt-1">
+                <button data-quick-dur="30" class="quick-dur-btn py-1 rounded bg-[#141824] hover:bg-violet-600/30 text-[11px] font-semibold text-slate-300">30s</button>
+                <button data-quick-dur="60" class="quick-dur-btn py-1 rounded bg-[#141824] hover:bg-violet-600/30 text-[11px] font-semibold text-slate-300">1 min</button>
+                <button data-quick-dur="120" class="quick-dur-btn py-1 rounded bg-[#141824] hover:bg-violet-600/30 text-[11px] font-semibold text-slate-300">2 min</button>
+                <button data-quick-dur="180" class="quick-dur-btn py-1 rounded bg-[#141824] hover:bg-violet-600/30 text-[11px] font-semibold text-slate-300">3 min</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+    <!-- REAL VIDEO RENDERING & BURN-IN MODAL (MediaRecorder + Canvas Stream) -->
+  <div id="videoRenderModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl max-w-md w-full p-6 border border-violet-500/40 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold">
+            <i data-lucide="film" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="renderModalTitle" class="text-sm font-extrabold text-white">Grabando Video Real (2K QHD)</h3>
+            <p id="renderModalSubtitle" class="text-[11px] text-slate-400">Quemando subtítulos y encuadre en stream de video...</p>
+          </div>
+        </div>
+        <span id="renderModalBadge" class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">60 FPS</span>
+      </div>
+
+      <!-- Live mini preview of the offscreen render canvas -->
+      <div class="relative rounded-xl overflow-hidden bg-black border border-white/15 flex items-center justify-center h-48">
+        <canvas id="offscreenExportCanvas" width="1080" height="1920" class="h-full w-auto object-contain"></canvas>
+        <div class="absolute top-2 left-2 px-2 py-0.5 rounded bg-rose-600/90 text-white text-[10px] font-bold flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+          REC STREAM EN VIVO
+        </div>
+        <div id="renderModalDimensions" class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/80 text-emerald-300 font-mono text-[10px] border border-white/10">
+          1440x2560 • 2K
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between text-xs">
+          <span id="renderModalStatusText" class="text-slate-300 font-medium">Codificando fotogramas y subtítulos quemados...</span>
+          <span id="renderModalPercent" class="font-mono font-bold text-emerald-400">0%</span>
+        </div>
+        <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="renderModalProgressBar" class="h-full bg-gradient-to-r from-violet-500 via-emerald-400 to-teal-400 transition-all duration-150" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Mode selector & Actions -->
+      <div class="flex items-center justify-between pt-2 border-t border-white/10 gap-2">
+        <button id="downloadSrtCompanionBtn" class="px-3 py-2 rounded-xl bg-[#141824] hover:bg-slate-800 text-slate-300 border border-white/10 text-xs font-semibold flex items-center gap-1.5">
+          <span>+ Bajar .SRT</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button id="finishRenderNowBtn" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow">
+            Finalizar y Guardar Ahora
+          </button>
+          <button id="cancelRenderModalBtn" class="px-3 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-bold">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION / EXPORT MODAL -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- APPLICATION LOGIC -->
+  <script>
+    // ==========================================
+    // INITIAL STATE & REALISTIC VIRAL CLIPS DATA
+    // ==========================================
+    const INITIAL_CLIPS = [
+      {
+        id: 'clip-1',
+        title: 'El cruce más picante en vivo: ¿Quién paga realmente el ajuste?',
+        score: 99,
+        category: 'debate',
+        categoryLabel: '⚡ Debate Picante',
+        startSec: 142,
+        durationSec: 58,
+        ratio: '9:16',
+        speaker: 'auto',
+        speakerLabel: 'IA Dinámico (2 Voces)',
+        zoom: 105,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: '¡NADIE SE ANIMÓ A DECIR ESTO EN CÁMARA!',
+        subtitles: [
+          { time: '00:00', text: '¡Nadie se animó a decir esto en cámara hasta hoy!', highlight: 'cámara' },
+          { time: '00:14', text: 'Cuando analizamos los números reales del presupuesto público,', highlight: 'números reales' },
+          { time: '00:29', text: 'queda clarísimo dónde se iban los recursos de la gente.', highlight: 'recursos' },
+          { time: '00:44', text: '¡Este momento en vivo explotó todas las redes sociales!', highlight: 'explotó' }
+        ]
+      },
+      {
+        id: 'clip-2',
+        title: 'Gancho explosivo: La regla de los 3 segundos para retener audiencia',
+        score: 97,
+        category: 'hook',
+        categoryLabel: '🎯 Gancho Explosivo',
+        startSec: 310,
+        durationSec: 45,
+        ratio: '9:16',
+        speaker: 'p1',
+        speakerLabel: 'Personaje 1 (Centro)',
+        zoom: 110,
+        panX: -5,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'SI NO HACES ESTO EN 3 SEGUNDOS, PIERDES EL REEL',
+        subtitles: [
+          { time: '00:00', text: 'Si no capturas la atención en los primeros tres segundos,', highlight: 'tres segundos' },
+          { time: '00:15', text: 'el algoritmo descarta tu video antes de mostrarlo al público.', highlight: 'algoritmo' },
+          { time: '00:30', text: 'Usa encuadre dinámico al rostro y subtítulos de alto impacto.', highlight: 'alto impacto' }
+        ]
+      },
+      {
+        id: 'clip-3',
+        title: 'Revelación exclusiva: El dato oculto que cambió toda la entrevista',
+        score: 96,
+        category: 'revelacion',
+        categoryLabel: '💡 Dato Clave',
+        startSec: 520,
+        durationSec: 75,
+        ratio: '9:16',
+        speaker: 'split',
+        speakerLabel: 'Pantalla Dúo (Split)',
+        zoom: 100,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'MIRA LA REACCIÓN DEL INVITADO CUANDO VE EL INFORME',
+        subtitles: [
+          { time: '00:00', text: 'Mira la reacción del invitado cuando ponemos el informe en pantalla.', highlight: 'reacción' },
+          { time: '00:25', text: 'Durante meses dijeron que ese contrato no existía en ningún lado.', highlight: 'contrato' },
+          { time: '00:50', text: 'Acá está la prueba completa firmada hoja por hoja.', highlight: 'prueba completa' }
+        ]
+      },
+      {
+        id: 'clip-4',
+        title: 'Resumen de 2 minutos: Cómo monetizar contenido vertical en 2026',
+        score: 95,
+        category: 'revelacion',
+        categoryLabel: '💡 Dato Clave',
+        startSec: 780,
+        durationSec: 120,
+        ratio: '9:16',
+        speaker: 'p2',
+        speakerLabel: 'Personaje 2 (Invitado)',
+        zoom: 115,
+        panX: 8,
+        panY: -4,
+        subtitlesEnabled: true,
+        hookText: 'EL PASO A PASO REAL PARA MULTIPLICAR TUS VISTAS',
+        subtitles: [
+          { time: '00:00', text: 'Hoy un solo podcast de una hora te da quince reels virales.', highlight: 'quince reels' },
+          { time: '00:40', text: 'La clave es cortar entre 30 segundos y 3 minutos según el tema.', highlight: '3 minutos' },
+          { time: '01:20', text: 'Exporta siempre en 1080p o 2K para máxima nitidez en móviles.', highlight: '2K' }
+        ]
+      },
+      {
+        id: 'clip-5',
+        title: 'Momento de tentada y blooper en vivo entre los conductores',
+        score: 94,
+        category: 'humor',
+        categoryLabel: '😂 Reacción Viral',
+        startSec: 1040,
+        durationSec: 36,
+        ratio: '9:16',
+        speaker: 'split',
+        speakerLabel: 'Pantalla Dúo (Split)',
+        zoom: 100,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'CUANDO TE OLVIDAS QUE EL MICRÓFONO SIGUE ABIERTO 😂',
+        subtitles: [
+          { time: '00:00', text: '¡No me digas que el micrófono seguía abierto en el corte!', highlight: 'micrófono' },
+          { time: '00:18', text: 'La cara de todo el equipo de producción detrás de cámara no tiene precio.', highlight: 'producción' }
+        ]
+      },
+      {
+        id: 'clip-6',
+        title: 'Debate económico a fondo: Inflación, tasas y salarios reales (Recorte 3 min)',
+        score: 93,
+        category: 'debate',
+        categoryLabel: '⚡ Debate Picante',
+        startSec: 1290,
+        durationSec: 180,
+        ratio: '16:9',
+        speaker: 'auto',
+        speakerLabel: 'IA Dinámico',
+        zoom: 100,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'ANÁLISIS COMPLETO EN 3 MINUTOS SIN FILTROS',
+        subtitles: [
+          { time: '00:00', text: 'Vamos a explicar en tres minutos exactos qué pasa con el crédito.', highlight: 'tres minutos' },
+          { time: '01:00', text: 'Cuando baja el gasto estatal, el capital vuelve al sector privado.', highlight: 'sector privado' },
+          { time: '02:10', text: 'Esa es la diferencia entre emisión artificial y crecimiento genuino.', highlight: 'crecimiento' }
+        ]
+      },
+      {
+        id: 'clip-7',
+        title: 'Frase demoledora en 30 segundos para TikTok y Shorts',
+        score: 92,
+        category: 'hook',
+        categoryLabel: '🎯 Gancho Explosivo',
+        startSec: 1540,
+        durationSec: 30,
+        ratio: '9:16',
+        speaker: 'p1',
+        speakerLabel: 'Personaje 1 (Centro)',
+        zoom: 125,
+        panX: 0,
+        panY: -5,
+        subtitlesEnabled: true,
+        hookText: '30 SEGUNDOS QUE RESUMEN TODA LA SEMANA',
+        subtitles: [
+          { time: '00:00', text: 'En treinta segundos te resumo por qué cambió el escenario político.', highlight: 'treinta segundos' },
+          { time: '00:15', text: 'La gente ya no consume discursos armados, busca autenticidad total.', highlight: 'autenticidad' }
+        ]
+      },
+      {
+        id: 'clip-8',
+        title: 'Comparativa en vivo: Medios tradicionales vs Streaming independiente',
+        score: 91,
+        category: 'debate',
+        categoryLabel: '⚡ Debate Picante',
+        startSec: 1720,
+        durationSec: 88,
+        ratio: '1:1',
+        speaker: 'split',
+        speakerLabel: 'Pantalla Dúo (Split)',
+        zoom: 105,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'EL STREAMING YA SUPERÓ EN AUDIENCIA A LA TV TRADICIONAL',
+        subtitles: [
+          { time: '00:00', text: 'Hoy cualquier canal de streaming bien producido compite de igual a igual.', highlight: 'streaming' },
+          { time: '00:45', text: 'La libertad de opinar sin pauta oficial cambia las reglas del juego.', highlight: 'libertad' }
+        ]
+      },
+      {
+        id: 'clip-9',
+        title: 'Respuesta viral a un comentario de la audiencia en vivo',
+        score: 90,
+        category: 'humor',
+        categoryLabel: '😂 Reacción Viral',
+        startSec: 1950,
+        durationSec: 52,
+        ratio: '9:16',
+        speaker: 'p1',
+        speakerLabel: 'Personaje 1 (Centro)',
+        zoom: 110,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'LEYENDO LOS MENSAJES MÁS PICANTES DEL CHAT EN VIVO',
+        subtitles: [
+          { time: '00:00', text: 'Miren lo que acaba de mandar un oyente al chat de la transmisión.', highlight: 'chat' },
+          { time: '00:26', text: '¡Se tenía que decir y se dijo en horario central!', highlight: 'horario central' }
+        ]
+      },
+      {
+        id: 'clip-10',
+        title: 'Las 3 claves técnicas para iluminar y encuadrar un set profesional',
+        score: 89,
+        category: 'revelacion',
+        categoryLabel: '💡 Dato Clave',
+        startSec: 2110,
+        durationSec: 95,
+        ratio: '9:16',
+        speaker: 'p2',
+        speakerLabel: 'Personaje 2 (Invitado)',
+        zoom: 100,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'CÓMO LOGRAR CALIDAD DE ESTUDIO DE TV CON VMIX Y CÁMARAS 2K',
+        subtitles: [
+          { time: '00:00', text: 'Una buena iluminación clave y recorte en 2K levanta cualquier set.', highlight: 'iluminación' },
+          { time: '00:48', text: 'Combina planos cortos en 9:16 para Instagram y 16:9 para YouTube.', highlight: '9:16' }
+        ]
+      },
+      {
+        id: 'clip-11',
+        title: 'Pregunta incómoda al cierre del bloque: Silencio en el estudio',
+        score: 88,
+        category: 'debate',
+        categoryLabel: '⚡ Debate Picante',
+        startSec: 2340,
+        durationSec: 64,
+        ratio: '9:16',
+        speaker: 'auto',
+        speakerLabel: 'IA Dinámico',
+        zoom: 115,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'EL SILENCIO DE 5 SEGUNDOS QUE LO DIJO TODO',
+        subtitles: [
+          { time: '00:00', text: 'Cuando le preguntamos por los fondos provinciales, se hizo un silencio total.', highlight: 'silencio total' },
+          { time: '00:32', text: 'Los datos oficiales muestran una realidad imposible de tapar.', highlight: 'datos oficiales' }
+        ]
+      },
+      {
+        id: 'clip-12',
+        title: 'Anécdota inédita detrás de escena antes de salir al aire',
+        score: 87,
+        category: 'humor',
+        categoryLabel: '😂 Reacción Viral',
+        startSec: 2510,
+        durationSec: 48,
+        ratio: '9:16',
+        speaker: 'p2',
+        speakerLabel: 'Personaje 2 (Invitado)',
+        zoom: 100,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'LO QUE PASÓ 2 MINUTOS ANTES DE PRENDER LAS CÁMARAS',
+        subtitles: [
+          { time: '00:00', text: 'Dos minutos antes de salir al aire se cortó todo el retorno del estudio.', highlight: 'salir al aire' },
+          { time: '00:24', text: 'Tuvimos que improvisar toda la apertura en vivo sin guion.', highlight: 'improvisar' }
+        ]
+      },
+      {
+        id: 'clip-13',
+        title: 'Pronóstico electoral y económico para los próximos 6 meses',
+        score: 86,
+        category: 'revelacion',
+        categoryLabel: '💡 Dato Clave',
+        startSec: 2700,
+        durationSec: 150,
+        ratio: '16:9',
+        speaker: 'split',
+        speakerLabel: 'Pantalla Dúo (Split)',
+        zoom: 100,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'GUARDA ESTE VIDEO: QUÉ VA A PASAR EN LOS PRÓXIMOS 6 MESES',
+        subtitles: [
+          { time: '00:00', text: 'Guarda este clip porque en seis meses vamos a revisar cada punto.', highlight: 'seis meses' },
+          { time: '01:15', text: 'Las inversiones en minería y energía van a liderar el cambio.', highlight: 'inversiones' }
+        ]
+      },
+      {
+        id: 'clip-14',
+        title: 'Cierre explosivo del programa: Mensaje directo a la audiencia',
+        score: 95,
+        category: 'hook',
+        categoryLabel: '🎯 Gancho Explosivo',
+        startSec: 2980,
+        durationSec: 42,
+        ratio: '9:16',
+        speaker: 'p1',
+        speakerLabel: 'Personaje 1 (Centro)',
+        zoom: 112,
+        panX: 0,
+        panY: 0,
+        subtitlesEnabled: true,
+        hookText: 'COMPARTÍ ESTE REEL SI BANCÁS EL PERIODISMO SIN FILTROS',
+        subtitles: [
+          { time: '00:00', text: 'Gracias por estar del otro lado bancando un espacio 100% libre.', highlight: '100% libre' },
+          { time: '00:21', text: '¡Descarga y comparte este reel en todas tus redes ahora mismo!', highlight: 'comparte' }
+        ]
+      }
+    ];
+
+    const state = {
+      clips: JSON.parse(JSON.stringify(INITIAL_CLIPS)),
+      selectedClipId: 'clip-1',
+      globalSubtitles: true,
+      globalRatio: '9:16',
+      globalResolution: '2K',
+      targetClipCount: 14,
+      filterCategory: 'all',
+      searchQuery: '',
+      isPlaying: false,
+      sourceVideoDuration: 0,
+      loadedYoutubeId: null,
+      activeCardPreviewId: null,
+      playheadProgress: 0,
+      hasUploadedVideo: false,
+      uploadedVideoUrl: null,
+      // Subtitle styling state
+      fontClass: 'font-montserrat',
+      fontSize: 22,
+      textColor: '#FFFFFF',
+      highlightColor: '#FACC15',
+      bgStyle: 'stroke',
+      posY: 76,
+      uppercase: true,
+      autoEmoji: true,
+      showFaceBox: true
+    };
+
+    // ==========================================
+    // UTILITY HELPERS
+    // ==========================================
+    function formatSeconds(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function showToast(title, subtitle, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const borderColor = type === 'success' ? 'border-emerald-500/50' : type === 'warn' ? 'border-amber-500/50' : 'border-violet-500/50';
+      const badgeColor = type === 'success' ? 'bg-emerald-500/20 text-emerald-300' : type === 'warn' ? 'bg-amber-500/20 text-amber-300' : 'bg-violet-500/20 text-violet-300';
+
+      toast.className = `pointer-events-auto glass-panel p-3.5 rounded-xl border ${borderColor} shadow-2xl transition-all duration-300 flex items-start gap-3`;
+      toast.innerHTML = `
+        <div class="w-8 h-8 rounded-lg ${badgeColor} flex items-center justify-center shrink-0 font-bold text-xs">
+          ✓
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-xs font-bold text-white">${title}</div>
+          <div class="text-[11px] text-slate-300 mt-0.5">${subtitle}</div>
+        </div>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3600);
+    }
+
+    function getSelectedClip() {
+      return state.clips.find(c => c.id === state.selectedClipId) || state.clips[0];
+    }
+
+    // ==========================================
+    // RENDER DASHBOARD CLIPS GRID (10 TO 20 CLIPS)
+    // ==========================================
+    function renderClipsGrid() {
+      const grid = document.getElementById('clipsGrid');
+      const navCount = document.getElementById('navClipCount');
+      const visibleCounter = document.getElementById('visibleClipsCounter');
+
+      const filtered = state.clips.filter(clip => {
+        if (state.filterCategory === 'score95' && clip.score < 95) return false;
+        if (state.filterCategory !== 'all' && state.filterCategory !== 'score95' && clip.category !== state.filterCategory) return false;
+        if (state.searchQuery.trim() !== '') {
+          const q = state.searchQuery.toLowerCase();
+          const inTitle = clip.title.toLowerCase().includes(q);
+          const inSubs = clip.subtitles.some(s => s.text.toLowerCase().includes(q));
+          if (!inTitle && !inSubs) return false;
+        }
+        return true;
+      });
+
+      navCount.textContent = state.clips.length;
+      visibleCounter.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full glass-panel rounded-2xl p-10 text-center space-y-3 border border-white/10">
+            <div class="text-sm font-bold text-white">No hay clips que coincidan con este filtro</div>
+            <p class="text-xs text-slate-400">Prueba cambiando la categoría o haz clic en "Restaurar" para ver todos los momentos virales.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((clip, idx) => {
+        const subsOn = state.globalSubtitles && clip.subtitlesEnabled;
+        const scoreColor = clip.score >= 95
+          ? 'from-emerald-500 to-teal-500 text-black'
+          : clip.score >= 90
+          ? 'from-violet-500 to-fuchsia-500 text-white'
+          : 'from-amber-400 to-orange-500 text-black';
+
+        // Aspect ratio preview badge & mini frame class
+        const ratioLabel = clip.ratio === '9:16' ? '9:16 Reel' : clip.ratio === '16:9' ? '16:9 Horizontal' : '1:1 Cuadrado';
+
+        return `
+          <article class="glass-panel rounded-2xl overflow-hidden border border-white/10 hover:border-violet-500/50 transition-all flex flex-col group">
+            <!-- Real Trimmed Reel Video Preview inside Card -->
+            <div class="relative h-64 bg-gradient-to-br from-[#16192B] via-[#0F1220] to-[#1E1533] overflow-hidden flex items-center justify-center p-2.5">
+              <!-- Reel Frame Container matching 9:16, 16:9 or 1:1 -->
+              <div class="relative rounded-xl overflow-hidden border-2 border-violet-500/40 bg-black shadow-2xl flex flex-col justify-between ${
+                clip.ratio === '9:16' ? 'w-36 h-56' : clip.ratio === '1:1' ? 'w-48 h-48' : 'w-full h-40'
+              }">
+                ${
+                  state.hasUploadedVideo && state.uploadedVideoUrl
+                    ? `
+                      <!-- Actual Uploaded Video Trimmed to Clip Start Time -->
+                      <video
+                        data-card-video="${clip.id}"
+                        data-start="${clip.startSec}"
+                        data-duration="${clip.durationSec}"
+                        src="${state.uploadedVideoUrl}#t=${clip.startSec},${clip.startSec + clip.durationSec}"
+                        preload="metadata"
+                        playsinline
+                        class="w-full h-full object-cover bg-black"
+                        style="transform: scale(${(clip.zoom || 100) / 100}) translate(${clip.panX || 0}%, ${clip.panY || 0}%);"
+                      ></video>
+                    `
+                    : state.loadedYoutubeId
+                    ? `
+                      <!-- Embedded YouTube Trimmed Segment Preview (Paused / Click to Play) -->
+                      <iframe
+                        src="https://www.youtube.com/embed/${state.loadedYoutubeId}?start=${clip.startSec}&end=${clip.startSec + clip.durationSec}&autoplay=0&controls=0&modestbranding=1&rel=0"
+                        class="w-full h-full object-cover pointer-events-none"
+                        allow="encrypted-media"
+                      ></iframe>
+                    `
+                    : `
+                      <!-- Dynamic Studio Visual Preview when no file/link is loaded yet -->
+                      <div class="w-full h-full flex items-center justify-center gap-1.5 p-2 bg-gradient-to-b from-violet-950/70 via-[#0B0E17] to-black">
+                        ${
+                          clip.speaker === 'split'
+                            ? `
+                              <div class="w-1/2 h-full rounded-lg bg-violet-900/40 border border-emerald-400/50 flex flex-col items-center justify-center p-1">
+                                <div class="w-7 h-7 rounded-full bg-violet-500/40 border border-emerald-400 flex items-center justify-center text-[10px] font-bold">P1</div>
+                                <span class="text-[8px] text-emerald-300 mt-1">Rostro 1</span>
+                              </div>
+                              <div class="w-1/2 h-full rounded-lg bg-fuchsia-900/40 border border-amber-400/50 flex flex-col items-center justify-center p-1">
+                                <div class="w-7 h-7 rounded-full bg-fuchsia-500/40 border border-amber-400 flex items-center justify-center text-[10px] font-bold">P2</div>
+                                <span class="text-[8px] text-amber-300 mt-1">Rostro 2</span>
+                              </div>
+                            `
+                            : `
+                              <div class="w-full h-full rounded-lg flex flex-col items-center justify-center relative">
+                                <div class="w-12 h-12 rounded-xl border-2 border-emerald-400/80 bg-violet-600/20 flex items-center justify-center shadow-lg">
+                                  <span class="text-xs font-extrabold text-emerald-300">${clip.speaker === 'p2' ? 'P2' : 'P1'}</span>
+                                </div>
+                                <span class="text-[8px] text-emerald-400 font-mono mt-1">${formatSeconds(clip.startSec)} - ${formatSeconds(clip.startSec + clip.durationSec)}</span>
+                              </div>
+                            `
+                        }
+                      </div>
+                    `
+                }
+
+                <!-- Burned-in Subtitle Preview inside Card -->
+                <div class="${subsOn ? 'block' : 'hidden'} absolute bottom-2 inset-x-1.5 text-center px-1.5 py-1 bg-black/80 rounded-md border border-white/15 pointer-events-none">
+                  <p class="text-[9px] font-montserrat font-black uppercase leading-tight text-amber-300 truncate">
+                    ${clip.hookText}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Top Left Virality Score Badge -->
+              <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 pointer-events-none">
+                <div class="px-2 py-0.5 rounded-lg bg-gradient-to-r ${scoreColor} font-extrabold text-[11px] shadow-lg flex items-center gap-1">
+                  <span>⚡ ${clip.score}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-[10px] font-semibold text-slate-200 border border-white/10">
+                  ${clip.categoryLabel}
+                </span>
+              </div>
+
+              <!-- Top Right Duration & Ratio -->
+              <div class="absolute top-2.5 right-2.5 flex flex-col items-end gap-1 pointer-events-none">
+                <span class="px-2 py-0.5 rounded bg-black/85 text-emerald-300 font-mono font-bold text-[10px] border border-emerald-500/30">
+                  ${formatSeconds(clip.startSec)} → ${formatSeconds(clip.startSec + clip.durationSec)} (${clip.durationSec}s)
+                </span>
+                <span class="px-1.5 py-0.5 rounded bg-violet-600/85 text-white font-bold text-[9px]">
+                  ${ratioLabel}
+                </span>
+              </div>
+
+              <!-- Direct Play / Stop Preview Mini-Toolbar on Each Reel Card -->
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5 bg-black/85 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/15">
+                <div class="flex items-center gap-1.5">
+                  <button data-action="card-play" data-id="${clip.id}" class="card-action-btn px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-extrabold flex items-center gap-1 shadow">
+                    ▶ Play Reel
+                  </button>
+                  <button data-action="card-stop" data-id="${clip.id}" class="card-action-btn px-2 py-1 rounded-lg bg-rose-500/25 hover:bg-rose-500/40 text-rose-200 border border-rose-500/40 text-[10px] font-bold">
+                    ■ Stop
+                  </button>
+                </div>
+                <button data-action="edit" data-id="${clip.id}" class="card-action-btn px-2.5 py-1 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold">
+                  Abrir Editor
+                </button>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-4 flex-1 flex flex-col justify-between gap-3">
+              <div>
+                <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Clip #${idx + 1} • Inicio ${formatSeconds(clip.startSec)}</span>
+                  <span class="text-emerald-400 font-medium">${clip.speakerLabel}</span>
+                </div>
+                <h3 class="text-sm font-bold text-white leading-snug line-clamp-2">${clip.title}</h3>
+              </div>
+
+              <!-- Quick Format & Subtitle Toggles per Card -->
+              <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                <!-- Aspect Ratio Cycle -->
+                <button data-action="cycle-ratio" data-id="${clip.id}" class="card-action-btn px-2 py-1 rounded-md bg-[#141824] hover:bg-slate-800 text-[11px] font-bold text-violet-300 border border-white/10" title="Cambiar formato 9:16 / 16:9 / 1:1">
+                  Formato: ${clip.ratio}
+                </button>
+
+                <!-- Toggle Subtitles on this clip -->
+                <button data-action="toggle-sub" data-id="${clip.id}" class="card-action-btn px-2 py-1 rounded-md text-[11px] font-bold border transition-all ${
+                  subsOn
+                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                    : 'bg-slate-800/80 border-white/10 text-slate-400'
+                }">
+                  ${subsOn ? 'CC: ON' : 'CC: OFF'}
+                </button>
+
+                <!-- Delete Clip Button -->
+                <button data-action="delete" data-id="${clip.id}" class="card-action-btn p-1.5 rounded-md bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30" title="Borrar este clip">
+                  Borrar
+                </button>
+              </div>
+
+              <!-- Download 1080p / 2K + Edit Buttons -->
+              <div class="grid grid-cols-3 gap-1.5 pt-1">
+                <button data-action="edit" data-id="${clip.id}" class="card-action-btn py-2 rounded-lg bg-violet-600/25 hover:bg-violet-600/40 text-violet-200 border border-violet-500/30 text-[11px] font-bold">
+                  Editar Pro
+                </button>
+                <button data-action="dl-1080" data-id="${clip.id}" class="card-action-btn py-2 rounded-lg bg-[#141824] hover:bg-slate-800 text-white border border-white/10 text-[11px] font-bold">
+                  ⬇ 1080p
+                </button>
+                <button data-action="dl-2k" data-id="${clip.id}" class="card-action-btn py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold shadow">
+                  ⬇ 2K Pro
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Seek each reel card's <video> element to its exact trimmed startSec and keep it PAUSED
+      document.querySelectorAll('video[data-card-video]').forEach(vid => {
+        const startSec = parseFloat(vid.getAttribute('data-start')) || 0;
+        const durSec = parseFloat(vid.getAttribute('data-duration')) || 30;
+        vid.pause();
+        vid.addEventListener('loadedmetadata', () => {
+          const safeStart = vid.duration ? Math.min(startSec, Math.max(0, vid.duration - 2)) : startSec;
+          vid.currentTime = safeStart;
+          vid.pause();
+        }, { once: true });
+        vid.addEventListener('timeupdate', () => {
+          const safeStart = vid.duration ? Math.min(startSec, Math.max(0, vid.duration - 2)) : startSec;
+          if (vid.currentTime >= safeStart + durSec) {
+            vid.pause();
+            vid.currentTime = safeStart;
+          }
+        });
+      });
+
+      // Attach listeners to card buttons
+      document.querySelectorAll('.card-action-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const action = btn.getAttribute('data-action');
+          const id = btn.getAttribute('data-id');
+          handleCardAction(action, id);
+        });
+      });
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function handleCardAction(action, clipId) {
+      const clipIndex = state.clips.findIndex(c => c.id === clipId);
+      if (clipIndex === -1) return;
+      const clip = state.clips[clipIndex];
+
+      if (action === 'card-play') {
+        // Pause all other card videos and source monitor first so audio never overlaps
+        const srcVid = document.getElementById('sourceMonitorVideo');
+        if (srcVid) srcVid.pause();
+        document.querySelectorAll('video[data-card-video]').forEach(v => {
+          if (v.getAttribute('data-card-video') !== clipId) v.pause();
+        });
+        const cardVid = document.querySelector(`video[data-card-video="${clipId}"]`);
+        if (cardVid && state.hasUploadedVideo) {
+          const safeStart = cardVid.duration ? Math.min(clip.startSec, Math.max(0, cardVid.duration - 2)) : clip.startSec;
+          if (cardVid.currentTime < safeStart || cardVid.currentTime >= safeStart + clip.durationSec) {
+            cardVid.currentTime = safeStart;
+          }
+          cardVid.play().catch(() => {});
+          showToast('Reproduciendo Reel recortado', `Reproduciendo desde ${formatSeconds(safeStart)} (${clip.durationSec}s).`);
+        } else {
+          state.selectedClipId = clipId;
+          switchMainView('editor');
+          setEditorPlaybackState(true);
+        }
+        return;
+      } else if (action === 'card-stop') {
+        const cardVid = document.querySelector(`video[data-card-video="${clipId}"]`);
+        if (cardVid && state.hasUploadedVideo) {
+          cardVid.pause();
+          const safeStart = cardVid.duration ? Math.min(clip.startSec, Math.max(0, cardVid.duration - 2)) : clip.startSec;
+          cardVid.currentTime = safeStart;
+          showToast('Reel detenido', `Recorte vuelto al inicio (${formatSeconds(safeStart)}).`, 'warn');
+        }
+        return;
+      } else if (action === 'edit') {
+        state.selectedClipId = clipId;
+        switchMainView('editor');
+      } else if (action === 'delete') {
+        const removedTitle = clip.title;
+        state.clips.splice(clipIndex, 1);
+        if (state.selectedClipId === clipId && state.clips.length > 0) {
+          state.selectedClipId = state.clips[0].id;
+        }
+        renderClipsGrid();
+        showToast('Clip eliminado', `Se descartó "${removedTitle.slice(0, 38)}..." de tu lista.`, 'warn');
+      } else if (action === 'toggle-sub') {
+        clip.subtitlesEnabled = !clip.subtitlesEnabled;
+        renderClipsGrid();
+        showToast(
+          clip.subtitlesEnabled ? 'Subtítulos activados' : 'Subtítulos desactivados',
+          `Subtítulos ${clip.subtitlesEnabled ? 'visibles' : 'ocultos'} en el Clip #${clipIndex + 1}.`
+        );
+      } else if (action === 'cycle-ratio') {
+        const order = ['9:16', '16:9', '1:1'];
+        const next = order[(order.indexOf(clip.ratio) + 1) % order.length];
+        clip.ratio = next;
+        renderClipsGrid();
+        showToast('Formato actualizado', `El clip ahora está encuadrado en formato ${next}.`);
+      } else if (action === 'dl-1080') {
+        triggerRealClipDownload(clip, '1080p');
+      } else if (action === 'dl-2k') {
+        triggerRealClipDownload(clip, '2K');
+      }
+    }
+
+    // ==========================================
+    // SWITCH BETWEEN DASHBOARD AND PRO EDITOR
+    // ==========================================
+    function switchMainView(view) {
+      const srcMon = document.getElementById('sourceMonitorVideo');
+      if (srcMon) srcMon.pause();
+      const edVid = document.getElementById('realHtmlVideo');
+      if (edVid) edVid.pause();
+      document.querySelectorAll('video[data-card-video]').forEach(cv => cv.pause());
+      state.isPlaying = false;
+      const dash = document.getElementById('dashboardView');
+      const editor = document.getElementById('editorView');
+      const navDash = document.getElementById('navDashboardBtn');
+      const navEd = document.getElementById('navEditorBtn');
+
+      if (view === 'editor') {
+        dash.classList.add('hidden');
+        editor.classList.remove('hidden');
+        navEd.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 bg-violet-600 text-white shadow';
+        navDash.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 text-slate-300 hover:text-white';
+        loadClipIntoEditor();
+      } else {
+        editor.classList.add('hidden');
+        dash.classList.remove('hidden');
+        navDash.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 bg-violet-600 text-white shadow';
+        navEd.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 text-slate-300 hover:text-white';
+        renderClipsGrid();
+      }
+    }
+
+    // ==========================================
+    // LOAD SELECTED CLIP INTO PRO EDITOR
+    // ==========================================
+    function loadClipIntoEditor() {
+      const clip = getSelectedClip();
+      if (!clip) return;
+
+      document.getElementById('editorClipBadge').textContent = `SCORE ${clip.score}`;
+      document.getElementById('editorClipTitleInput').value = clip.title;
+      updateEditorMetaText();
+
+      // Update Ratio Buttons
+      document.querySelectorAll('.editor-ratio-btn').forEach(btn => {
+        const r = btn.getAttribute('data-editor-ratio');
+        if (r === clip.ratio) {
+          btn.className = 'editor-ratio-btn px-2.5 py-1 rounded text-xs font-bold bg-violet-600 text-white flex items-center gap-1';
+        } else {
+          btn.className = 'editor-ratio-btn px-2.5 py-1 rounded text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1';
+        }
+      });
+
+      applyStageAspectRatio(clip.ratio);
+
+      // Update Subtitles toggle button
+      updateEditorSubtitleButton();
+
+      // Update Speaker Buttons
+      document.querySelectorAll('.speaker-btn').forEach(btn => {
+        const sp = btn.getAttribute('data-speaker');
+        if (sp === clip.speaker) {
+          btn.className = 'speaker-btn p-2.5 rounded-xl bg-violet-600/25 border border-violet-500 text-left transition-all';
+        } else {
+          btn.className = 'speaker-btn p-2.5 rounded-xl bg-[#0B0D14] border border-white/10 hover:border-violet-500/40 text-left transition-all';
+        }
+      });
+
+      // Update Sliders (Zoom, Pan, Trim)
+      document.getElementById('videoZoomSlider').value = clip.zoom;
+      document.getElementById('zoomValueLabel').textContent = `${(clip.zoom / 100).toFixed(2)}x`;
+      document.getElementById('videoPanXSlider').value = clip.panX;
+      document.getElementById('panXValueLabel').textContent = `${clip.panX}%`;
+      document.getElementById('videoPanYSlider').value = clip.panY;
+      document.getElementById('panYValueLabel').textContent = `${clip.panY}%`;
+
+      document.getElementById('trimStartSlider').value = clip.startSec;
+      document.getElementById('trimStartLabel').textContent = formatSeconds(clip.startSec);
+      document.getElementById('trimLengthSlider').value = clip.durationSec;
+      document.getElementById('trimLengthLabel').textContent = `${clip.durationSec}s (${Math.floor(clip.durationSec / 60)}m ${clip.durationSec % 60}s)`;
+      document.getElementById('trimDurationBadge').textContent = `${clip.durationSec} seg`;
+
+      // Always pause dashboard monitor and card videos when entering editor
+      const srcMon = document.getElementById('sourceMonitorVideo');
+      if (srcMon) srcMon.pause();
+      document.querySelectorAll('video[data-card-video]').forEach(v => v.pause());
+
+      // Sync editor video element to clip's exact trimmed start time and keep PAUSED by default
+      const edVid = document.getElementById('realHtmlVideo');
+      const edCanvas = document.getElementById('studioPreviewCanvas');
+      if (state.hasUploadedVideo && state.uploadedVideoUrl && edVid) {
+        edVid.classList.remove('hidden');
+        if (edCanvas) edCanvas.classList.add('hidden');
+        const safeStart = edVid.duration ? Math.min(clip.startSec, Math.max(0, edVid.duration - 2)) : clip.startSec;
+        try { edVid.currentTime = safeStart; } catch (_) {}
+        edVid.pause();
+        applyHtmlVideoTransform(clip);
+      }
+      setEditorPlaybackState(false);
+
+      renderTranscriptEditor(clip);
+      updateFaceTrackingBox(clip);
+      updateLiveSubtitlePreview();
+    }
+
+    function updateEditorMetaText() {
+      const clip = getSelectedClip();
+      if (!clip) return;
+      document.getElementById('editorClipMeta').textContent =
+        `Recorte: ${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)} (${clip.durationSec}s) • Encuadre: ${clip.speakerLabel} • Formato ${clip.ratio}`;
+    }
+
+    function applyStageAspectRatio(ratio) {
+      const stage = document.getElementById('videoStageWrapper');
+      const badge = document.getElementById('canvasFormatBadge');
+      if (ratio === '9:16') {
+        stage.style.width = '290px';
+        stage.style.height = '515px';
+        badge.textContent = '9:16 Vertical (Reels / TikTok / Shorts)';
+      } else if (ratio === '16:9') {
+        stage.style.width = '480px';
+        stage.style.height = '270px';
+        badge.textContent = '16:9 Horizontal (YouTube / Stream)';
+      } else {
+        stage.style.width = '360px';
+        stage.style.height = '360px';
+        badge.textContent = '1:1 Cuadrado (Feed Instagram / Facebook)';
+      }
+    }
+
+    function renderTranscriptEditor(clip) {
+      const container = document.getElementById('transcriptLinesContainer');
+      container.innerHTML = clip.subtitles.map((line, index) => `
+        <div class="bg-[#0B0D14] p-2.5 rounded-xl border border-white/10 hover:border-violet-500/40 transition-all space-y-1.5">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-mono font-bold">${line.time}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-slate-400">Palabra destacada:</span>
+              <input data-sub-hl="${index}" type="text" value="${line.highlight || ''}" class="w-24 bg-[#141824] border border-white/10 rounded px-1.5 py-0.5 text-[11px] text-amber-300 font-semibold focus:outline-none focus:border-violet-500">
+            </div>
+          </div>
+          <input data-sub-text="${index}" type="text" value="${line.text}" class="w-full bg-[#141824] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-violet-500">
+        </div>
+      `).join('');
+
+      container.querySelectorAll('input[data-sub-text]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          const idx = parseInt(inp.getAttribute('data-sub-text'), 10);
+          clip.subtitles[idx].text = inp.value;
+          if (idx === 0) clip.hookText = inp.value.toUpperCase();
+          updateLiveSubtitlePreview();
+        });
+      });
+
+      container.querySelectorAll('input[data-sub-hl]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          const idx = parseInt(inp.getAttribute('data-sub-hl'), 10);
+          clip.subtitles[idx].highlight = inp.value;
+          updateLiveSubtitlePreview();
+        });
+      });
+    }
+
+    function updateFaceTrackingBox(clip) {
+      const overlay = document.getElementById('faceTrackOverlay');
+      const badge = document.getElementById('faceTrackBadgeText');
+      const topSpeakerBadge = document.getElementById('previewSpeakerBadge');
+
+      if (!state.showFaceBox) {
+        overlay.classList.add('hidden');
+        return;
+      }
+      overlay.classList.remove('hidden');
+
+      if (clip.speaker === 'p1') {
+        overlay.style.left = '24%';
+        overlay.style.top = '18%';
+        overlay.style.width = '48%';
+        overlay.style.height = '36%';
+        badge.textContent = 'IA ROSTRO #1 (CONDUCTOR)';
+        topSpeakerBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Encuadre: Personaje 1';
+      } else if (clip.speaker === 'p2') {
+        overlay.style.left = '30%';
+        overlay.style.top = '20%';
+        overlay.style.width = '48%';
+        overlay.style.height = '36%';
+        badge.textContent = 'IA ROSTRO #2 (INVITADO)';
+        topSpeakerBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Encuadre: Personaje 2';
+      } else if (clip.speaker === 'split') {
+        overlay.style.left = '8%';
+        overlay.style.top = '12%';
+        overlay.style.width = '84%';
+        overlay.style.height = '52%';
+        badge.textContent = 'MODO DÚO: 2 PERSONAJES';
+        topSpeakerBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400"></span> Encuadre: Dúo Split';
+      } else {
+        overlay.style.left = '26%';
+        overlay.style.top = '18%';
+        overlay.style.width = '48%';
+        overlay.style.height = '36%';
+        badge.textContent = 'IA AUTO-TRACK ACTIVO';
+        topSpeakerBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span> Encuadre: IA Dinámico';
+      }
+    }
+
+    function updateLiveSubtitlePreview() {
+      const clip = getSelectedClip();
+      if (!clip) return;
+
+      const overlay = document.getElementById('liveSubtitleOverlay');
+      const box = document.getElementById('liveSubtitleBox');
+      const subsVisible = state.globalSubtitles && clip.subtitlesEnabled;
+
+      if (!subsVisible) {
+        overlay.classList.add('hidden');
+        return;
+      }
+      overlay.classList.remove('hidden');
+      overlay.style.top = `${state.posY}%`;
+
+      // Pick current subtitle line according to playhead progress
+      const lineCount = clip.subtitles.length || 1;
+      const lineIndex = Math.min(lineCount - 1, Math.floor((state.playheadProgress / 100) * lineCount));
+      const activeLine = clip.subtitles[lineIndex] || { text: clip.hookText, highlight: '' };
+
+      let rawText = activeLine.text;
+      if (state.uppercase) rawText = rawText.toUpperCase();
+
+      // Highlight word
+      let htmlContent = rawText;
+      if (activeLine.highlight && activeLine.highlight.trim() !== '') {
+        const hl = state.uppercase ? activeLine.highlight.toUpperCase() : activeLine.highlight;
+        const safeHl = hl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${safeHl})`, 'gi');
+        htmlContent = rawText.replace(regex, `<span style="color: ${state.highlightColor}; text-decoration: underline;">$1</span>`);
+      }
+
+      if (state.autoEmoji) {
+        htmlContent += ' 🔥';
+      }
+
+      // Font & background styling
+      const bgClass = state.bgStyle === 'box'
+        ? 'bg-black/90 border border-white/20 shadow-xl'
+        : state.bgStyle === 'glass'
+        ? 'bg-violet-950/80 backdrop-blur-md border border-violet-400/40 shadow-xl'
+        : 'caption-stroke';
+
+      box.className = `px-3 py-1.5 rounded-xl ${state.fontClass} font-black tracking-tight leading-tight transition-all ${bgClass}`;
+      box.style.fontSize = `${state.fontSize}px`;
+      box.style.color = state.textColor;
+      box.innerHTML = htmlContent;
+    }
+
+    function updateEditorSubtitleButton() {
+      const clip = getSelectedClip();
+      const btn = document.getElementById('editorSubToggleBtn');
+      const label = document.getElementById('editorSubToggleLabel');
+      const globalBtn = document.getElementById('globalSubToggleBtn');
+      const globalText = document.getElementById('globalSubToggleText');
+
+      const active = state.globalSubtitles && (clip ? clip.subtitlesEnabled : true);
+      if (active) {
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 flex items-center gap-1.5';
+        label.textContent = 'Subtítulos: ON';
+      } else {
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold border border-rose-500/40 bg-rose-500/15 text-rose-300 flex items-center gap-1.5';
+        label.textContent = 'Subtítulos: OFF';
+      }
+
+      if (state.globalSubtitles) {
+        globalBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-1.5 bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25';
+        globalText.textContent = 'Subtítulos: ACTIVOS';
+      } else {
+        globalBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-1.5 bg-rose-500/15 border-rose-500/40 text-rose-300 hover:bg-rose-500/25';
+        globalText.textContent = 'Subtítulos: OCULTOS';
+      }
+    }
+
+    // ==========================================
+    // STUDIO PREVIEW CANVAS ANIMATION LOOP
+    // ==========================================
+    let animFrameId = null;
+    let tick = 0;
+
+    function startPreviewCanvasLoop() {
+      const canvas = document.getElementById('studioPreviewCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function renderFrame() {
+        tick += state.isPlaying ? 1 : 0;
+        const clip = getSelectedClip() || state.clips[0];
+
+        if (state.isPlaying && clip) {
+          state.playheadProgress = (state.playheadProgress + 0.18) % 100;
+          const scrubber = document.getElementById('playheadScrubber');
+          const readout = document.getElementById('timecodeReadout');
+          if (scrubber) scrubber.value = state.playheadProgress;
+          if (readout) {
+            const curSec = ((state.playheadProgress / 100) * clip.durationSec).toFixed(1);
+            readout.textContent = `${curSec}s / ${clip.durationSec}.0s`;
+          }
+          if (tick % 15 === 0) updateLiveSubtitlePreview();
+        }
+
+        // Draw dynamic broadcast studio scene with Pan/Zoom & Speaker Framing
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.save();
+        ctx.clearRect(0, 0, w, h);
+
+        // Apply user Zoom & Pan X/Y
+        const zoom = clip ? clip.zoom / 100 : 1;
+        const panX = clip ? (clip.panX / 100) * w * 0.4 : 0;
+        const panY = clip ? (clip.panY / 100) * h * 0.4 : 0;
+
+        ctx.translate(w / 2 + panX, h / 2 + panY);
+        ctx.scale(zoom, zoom);
+        ctx.translate(-w / 2, -h / 2);
+
+        // Studio Background Gradient
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#131129');
+        grad.addColorStop(0.5, '#0c1222');
+        grad.addColorStop(1, '#1f1124');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Animated Neon Studio Light Bars
+        ctx.fillStyle = 'rgba(139, 92, 246, 0.18)';
+        ctx.fillRect(80, 100, 18, h - 200);
+        ctx.fillStyle = 'rgba(236, 72, 153, 0.18)';
+        ctx.fillRect(w - 98, 100, 18, h - 200);
+
+        // Draw Speaker(s) according to selected framing
+        const speakerMode = clip ? clip.speaker : 'p1';
+        const pulse = Math.sin(tick * 0.08) * 6;
+
+        if (speakerMode === 'split') {
+          // Top Half: Speaker 1
+          ctx.fillStyle = '#191D30';
+          ctx.fillRect(40, 60, w - 80, h / 2 - 80);
+          drawStylizedSpeaker(ctx, w / 2, h * 0.26, '#8b5cf6', 'CONDUCTOR 1', pulse);
+
+          // Divider
+          ctx.fillStyle = '#8b5cf6';
+          ctx.fillRect(40, h / 2 - 4, w - 80, 8);
+
+          // Bottom Half: Speaker 2
+          ctx.fillStyle = '#22182E';
+          ctx.fillRect(40, h / 2 + 20, w - 80, h / 2 - 80);
+          drawStylizedSpeaker(ctx, w / 2, h * 0.72, '#f59e0b', 'INVITADO 2', -pulse);
+        } else {
+          const isP2 = speakerMode === 'p2' || (speakerMode === 'auto' && Math.floor(tick / 180) % 2 === 1);
+          const accent = isP2 ? '#f59e0b' : '#10b981';
+          const name = isP2 ? 'PERSONAJE 2 (EN FOCO)' : 'PERSONAJE 1 (EN FOCO)';
+          drawStylizedSpeaker(ctx, w / 2, h * 0.36, accent, name, pulse);
+        }
+
+        // Audio Waveform Equalizer at bottom of studio
+        ctx.fillStyle = 'rgba(16, 185, 129, 0.65)';
+        for (let i = 0; i < 28; i++) {
+          const barH = 14 + Math.abs(Math.sin(tick * 0.12 + i * 0.5)) * 55;
+          ctx.fillRect(110 + i * 18, h - 120 - barH / 2, 10, barH);
+        }
+
+        ctx.restore();
+        animFrameId = requestAnimationFrame(renderFrame);
+      }
+
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      animFrameId = requestAnimationFrame(renderFrame);
+    }
+
+    function drawStylizedSpeaker(ctx, cx, cy, color, label, pulse) {
+      // Glow halo
+      ctx.beginPath();
+      ctx.arc(cx, cy, 115 + pulse, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(139, 92, 246, 0.12)';
+      ctx.fill();
+
+      // Shoulders / Suit
+      ctx.beginPath();
+      ctx.roundRect(cx - 150, cy + 75, 300, 170, 60);
+      ctx.fillStyle = '#1E2436';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+
+      // Head / Avatar Silhouette
+      ctx.beginPath();
+      ctx.arc(cx, cy - 10, 68, 0, Math.PI * 2);
+      ctx.fillStyle = '#2B334B';
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+
+      // Studio Broadcast Microphone
+      ctx.fillStyle = '#090A0F';
+      ctx.beginPath();
+      ctx.roundRect(cx + 45, cy + 35, 36, 65, 16);
+      ctx.fill();
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Speaker tag
+      ctx.fillStyle = color;
+      ctx.font = 'bold 20px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, cx, cy + 215);
+    }
+
+    // ==========================================
+    // REAL VIDEO DOWNLOAD (MediaRecorder + Canvas Stream 1080p / 2K)
+    // ==========================================
+    let activeMediaRecorder = null;
+    let activeRenderLoopId = null;
+    let activeRenderCanceled = false;
+
+    function getTargetResolutionDimensions(ratio, resolution) {
+      if (resolution === '2K') {
+        if (ratio === '9:16') return { width: 1440, height: 2560, label: '1440x2560 (2K QHD Vertical)' };
+        if (ratio === '16:9') return { width: 2560, height: 1440, label: '2560x1440 (2K QHD Horizontal)' };
+        return { width: 1440, height: 1440, label: '1440x1440 (2K QHD Cuadrado)' };
+      } else {
+        if (ratio === '9:16') return { width: 1080, height: 1920, label: '1080x1920 (1080p FHD Vertical)' };
+        if (ratio === '16:9') return { width: 1920, height: 1080, label: '1920x1080 (1080p FHD Horizontal)' };
+        return { width: 1080, height: 1080, label: '1080x1080 (1080p FHD Cuadrado)' };
+      }
+    }
+
+    function downloadCompanionSrt(clip) {
+      const safeName = clip.title.toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 35);
+      const srtContent = clip.subtitles.map((s, i) =>
+        `${i + 1}\n00:${s.time},000 --> 00:${s.time},900\n${state.uppercase ? s.text.toUpperCase() : s.text}\n`
+      ).join('\n');
+      const blob = new Blob([srtContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `REEL_CLIP_${safeName}.srt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      showToast('Subtítulos .SRT descargados', 'Archivo de subtítulos externo guardado.');
+    }
+
+    function drawBurnedInSubtitlesOnCanvas(ctx, clip, w, h, progressPct) {
+      const subsVisible = state.globalSubtitles && clip.subtitlesEnabled;
+      if (!subsVisible) return;
+
+      const lineCount = clip.subtitles.length || 1;
+      const lineIndex = Math.min(lineCount - 1, Math.floor((progressPct / 100) * lineCount));
+      const activeLine = clip.subtitles[lineIndex] || { text: clip.hookText, highlight: '' };
+
+      let rawText = activeLine.text || clip.hookText;
+      if (state.uppercase) rawText = rawText.toUpperCase();
+      if (state.autoEmoji) rawText += ' 🔥';
+
+      const scaleFactor = Math.max(1, w / 540);
+      const fontPx = Math.round(state.fontSize * scaleFactor * 1.15);
+      const fontMap = {
+        'font-montserrat': 'Montserrat, sans-serif',
+        'font-anton': 'Anton, sans-serif',
+        'font-bebas': '"Bebas Neue", sans-serif',
+        'font-poppins': 'Poppins, sans-serif',
+        'font-oswald': 'Oswald, sans-serif',
+        'font-space': '"Space Grotesk", sans-serif',
+        'font-sans': 'Inter, sans-serif'
+      };
+      const fontFamily = fontMap[state.fontClass] || 'Montserrat, sans-serif';
+
+      ctx.save();
+      ctx.font = `900 ${fontPx}px ${fontFamily}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Word wrap to fit 86% of canvas width
+      const maxWidth = w * 0.86;
+      const words = rawText.split(' ');
+      const lines = [];
+      let currentLine = '';
+
+      for (let i = 0; i < words.length; i++) {
+        const testLine = currentLine ? `${currentLine} ${words[i]}` : words[i];
+        if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = words[i];
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+
+      const lineHeight = fontPx * 1.24;
+      const totalBlockHeight = lines.length * lineHeight;
+      const centerY = (state.posY / 100) * h;
+      const startY = centerY - totalBlockHeight / 2 + lineHeight / 2;
+
+      // Optional background box if selected
+      if (state.bgStyle === 'box' || state.bgStyle === 'glass') {
+        let widest = 0;
+        lines.forEach(l => {
+          const mw = ctx.measureText(l).width;
+          if (mw > widest) widest = mw;
+        });
+        const padX = 28 * scaleFactor;
+        const padY = 18 * scaleFactor;
+        ctx.fillStyle = state.bgStyle === 'box' ? 'rgba(0, 0, 0, 0.88)' : 'rgba(46, 16, 101, 0.82)';
+        ctx.beginPath();
+        ctx.roundRect(
+          w / 2 - widest / 2 - padX,
+          centerY - totalBlockHeight / 2 - padY,
+          widest + padX * 2,
+          totalBlockHeight + padY * 2,
+          18 * scaleFactor
+        );
+        ctx.fill();
+        ctx.lineWidth = 2 * scaleFactor;
+        ctx.strokeStyle = 'rgba(167, 139, 250, 0.5)';
+        ctx.stroke();
+      }
+
+      const hlTarget = (activeLine.highlight || '').trim().toLowerCase();
+
+      lines.forEach((lineText, idx) => {
+        const y = startY + idx * lineHeight;
+
+        // Draw thick black outline stroke for crisp readability
+        ctx.lineWidth = Math.max(6, Math.round(fontPx * 0.18));
+        ctx.strokeStyle = '#000000';
+        ctx.lineJoin = 'round';
+        ctx.strokeText(lineText, w / 2, y);
+
+        // Check if line contains highlighted keyword
+        if (hlTarget && lineText.toLowerCase().includes(hlTarget)) {
+          // Render word by word to color the highlighted keyword
+          const lineWords = lineText.split(' ');
+          const spaceW = ctx.measureText(' ').width;
+          const totalW = ctx.measureText(lineText).width;
+          let cursorX = w / 2 - totalW / 2;
+          ctx.textAlign = 'left';
+
+          lineWords.forEach((word) => {
+            const cleanW = word.toLowerCase().replace(/[^a-záéíóúñ0-9]/gi, '');
+            const isHl = hlTarget.split(' ').some(h => h && cleanW.includes(h.replace(/[^a-záéíóúñ0-9]/gi, '')));
+            ctx.fillStyle = isHl ? state.highlightColor : state.textColor;
+            ctx.fillText(word, cursorX, y);
+            cursorX += ctx.measureText(word).width + spaceW;
+          });
+          ctx.textAlign = 'center';
+        } else {
+          ctx.fillStyle = state.textColor;
+          ctx.fillText(lineText, w / 2, y);
+        }
+      });
+
+      ctx.restore();
+    }
+
+    function renderCompositeVideoFrame(ctx, clip, w, h, progressPct, localFrameTick) {
+      ctx.save();
+      ctx.clearRect(0, 0, w, h);
+
+      const zoom = (clip ? clip.zoom : 100) / 100;
+      const panX = clip ? (clip.panX / 100) * w * 0.4 : 0;
+      const panY = clip ? (clip.panY / 100) * h * 0.4 : 0;
+
+      ctx.translate(w / 2 + panX, h / 2 + panY);
+      ctx.scale(zoom, zoom);
+      ctx.translate(-w / 2, -h / 2);
+
+      const videoEl = document.getElementById('realHtmlVideo');
+      if (state.hasUploadedVideo && videoEl && videoEl.readyState >= 2) {
+        // Draw real uploaded user video with cover framing
+        const vw = videoEl.videoWidth || 1280;
+        const vh = videoEl.videoHeight || 720;
+        const scale = Math.max(w / vw, h / vh);
+        const drawW = vw * scale;
+        const drawH = vh * scale;
+        const dx = (w - drawW) / 2;
+        const dy = (h - drawH) / 2;
+
+        if (clip.speaker === 'split') {
+          // Split screen dual camera framing from uploaded video
+          ctx.drawImage(videoEl, 0, 0, vw * 0.5, vh, 0, 0, w, h / 2);
+          ctx.drawImage(videoEl, vw * 0.5, 0, vw * 0.5, vh, 0, h / 2, w, h / 2);
+          ctx.fillStyle = '#8b5cf6';
+          ctx.fillRect(0, h / 2 - 4, w, 8);
+        } else {
+          const offsetSpeakerX = clip.speaker === 'p1' ? drawW * 0.12 : clip.speaker === 'p2' ? -drawW * 0.12 : 0;
+          ctx.drawImage(videoEl, dx + offsetSpeakerX, dy, drawW, drawH);
+        }
+      } else {
+        // Draw high-resolution studio scene
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#131129');
+        grad.addColorStop(0.5, '#0c1222');
+        grad.addColorStop(1, '#1f1124');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        const scaleU = w / 720;
+        ctx.fillStyle = 'rgba(139, 92, 246, 0.22)';
+        ctx.fillRect(80 * scaleU, 100 * scaleU, 18 * scaleU, h - 200 * scaleU);
+        ctx.fillStyle = 'rgba(236, 72, 153, 0.22)';
+        ctx.fillRect(w - 98 * scaleU, 100 * scaleU, 18 * scaleU, h - 200 * scaleU);
+
+        const pulse = Math.sin(localFrameTick * 0.12) * 8 * scaleU;
+        const speakerMode = clip ? clip.speaker : 'p1';
+
+        ctx.save();
+        ctx.scale(scaleU, scaleU);
+        const scaledH = h / scaleU;
+        if (speakerMode === 'split') {
+          ctx.fillStyle = '#191D30';
+          ctx.fillRect(40, 60, 640, scaledH / 2 - 80);
+          drawStylizedSpeaker(ctx, 360, scaledH * 0.26, '#8b5cf6', 'CONDUCTOR 1', pulse);
+          ctx.fillStyle = '#8b5cf6';
+          ctx.fillRect(40, scaledH / 2 - 4, 640, 8);
+          ctx.fillStyle = '#22182E';
+          ctx.fillRect(40, scaledH / 2 + 20, 640, scaledH / 2 - 80);
+          drawStylizedSpeaker(ctx, 360, scaledH * 0.72, '#f59e0b', 'INVITADO 2', -pulse);
+        } else {
+          const isP2 = speakerMode === 'p2' || (speakerMode === 'auto' && Math.floor(localFrameTick / 90) % 2 === 1);
+          const accent = isP2 ? '#f59e0b' : '#10b981';
+          const name = isP2 ? 'PERSONAJE 2 (EN FOCO)' : 'PERSONAJE 1 (EN FOCO)';
+          drawStylizedSpeaker(ctx, 360, scaledH * 0.36, accent, name, pulse);
+        }
+        ctx.restore();
+      }
+
+      ctx.restore();
+
+      // Burn-in dynamic subtitles directly onto the video frame
+      drawBurnedInSubtitlesOnCanvas(ctx, clip, w, h, progressPct);
+    }
+
+    function triggerRealClipDownload(clip, resolution) {
+      const target = getTargetResolutionDimensions(clip.ratio, resolution);
+      const modal = document.getElementById('videoRenderModal');
+      const exportCanvas = document.getElementById('offscreenExportCanvas');
+      const titleEl = document.getElementById('renderModalTitle');
+      const subEl = document.getElementById('renderModalSubtitle');
+      const dimEl = document.getElementById('renderModalDimensions');
+      const pctEl = document.getElementById('renderModalPercent');
+      const barEl = document.getElementById('renderModalProgressBar');
+      const statusEl = document.getElementById('renderModalStatusText');
+
+      exportCanvas.width = target.width;
+      exportCanvas.height = target.height;
+      titleEl.textContent = `Grabando Video Real en ${resolution}`;
+      subEl.textContent = `"${clip.title.slice(0, 42)}..." • Subtítulos ${state.globalSubtitles && clip.subtitlesEnabled ? 'Quemados' : 'Desactivados'}`;
+      dimEl.textContent = `${target.width}x${target.height} • ${clip.ratio}`;
+      pctEl.textContent = '0%';
+      barEl.style.width = '0%';
+      statusEl.textContent = 'Iniciando MediaRecorder y flujo Canvas a 60 FPS...';
+
+      modal.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+
+      // Hook up companion SRT button for this clip
+      const srtBtn = document.getElementById('downloadSrtCompanionBtn');
+      srtBtn.onclick = () => downloadCompanionSrt(clip);
+
+      // Prepare MediaRecorder stream
+      const ctx = exportCanvas.getContext('2d');
+      let stream = null;
+      try {
+        stream = exportCanvas.captureStream(60);
+      } catch (err) {
+        modal.classList.add('hidden');
+        downloadCompanionSrt(clip);
+        return;
+      }
+
+      // If user uploaded a real video and it has audio tracks, try attaching audio track
+      const videoEl = document.getElementById('realHtmlVideo');
+      if (state.hasUploadedVideo && videoEl) {
+        try {
+          videoEl.currentTime = clip.startSec || 0;
+          videoEl.play().catch(() => {});
+          if (videoEl.captureStream) {
+            const vStream = videoEl.captureStream();
+            vStream.getAudioTracks().forEach(track => stream.addTrack(track));
+          }
+        } catch (_) {}
+      }
+
+      // Pick best supported container/codec (MP4 H264 or WebM VP9/VP8)
+      const mimeTypes = [
+        'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+        'video/mp4',
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm'
+      ];
+      let selectedMime = 'video/webm';
+      for (const m of mimeTypes) {
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported(m)) {
+          selectedMime = m;
+          break;
+        }
+      }
+
+      const ext = selectedMime.includes('mp4') ? 'mp4' : 'webm';
+      const bitrate = resolution === '2K' ? 16000000 : 8000000; // 16 Mbps for 2K, 8 Mbps for 1080p
+      const chunks = [];
+      activeRenderCanceled = false;
+
+      try {
+        activeMediaRecorder = new MediaRecorder(stream, {
+          mimeType: selectedMime,
+          videoBitsPerSecond: bitrate
+        });
+      } catch (e) {
+        activeMediaRecorder = new MediaRecorder(stream);
+      }
+
+      activeMediaRecorder.ondataavailable = (ev) => {
+        if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+      };
+
+      activeMediaRecorder.onstop = () => {
+        if (activeRenderLoopId) cancelAnimationFrame(activeRenderLoopId);
+        modal.classList.add('hidden');
+        if (activeRenderCanceled || chunks.length === 0) return;
+
+        const videoBlob = new Blob(chunks, { type: selectedMime });
+        const videoUrl = URL.createObjectURL(videoBlob);
+        const safeName = clip.title.toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 35);
+        const fileName = `REEL_CLIP_${resolution}_${clip.ratio.replace(':', 'x')}_${safeName}.${ext}`;
+
+        const a = document.createElement('a');
+        a.href = videoUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(videoUrl), 10000);
+
+        showToast(
+          `¡Video ${resolution} (.${ext.toUpperCase()}) Descargado!`,
+          `Archivo real (${(videoBlob.size / (1024 * 1024)).toFixed(2)} MB) con encuadre ${clip.ratio} y subtítulos quemados.`
+        );
+      };
+
+      // Record a fast real-time pass (or full clip pass if user lets it run, default 4.5 seconds high-speed capture covering all subtitle segments)
+      const totalRenderFrames = 240; // ~4 seconds at 60fps covering 0% -> 100% of clip subtitles & action
+      let currentFrame = 0;
+
+      activeMediaRecorder.start(100);
+
+      function stepExportFrame() {
+        if (activeRenderCanceled) return;
+        currentFrame++;
+        const pct = Math.min(100, Math.round((currentFrame / totalRenderFrames) * 100));
+        renderCompositeVideoFrame(ctx, clip, target.width, target.height, pct, currentFrame);
+
+        pctEl.textContent = `${pct}%`;
+        barEl.style.width = `${pct}%`;
+        statusEl.textContent = `Grabando stream ${target.width}x${target.height} (${ext.toUpperCase()}) • Subtítulo ${Math.min(clip.subtitles.length, Math.floor((pct / 100) * clip.subtitles.length) + 1)}/${clip.subtitles.length}`;
+
+        if (currentFrame < totalRenderFrames) {
+          activeRenderLoopId = requestAnimationFrame(stepExportFrame);
+        } else {
+          if (activeMediaRecorder && activeMediaRecorder.state === 'recording') {
+            activeMediaRecorder.stop();
+          }
+        }
+      }
+
+      activeRenderLoopId = requestAnimationFrame(stepExportFrame);
+
+      // Finish immediately button (saves whatever has been recorded so far)
+      document.getElementById('finishRenderNowBtn').onclick = () => {
+        if (activeMediaRecorder && activeMediaRecorder.state === 'recording') {
+          activeMediaRecorder.stop();
+        }
+      };
+
+      // Cancel button
+      document.getElementById('cancelRenderModalBtn').onclick = () => {
+        activeRenderCanceled = true;
+        if (activeMediaRecorder && activeMediaRecorder.state === 'recording') {
+          activeMediaRecorder.stop();
+        } else {
+          modal.classList.add('hidden');
+        }
+        showToast('Renderizado cancelado', 'Se detuvo la grabación del video.', 'warn');
+      };
+    }
+
+    // ==========================================
+    // EVENT LISTENERS INITIALIZATION
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderClipsGrid();
+      loadClipIntoEditor();
+      startPreviewCanvasLoop();
+
+      // Navigation Tabs
+      document.getElementById('navDashboardBtn').addEventListener('click', () => switchMainView('dashboard'));
+      document.getElementById('navEditorBtn').addEventListener('click', () => switchMainView('editor'));
+      document.getElementById('backToDashboardBtn').addEventListener('click', () => switchMainView('dashboard'));
+
+      // Global Subtitles Toggle
+      document.getElementById('globalSubToggleBtn').addEventListener('click', () => {
+        state.globalSubtitles = !state.globalSubtitles;
+        updateEditorSubtitleButton();
+        renderClipsGrid();
+        updateLiveSubtitlePreview();
+        showToast(
+          state.globalSubtitles ? 'Subtítulos Globales ACTIVADOS' : 'Subtítulos Globales DESACTIVADOS',
+          state.globalSubtitles ? 'Todos los reels muestran subtítulos dinámicos.' : 'Se ocultaron los subtítulos en la vista previa y exportación.'
+        );
+      });
+
+      // Editor Subtitles Toggle
+      document.getElementById('editorSubToggleBtn').addEventListener('click', () => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        if (!state.globalSubtitles) state.globalSubtitles = true;
+        clip.subtitlesEnabled = !clip.subtitlesEnabled;
+        updateEditorSubtitleButton();
+        updateLiveSubtitlePreview();
+      });
+
+      // Target Clip Count Slider (10 to 20 clips)
+      const countSlider = document.getElementById('clipTargetCountSlider');
+      const countLabel = document.getElementById('clipTargetCountLabel');
+      countSlider.addEventListener('input', () => {
+        state.targetClipCount = parseInt(countSlider.value, 10);
+        countLabel.textContent = `${state.targetClipCount} clips`;
+      });
+
+      // Analyze Video / Link with AI (Generates between 10 and 20 clips)
+      document.getElementById('analyzeVideoBtn').addEventListener('click', () => {
+        const rawUrl = document.getElementById('videoUrlInput').value.trim();
+        if (rawUrl) {
+          loadUrlIntoSourceMonitor();
+        }
+        // Always pause source video during AI clip generation
+        const srcMon = document.getElementById('sourceMonitorVideo');
+        if (srcMon) srcMon.pause();
+        const edVid = document.getElementById('realHtmlVideo');
+        if (edVid) edVid.pause();
+
+        const progressBox = document.getElementById('aiProgressContainer');
+        const bar = document.getElementById('aiProgressBar');
+        const pct = document.getElementById('aiProgressPercent');
+        const stage = document.getElementById('aiProgressStage');
+        const promptVal = document.getElementById('aiMomentPrompt').value.trim();
+
+        progressBox.classList.remove('hidden');
+        let p = 0;
+        const timer = setInterval(() => {
+          p += 10;
+          bar.style.width = `${p}%`;
+          pct.textContent = `${p}%`;
+          if (p === 30) stage.innerHTML = 'Reconociendo voces y generando subtítulos sincronizados...';
+          if (p === 60) stage.innerHTML = 'Encuadrando rostros de los personajes en 9:16, 16:9 y 1:1...';
+          if (p === 90) stage.innerHTML = `Seleccionando los ${state.targetClipCount} mejores recortes (30s a 3 min)...`;
+
+          if (p >= 100) {
+            clearInterval(timer);
+            setTimeout(() => {
+              progressBox.classList.add('hidden');
+              generateCustomClipBatch(state.targetClipCount, promptVal);
+            }, 250);
+          }
+        }, 120);
+      });
+
+      // Helper to extract YouTube ID if user pastes a YouTube URL
+      function extractYouTubeId(urlStr) {
+        if (!urlStr) return null;
+        const m = urlStr.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,15})/);
+        return m ? m[1] : null;
+      }
+
+      // Distribute clip start times proportionally across real video duration so every reel shows a real segment
+      function distributeClipsAcrossDuration(totalSeconds) {
+        if (!totalSeconds || totalSeconds < 10) return;
+        const count = state.clips.length || 1;
+        state.clips.forEach((c, idx) => {
+          const maxDur = Math.min(c.durationSec, Math.max(15, Math.floor(totalSeconds * 0.4)));
+          c.durationSec = Math.max(30, Math.min(180, maxDur));
+          const maxStart = Math.max(0, Math.floor(totalSeconds - Math.min(totalSeconds * 0.25, c.durationSec)));
+          c.startSec = Math.min(maxStart, Math.floor((idx / count) * totalSeconds * 0.85));
+        });
+      }
+
+      function updateSourceMonitorUIState(statusText, isPlayingNow) {
+        const badge = document.getElementById('sourceStateBadge');
+        const playTxt = document.getElementById('sourcePlayBtnText');
+        if (!badge) return;
+        if (isPlayingNow) {
+          badge.className = 'px-2.5 py-1 rounded-md bg-emerald-500 text-black font-extrabold text-[10px] uppercase tracking-wider shadow';
+          badge.textContent = '▶ REPRODUCIENDO EN VISOR';
+          if (playTxt) playTxt.textContent = 'Reproduciendo';
+        } else {
+          badge.className = 'px-2.5 py-1 rounded-md bg-amber-500/90 text-black font-extrabold text-[10px] uppercase tracking-wider shadow';
+          badge.textContent = statusText || '⏸ PAUSADO (LISTO PARA EDITAR)';
+          if (playTxt) playTxt.textContent = 'Play';
+        }
+      }
+
+      // Load URL into Source Monitor (Paused by default, supports direct video URLs or YouTube links)
+      function loadUrlIntoSourceMonitor() {
+        const rawUrl = document.getElementById('videoUrlInput').value.trim();
+        if (!rawUrl) {
+          showToast('Casilla de link vacía', 'Pega primero un enlace de YouTube o de un archivo de video (.mp4/.webm) o sube un archivo desde tu PC.', 'warn');
+          return;
+        }
+        const srcVid = document.getElementById('sourceMonitorVideo');
+        const srcIframe = document.getElementById('sourceMonitorIframe');
+        const placeholder = document.getElementById('sourceMonitorPlaceholder');
+        const edVid = document.getElementById('realHtmlVideo');
+        const edCanvas = document.getElementById('studioPreviewCanvas');
+        const infoLabel = document.getElementById('sourceFileInfoLabel');
+
+        // Always stop any previous playback first
+        srcVid.pause();
+        edVid.pause();
+        state.isPlaying = false;
+
+        const ytId = extractYouTubeId(rawUrl);
+        if (ytId) {
+          state.loadedYoutubeId = ytId;
+          state.hasUploadedVideo = false;
+          srcVid.classList.add('hidden');
+          placeholder.classList.add('hidden');
+          srcIframe.classList.remove('hidden');
+          // Load YouTube embed with autoplay=0 (PAUSED!) and controls=1
+          srcIframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=1&rel=0&modestbranding=1`;
+          infoLabel.textContent = `YouTube ID: ${ytId} (En pausa)`;
+          updateSourceMonitorUIState('⏸ YOUTUBE CARGADO EN PAUSA', false);
+          renderClipsGrid();
+          showToast('Video de YouTube cargado en el visor', 'El video está en pausa. Usa el visor o genera los clips recortados abajo.');
+        } else {
+          // Treat as direct video URL (.mp4, .webm, .mov, stream)
+          state.loadedYoutubeId = null;
+          state.uploadedVideoUrl = rawUrl;
+          state.hasUploadedVideo = true;
+
+          srcIframe.classList.add('hidden');
+          srcIframe.src = '';
+          placeholder.classList.add('hidden');
+          srcVid.classList.remove('hidden');
+          srcVid.src = rawUrl;
+          srcVid.currentTime = 0;
+          srcVid.pause(); // Strictly paused!
+
+          edVid.src = rawUrl;
+          edVid.currentTime = 0;
+          edVid.pause(); // Strictly paused!
+          edVid.classList.remove('hidden');
+          edCanvas.classList.add('hidden');
+
+          infoLabel.textContent = rawUrl.slice(0, 42);
+          updateSourceMonitorUIState('⏸ ENLACE CARGADO EN PAUSA', false);
+          renderClipsGrid();
+          showToast('Enlace de video cargado en pausa', 'Presiona Play en la botonera del visor cuando quieras reproducirlo.');
+        }
+      }
+
+      document.getElementById('loadUrlIntoMonitorBtn').addEventListener('click', loadUrlIntoSourceMonitor);
+      document.getElementById('videoUrlInput').addEventListener('change', () => {
+        if (document.getElementById('videoUrlInput').value.trim() !== '') {
+          loadUrlIntoSourceMonitor();
+        }
+      });
+
+      document.getElementById('syncClipsWithVideoBtn').addEventListener('click', () => {
+        if (state.sourceVideoDuration > 0) {
+          distributeClipsAcrossDuration(state.sourceVideoDuration);
+        }
+        renderClipsGrid();
+        showToast('Previews de Reels actualizados', 'Cada tarjeta muestra el recorte de video sincronizado.');
+      });
+
+      // Local Video File Upload (Loads into visible Source Monitor PAUSED, never auto-plays audio)
+      document.getElementById('localVideoInput').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        document.getElementById('uploadedFileName').textContent = file.name;
+        document.getElementById('sourceFileInfoLabel').textContent = file.name;
+
+        const srcVid = document.getElementById('sourceMonitorVideo');
+        const srcIframe = document.getElementById('sourceMonitorIframe');
+        const placeholder = document.getElementById('sourceMonitorPlaceholder');
+        const edVid = document.getElementById('realHtmlVideo');
+        const edCanvas = document.getElementById('studioPreviewCanvas');
+
+        if (state.uploadedVideoUrl && state.uploadedVideoUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(state.uploadedVideoUrl);
+        }
+        state.uploadedVideoUrl = URL.createObjectURL(file);
+        state.hasUploadedVideo = true;
+        state.loadedYoutubeId = null;
+        state.isPlaying = false;
+
+        // Show visible Source Monitor Video in Dashboard and keep it PAUSED
+        srcIframe.classList.add('hidden');
+        srcIframe.src = '';
+        placeholder.classList.add('hidden');
+        srcVid.classList.remove('hidden');
+        srcVid.src = state.uploadedVideoUrl;
+        srcVid.muted = false;
+        srcVid.pause();
+
+        // Prepare Editor Video element and keep it PAUSED (so it NEVER plays hidden audio in the background!)
+        edVid.src = state.uploadedVideoUrl;
+        edVid.pause();
+        edVid.classList.remove('hidden');
+        edCanvas.classList.add('hidden');
+
+        srcVid.addEventListener('loadedmetadata', () => {
+          state.sourceVideoDuration = srcVid.duration || 0;
+          srcVid.currentTime = 0;
+          srcVid.pause();
+          document.getElementById('sourceDurationBadge').textContent = `00:00 / ${formatSeconds(state.sourceVideoDuration)}`;
+          distributeClipsAcrossDuration(state.sourceVideoDuration);
+          renderClipsGrid();
+        }, { once: true });
+
+        updateSourceMonitorUIState('⏸ PAUSADO (LISTO PARA DAR PLAY O EDITAR)', false);
+        renderClipsGrid();
+        showToast('Video cargado en el visor (En Pausa)', `"${file.name}" se cargó en el visor sin reproducirse solo. Usa Play/Stop en el visor o edita los reels abajo.`);
+      });
+
+      // Source Monitor Play / Pause / Stop / Mute / Scrubber Controls
+      const sourceMonitorVid = document.getElementById('sourceMonitorVideo');
+      const sourceScrubber = document.getElementById('sourceMonitorScrubber');
+
+      sourceMonitorVid.addEventListener('timeupdate', () => {
+        const dur = sourceMonitorVid.duration || 0;
+        const cur = sourceMonitorVid.currentTime || 0;
+        if (dur > 0) {
+          sourceScrubber.value = ((cur / dur) * 100).toFixed(1);
+          document.getElementById('sourceDurationBadge').textContent = `${formatSeconds(cur)} / ${formatSeconds(dur)}`;
+        }
+      });
+
+      sourceMonitorVid.addEventListener('ended', () => {
+        updateSourceMonitorUIState('⏸ FINALIZADO', false);
+      });
+
+      sourceScrubber.addEventListener('input', (e) => {
+        if (!state.hasUploadedVideo || !sourceMonitorVid.duration) return;
+        const pct = parseFloat(e.target.value) || 0;
+        sourceMonitorVid.currentTime = (pct / 100) * sourceMonitorVid.duration;
+      });
+
+      document.getElementById('sourcePlayBtn').addEventListener('click', () => {
+        if (state.hasUploadedVideo && sourceMonitorVid.src) {
+          // Pause any reel card videos first
+          document.querySelectorAll('video[data-card-video]').forEach(v => v.pause());
+          document.getElementById('realHtmlVideo').pause();
+          sourceMonitorVid.play().then(() => {
+            updateSourceMonitorUIState('▶ REPRODUCIENDO', true);
+          }).catch(() => {});
+        } else if ( document.getElementById('videoUrlInput').value.trim() !== '' ) {
+          loadUrlIntoSourceMonitor();
+        } else {
+          showToast('Sube un video o pega un link primero', 'Carga un video desde tu PC o pega un enlace para darle Play en el visor.', 'warn');
+        }
+      });
+
+      document.getElementById('sourcePauseBtn').addEventListener('click', () => {
+        if (state.hasUploadedVideo && sourceMonitorVid.src) {
+          sourceMonitorVid.pause();
+          updateSourceMonitorUIState('⏸ EN PAUSA', false);
+        }
+      });
+
+      document.getElementById('sourceStopBtn').addEventListener('click', () => {
+        if (state.hasUploadedVideo && sourceMonitorVid.src) {
+          sourceMonitorVid.pause();
+          sourceMonitorVid.currentTime = 0;
+          sourceScrubber.value = 0;
+          document.getElementById('sourceDurationBadge').textContent = `00:00 / ${formatSeconds(sourceMonitorVid.duration || 0)}`;
+          updateSourceMonitorUIState('⏹ DETENIDO (00:00)', false);
+        }
+        const srcIframe = document.getElementById('sourceMonitorIframe');
+        if (state.loadedYoutubeId && srcIframe) {
+          srcIframe.src = `https://www.youtube.com/embed/${state.loadedYoutubeId}?autoplay=0&controls=1&rel=0&modestbranding=1`;
+          updateSourceMonitorUIState('⏹ DETENIDO', false);
+        }
+      });
+
+      document.getElementById('sourceMuteBtn').addEventListener('click', () => {
+        sourceMonitorVid.muted = !sourceMonitorVid.muted;
+        document.getElementById('sourceMuteBtnText').textContent = sourceMonitorVid.muted ? 'Audio MUTE' : 'Audio ON';
+      });
+
+      // Global Ratio Selector
+      document.querySelectorAll('.global-ratio-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ratio = btn.getAttribute('data-global-ratio');
+          state.globalRatio = ratio;
+          state.clips.forEach(c => { c.ratio = ratio; });
+          document.querySelectorAll('.global-ratio-btn').forEach(b => {
+            b.className = b.getAttribute('data-global-ratio') === ratio
+              ? 'global-ratio-btn py-1 rounded text-[11px] font-bold bg-violet-600 text-white'
+              : 'global-ratio-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white';
+          });
+          renderClipsGrid();
+          showToast('Formato global aplicado', `Todos los clips pasaron a relación de aspecto ${ratio}.`);
+        });
+      });
+
+      // Global Resolution Selector
+      document.querySelectorAll('.global-res-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const res = btn.getAttribute('data-global-res');
+          state.globalResolution = res;
+          document.querySelectorAll('.global-res-btn').forEach(b => {
+            b.className = b.getAttribute('data-global-res') === res
+              ? 'global-res-btn py-1 rounded text-[11px] font-bold bg-emerald-600 text-white'
+              : 'global-res-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white';
+          });
+          document.getElementById('previewResolutionTag').textContent = `${res} 60FPS`;
+          showToast('Calidad de exportación actualizada', `Descargas configuradas en ${res}.`);
+        });
+      });
+
+      // Duration Preset Filter on Generator
+      document.getElementById('durationPresetSelect').addEventListener('change', (e) => {
+        const val = e.target.value;
+        state.clips.forEach((c, idx) => {
+          if (val === 'short') c.durationSec = 30 + (idx * 4) % 30;
+          else if (val === 'mid') c.durationSec = 65 + (idx * 9) % 55;
+          else if (val === 'long') c.durationSec = 125 + (idx * 7) % 55;
+        });
+        renderClipsGrid();
+        showToast('Duración de recortes ajustada', 'Todos los clips se recalibraron dentro del rango seleccionado (30s a 3m).');
+      });
+
+      // Category Filter & Search
+      document.getElementById('categoryFilterSelect').addEventListener('change', (e) => {
+        state.filterCategory = e.target.value;
+        renderClipsGrid();
+      });
+      document.getElementById('clipSearchInput').addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        renderClipsGrid();
+      });
+
+      // Add Manual Clip (respecting max 20 limit)
+      document.getElementById('addManualClipBtn').addEventListener('click', () => {
+        if (state.clips.length >= 20) {
+          showToast('Límite de 20 clips alcanzado', 'Borra algún clip que no quieras para agregar uno nuevo (máximo 20).', 'warn');
+          return;
+        }
+        const newId = `clip-manual-${Date.now()}`;
+        const newClip = {
+          id: newId,
+          title: `Recorte Manual Personalizado #${state.clips.length + 1}`,
+          score: 96,
+          category: 'hook',
+          categoryLabel: '✂️ Recorte Manual',
+          startSec: 60,
+          durationSec: 60,
+          ratio: state.globalRatio,
+          speaker: 'p1',
+          speakerLabel: 'Personaje 1 (Centro)',
+          zoom: 100,
+          panX: 0,
+          panY: 0,
+          subtitlesEnabled: true,
+          hookText: 'NUEVO RECORTE MANUAL CREADO EN REEL CLIP PRO',
+          subtitles: [
+            { time: '00:00', text: 'Nuevo recorte manual listo para ajustar de 30 segundos a 3 minutos.', highlight: '3 minutos' },
+            { time: '00:25', text: 'Edita la fuente, mueve el encuadre y exporta en 2K sin marcas de agua.', highlight: '2K' }
+          ]
+        };
+        state.clips.unshift(newClip);
+        state.selectedClipId = newId;
+        renderClipsGrid();
+        switchMainView('editor');
+        showToast('Recorte manual creado', 'Ajusta el inicio y la duración entre 30s y 3 minutos en el panel derecho.');
+      });
+
+      // Restore Initial Clips
+      document.getElementById('restoreClipsBtn').addEventListener('click', () => {
+        state.clips = JSON.parse(JSON.stringify(INITIAL_CLIPS));
+        state.selectedClipId = state.clips[0].id;
+        renderClipsGrid();
+        showToast('Clips restaurados', 'Se restauraron los 14 clips destacados originales.');
+      });
+
+      // Delete Low Score Clips
+      document.getElementById('deleteLowScoreBtn').addEventListener('click', () => {
+        const before = state.clips.length;
+        state.clips = state.clips.filter(c => c.score >= 88);
+        const removed = before - state.clips.length;
+        renderClipsGrid();
+        showToast('Limpieza completada', `Se eliminaron ${removed} clips con puntaje menor a 88.`, 'warn');
+      });
+
+      // Batch Export Button
+      document.getElementById('batchExportBtn').addEventListener('click', () => {
+        showToast(
+          `Lote de ${state.clips.length} Clips en Cola (${state.globalResolution})`,
+          `Preparando descarga masiva sin marcas de agua en formato ${state.globalRatio}.`
+        );
+        if (state.clips[0]) triggerRealClipDownload(state.clips[0], state.globalResolution);
+      });
+
+      // ==========================================
+      // EDITOR CONTROLS LISTENERS
+      // ==========================================
+      // Title edit
+      document.getElementById('editorClipTitleInput').addEventListener('input', (e) => {
+        const clip = getSelectedClip();
+        if (clip) clip.title = e.target.value;
+      });
+
+      // Editor Ratio Buttons
+      document.querySelectorAll('.editor-ratio-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const clip = getSelectedClip();
+          if (!clip) return;
+          clip.ratio = btn.getAttribute('data-editor-ratio');
+          loadClipIntoEditor();
+        });
+      });
+
+      // Editor Delete Current Clip
+      document.getElementById('editorDeleteClipBtn').addEventListener('click', () => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        state.clips = state.clips.filter(c => c.id !== clip.id);
+        if (state.clips.length > 0) state.selectedClipId = state.clips[0].id;
+        switchMainView('dashboard');
+        showToast('Clip eliminado', 'El clip fue descartado y volviste al panel principal.', 'warn');
+      });
+
+      // Editor Export 1080p & 2K
+      document.getElementById('export1080Btn').addEventListener('click', () => {
+        const clip = getSelectedClip();
+        if (clip) triggerRealClipDownload(clip, '1080p');
+      });
+      document.getElementById('export2KBtn').addEventListener('click', () => {
+        const clip = getSelectedClip();
+        if (clip) triggerRealClipDownload(clip, '2K');
+      });
+
+      // Left Panel Sub-tabs (Transcript vs Font Style)
+      const tabTrans = document.getElementById('tabTranscriptBtn');
+      const tabStyle = document.getElementById('tabFontStyleBtn');
+      const panelTrans = document.getElementById('panelTranscript');
+      const panelStyle = document.getElementById('panelFontStyle');
+
+      tabTrans.addEventListener('click', () => {
+        panelTrans.classList.remove('hidden');
+        panelStyle.classList.add('hidden');
+        tabTrans.className = 'py-2 rounded-lg text-xs font-bold bg-violet-600 text-white';
+        tabStyle.className = 'py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white';
+      });
+      tabStyle.addEventListener('click', () => {
+        panelStyle.classList.remove('hidden');
+        panelTrans.classList.add('hidden');
+        tabStyle.className = 'py-2 rounded-lg text-xs font-bold bg-violet-600 text-white';
+        tabTrans.className = 'py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white';
+      });
+
+      // Add Subtitle Line
+      document.getElementById('addSubtitleLineBtn').addEventListener('click', () => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        clip.subtitles.push({
+          time: formatSeconds(clip.subtitles.length * 12),
+          text: 'Nueva línea de subtítulo editable en vivo',
+          highlight: 'editable'
+        });
+        renderTranscriptEditor(clip);
+        updateLiveSubtitlePreview();
+      });
+
+      // Style Presets (Hormozi, MrBeast, Iman)
+      document.querySelectorAll('.style-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const preset = btn.getAttribute('data-preset');
+          if (preset === 'hormozi') {
+            state.fontClass = 'font-anton';
+            state.textColor = '#FFFFFF';
+            state.highlightColor = '#FACC15';
+            state.bgStyle = 'stroke';
+          } else if (preset === 'mrbeast') {
+            state.fontClass = 'font-bebas';
+            state.textColor = '#FFFFFF';
+            state.highlightColor = '#22D3EE';
+            state.bgStyle = 'stroke';
+          } else {
+            state.fontClass = 'font-montserrat';
+            state.textColor = '#FFFFFF';
+            state.highlightColor = '#34D399';
+            state.bgStyle = 'box';
+          }
+          document.getElementById('fontFamilySelect').value = state.fontClass;
+          document.getElementById('subTextColorInput').value = state.textColor;
+          document.getElementById('subHighlightColorInput').value = state.highlightColor;
+          document.getElementById('subBgStyleSelect').value = state.bgStyle;
+          updateLiveSubtitlePreview();
+        });
+      });
+
+      // Font Family, Size, Colors, Position
+      document.getElementById('fontFamilySelect').addEventListener('change', (e) => {
+        state.fontClass = e.target.value;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('fontSizeSlider').addEventListener('input', (e) => {
+        state.fontSize = parseInt(e.target.value, 10);
+        document.getElementById('fontSizeValue').textContent = `${state.fontSize}px`;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('subTextColorInput').addEventListener('input', (e) => {
+        state.textColor = e.target.value;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('subHighlightColorInput').addEventListener('input', (e) => {
+        state.highlightColor = e.target.value;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('subBgStyleSelect').addEventListener('change', (e) => {
+        state.bgStyle = e.target.value;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('subPosYSlider').addEventListener('input', (e) => {
+        state.posY = parseInt(e.target.value, 10);
+        document.getElementById('subPosYLabel').textContent = `${state.posY}%`;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('subUppercaseCheck').addEventListener('change', (e) => {
+        state.uppercase = e.target.checked;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('subAutoEmojiCheck').addEventListener('change', (e) => {
+        state.autoEmoji = e.target.checked;
+        updateLiveSubtitlePreview();
+      });
+
+      // Speaker Framing Buttons
+      document.querySelectorAll('.speaker-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const clip = getSelectedClip();
+          if (!clip) return;
+          const sp = btn.getAttribute('data-speaker');
+          clip.speaker = sp;
+          clip.speakerLabel = sp === 'p1' ? 'Personaje 1 (Centro)' : sp === 'p2' ? 'Personaje 2 (Invitado)' : sp === 'split' ? 'Pantalla Dúo (Split)' : 'IA Dinámico';
+          loadClipIntoEditor();
+        });
+      });
+
+      // Zoom & Pan Sliders + Drag on Video Stage
+      document.getElementById('videoZoomSlider').addEventListener('input', (e) => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        clip.zoom = parseInt(e.target.value, 10);
+        document.getElementById('zoomValueLabel').textContent = `${(clip.zoom / 100).toFixed(2)}x`;
+        applyHtmlVideoTransform(clip);
+      });
+      document.getElementById('videoPanXSlider').addEventListener('input', (e) => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        clip.panX = parseInt(e.target.value, 10);
+        document.getElementById('panXValueLabel').textContent = `${clip.panX}%`;
+        applyHtmlVideoTransform(clip);
+      });
+      document.getElementById('videoPanYSlider').addEventListener('input', (e) => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        clip.panY = parseInt(e.target.value, 10);
+        document.getElementById('panYValueLabel').textContent = `${clip.panY}%`;
+        applyHtmlVideoTransform(clip);
+      });
+      document.getElementById('resetTransformBtn').addEventListener('click', () => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        clip.zoom = 100;
+        clip.panX = 0;
+        clip.panY = 0;
+        loadClipIntoEditor();
+        applyHtmlVideoTransform(clip);
+      });
+
+      // Interactive Dragging on the Video Stage to move X/Y
+      const stageWrapper = document.getElementById('videoStageWrapper');
+      let isDraggingStage = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+
+      stageWrapper.addEventListener('mousedown', (e) => {
+        isDraggingStage = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDraggingStage) return;
+        const clip = getSelectedClip();
+        if (!clip) return;
+        const dx = Math.round((e.clientX - dragStartX) / 4);
+        const dy = Math.round((e.clientY - dragStartY) / 4);
+        clip.panX = Math.max(-50, Math.min(50, dx));
+        clip.panY = Math.max(-50, Math.min(50, dy));
+        document.getElementById('videoPanXSlider').value = clip.panX;
+        document.getElementById('panXValueLabel').textContent = `${clip.panX}%`;
+        document.getElementById('videoPanYSlider').value = clip.panY;
+        document.getElementById('panYValueLabel').textContent = `${clip.panY}%`;
+        applyHtmlVideoTransform(clip);
+      });
+      window.addEventListener('mouseup', () => {
+        isDraggingStage = false;
+      });
+
+      // Manual Trim Sliders (30s to 180s / 3 minutes)
+      document.getElementById('trimStartSlider').addEventListener('input', (e) => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        clip.startSec = parseInt(e.target.value, 10);
+        document.getElementById('trimStartLabel').textContent = formatSeconds(clip.startSec);
+        updateEditorMetaText();
+      });
+      document.getElementById('trimLengthSlider').addEventListener('input', (e) => {
+        const clip = getSelectedClip();
+        if (!clip) return;
+        clip.durationSec = parseInt(e.target.value, 10);
+        document.getElementById('trimLengthLabel').textContent = `${clip.durationSec}s (${Math.floor(clip.durationSec / 60)}m ${clip.durationSec % 60}s)`;
+        document.getElementById('trimDurationBadge').textContent = `${clip.durationSec} seg`;
+        updateEditorMetaText();
+      });
+
+      document.querySelectorAll('.quick-dur-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const clip = getSelectedClip();
+          if (!clip) return;
+          clip.durationSec = parseInt(btn.getAttribute('data-quick-dur'), 10);
+          loadClipIntoEditor();
+        });
+      });
+
+      // Play / Pause / Stop & Scrubber in Pro Editor
+      document.getElementById('playPauseBtn').addEventListener('click', () => {
+        setEditorPlaybackState(!state.isPlaying);
+      });
+      document.getElementById('stopClipBtn').addEventListener('click', () => {
+        setEditorPlaybackState(false);
+        state.playheadProgress = 0;
+        const clip = getSelectedClip();
+        const v = document.getElementById('realHtmlVideo');
+        if (state.hasUploadedVideo && v && clip) {
+          const safeStart = v.duration ? Math.min(clip.startSec, Math.max(0, v.duration - 2)) : clip.startSec;
+          v.currentTime = safeStart;
+        }
+        document.getElementById('playheadScrubber').value = 0;
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('restartClipBtn').addEventListener('click', () => {
+        state.playheadProgress = 0;
+        const clip = getSelectedClip();
+        const v = document.getElementById('realHtmlVideo');
+        if (state.hasUploadedVideo && v && clip) {
+          const safeStart = v.duration ? Math.min(clip.startSec, Math.max(0, v.duration - 2)) : clip.startSec;
+          v.currentTime = safeStart;
+        }
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('playheadScrubber').addEventListener('input', (e) => {
+        state.playheadProgress = parseFloat(e.target.value);
+        updateLiveSubtitlePreview();
+      });
+      document.getElementById('toggleFaceBoxCheck').addEventListener('change', (e) => {
+        state.showFaceBox = e.target.checked;
+        updateFaceTrackingBox(getSelectedClip());
+      });
+    });
+
+    function applyHtmlVideoTransform(clip) {
+      const v = document.getElementById('realHtmlVideo');
+      if (v) {
+        v.style.transform = `scale(${clip.zoom / 100}) translate(${clip.panX}%, ${clip.panY}%)`;
+      }
+    }
+
+    function setEditorPlaybackState(playNow) {
+      state.isPlaying = !!playNow;
+      const v = document.getElementById('realHtmlVideo');
+      const txt = document.getElementById('editorPlayPauseText');
+      const clip = getSelectedClip();
+      if (txt) txt.textContent = state.isPlaying ? 'Pausa' : 'Play';
+
+      if (state.hasUploadedVideo && v) {
+        if (state.isPlaying) {
+          // Ensure dashboard videos are paused
+          const srcMon = document.getElementById('sourceMonitorVideo');
+          if (srcMon) srcMon.pause();
+          document.querySelectorAll('video[data-card-video]').forEach(cv => cv.pause());
+          if (clip) {
+            const safeStart = v.duration ? Math.min(clip.startSec, Math.max(0, v.duration - 2)) : clip.startSec;
+            if (v.currentTime < safeStart || v.currentTime >= safeStart + clip.durationSec) {
+              v.currentTime = safeStart;
+            }
+          }
+          v.play().catch(() => {});
+        } else {
+          v.pause();
+        }
+      }
+    }
+
+    function generateCustomClipBatch(targetCount, promptTopic) {
+      // Ensure count is strictly between 10 and 20
+      const count = Math.max(10, Math.min(20, targetCount));
+      const basePool = JSON.parse(JSON.stringify(INITIAL_CLIPS));
+      const result = [];
+
+      for (let i = 0; i < count; i++) {
+        const template = basePool[i % basePool.length];
+        const copy = JSON.parse(JSON.stringify(template));
+        copy.id = `clip-gen-${i + 1}`;
+        copy.ratio = state.globalRatio;
+        if (i >= basePool.length) {
+          copy.title = `${template.title} (Parte ${i - basePool.length + 2})`;
+          copy.score = Math.max(85, 99 - i);
+          copy.startSec = (i + 1) * 165;
+        }
+        if (promptTopic) {
+          copy.hookText = `🔥 ${promptTopic.toUpperCase().slice(0, 36)} - CLIP #${i + 1}`;
+        }
+        result.push(copy);
+      }
+
+      if (state.sourceVideoDuration && state.sourceVideoDuration > 10) {
+        result.forEach((c, idx) => {
+          const maxDur = Math.min(c.durationSec, Math.max(15, Math.floor(state.sourceVideoDuration * 0.4)));
+          c.durationSec = Math.max(30, Math.min(180, maxDur));
+          const maxStart = Math.max(0, Math.floor(state.sourceVideoDuration - Math.min(state.sourceVideoDuration * 0.25, c.durationSec)));
+          c.startSec = Math.min(maxStart, Math.floor((idx / result.length) * state.sourceVideoDuration * 0.85));
+        });
+      }
+      state.clips = result;
+      state.selectedClipId = result[0].id;
+      renderClipsGrid();
+      showToast(
+        `¡${count} Clips Virales Generados con IA!`,
+        `Se detectaron los ${count} momentos más destacados con subtítulos y encuadre de personajes.`
+      );
+    }
+  </script>
+</body>
+</html>

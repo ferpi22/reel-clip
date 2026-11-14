@@ -155,7 +155,7 @@
             <div class="flex flex-col sm:flex-row gap-2.5">
               <div class="relative flex-1">
                 <i data-lucide="link" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                <input id="videoUrlInput" type="text" placeholder="Pega un link de YouTube, Stream, Podcast o sube un archivo de video..." value="https://www.youtube.com/watch?v=TerritorioLiberal_DebateEnVivo_2026" class="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0B0D14] border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-violet-500">
+                <input id="videoUrlInput" type="text" placeholder="Pega aquí el link de YouTube, Twitch, Kick, Facebook o sube un video desde tu PC..." value="" class="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0B0D14] border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-violet-500">
               </div>
               <button id="analyzeVideoBtn" class="px-5 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-violet-600 via-fuchsia-600 to-amber-500 hover:opacity-95 text-white shadow-lg shadow-violet-600/30 flex items-center justify-center gap-2 whitespace-nowrap transition-all">
                 <i data-lucide="wand-2" class="w-4 h-4"></i>
@@ -243,6 +243,89 @@
                   <button data-global-res="1080p" class="global-res-btn py-1 rounded text-[11px] font-bold text-slate-400 hover:text-white">1080p FHD</button>
                   <button data-global-res="2K" class="global-res-btn py-1 rounded text-[11px] font-bold bg-emerald-600 text-white">2K QHD Pro</button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SOURCE VIDEO PREVIEW MONITOR (PAUSED BY DEFAULT + PLAY/STOP TOOLBAR) -->
+        <div id="sourcePreviewContainer" class="mt-5 pt-5 border-t border-white/10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center bg-[#0B0D14] p-4 rounded-2xl border border-violet-500/30">
+            <div class="lg:col-span-7">
+              <div class="relative rounded-xl overflow-hidden bg-black border border-white/15 aspect-video flex items-center justify-center group shadow-2xl">
+                <!-- HTML5 Source Video (Paused on load, never autoplays audio in background) -->
+                <video id="sourceMonitorVideo" class="hidden w-full h-full object-contain bg-black" preload="metadata" playsinline></video>
+                <!-- YouTube / External Embed Preview Container -->
+                <iframe id="sourceMonitorIframe" class="hidden w-full h-full bg-black" allow=" encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <!-- Default / Standby Visual Screen when no local video is loaded yet -->
+                <div id="sourceMonitorPlaceholder" class="flex flex-col items-center justify-center text-center p-6 space-y-2">
+                  <div class="w-12 h-12 rounded-2xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-300">
+                    <i data-lucide="video" class="w-6 h-6"></i>
+                  </div>
+                  <div id="sourceMonitorStatusTitle" class="text-sm font-bold text-white">Visor de Video Fuente (En Pausa)</div>
+                  <p id="sourceMonitorStatusDesc" class="text-xs text-slate-400 max-w-md">
+                    Sube un archivo de video desde tu PC o pega un enlace arriba para previsualizarlo aquí. El video se carga en pausa para no reproducir audio automáticamente.
+                  </p>
+                </div>
+
+                <!-- Status Badge Top-Left -->
+                <div class="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
+                  <span id="sourceStateBadge" class="px-2.5 py-1 rounded-md bg-amber-500/90 text-black font-extrabold text-[10px] uppercase tracking-wider shadow">
+                    ⏸ PAUSADO (LISTO PARA EDITAR)
+                  </span>
+                  <span id="sourceDurationBadge" class="px-2 py-0.5 rounded-md bg-black/80 text-white font-mono text-[11px] border border-white/10">
+                    00:00 / 00:00
+                  </span>
+                </div>
+
+                <!-- Embedded Play / Pause / Stop / Mute Control Bar Inside the Preview -->
+                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/80 to-transparent p-3 pt-6 flex flex-col gap-2">
+                  <input id="sourceMonitorScrubber" type="range" min="0" max="100" value="0" step="0.1" class="w-full h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <button id="sourcePlayBtn" type="button" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow transition-all">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                        <span id="sourcePlayBtnText">Play</span>
+                      </button>
+                      <button id="sourcePauseBtn" type="button" class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 transition-all">
+                        <i data-lucide="pause" class="w-3.5 h-3.5"></i>
+                        <span>Pausa</span>
+                      </button>
+                      <button id="sourceStopBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1.5 transition-all">
+                        <i data-lucide="square" class="w-3.5 h-3.5"></i>
+                        <span>Stop</span>
+                      </button>
+                      <button id="sourceMuteBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-semibold flex items-center gap-1">
+                        <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                        <span id="sourceMuteBtnText">Audio ON</span>
+                      </button>
+                    </div>
+                    <span id="sourceFileInfoLabel" class="text-[11px] text-slate-300 font-mono truncate max-w-[220px]">
+                      Sin archivo local cargado
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right info & quick actions for loaded source video -->
+            <div class="lg:col-span-5 space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-violet-400"></span>
+                <h3 class="text-sm font-extrabold text-white">Control de Video Base y Previews de Reels</h3>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Tu video queda cargado en este monitor **en pausa** para que nunca suene el audio solo en segundo plano. Usa los botones **Play**, **Pausa** y **Stop** integrados en el visor cuando quieras revisarlo, y cada tarjeta de los **10 a 20 Reels generados** abajo mostrará el fragmento de video recortado correspondiente.
+              </p>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button id="loadUrlIntoMonitorBtn" type="button" class="px-3 py-2 rounded-xl bg-violet-600/25 hover:bg-violet-600/40 text-violet-200 border border-violet-500/40 text-xs font-bold flex items-center justify-center gap-1.5">
+                  <i data-lucide="tv" class="w-3.5 h-3.5"></i>
+                  <span>Cargar Link en el Visor</span>
+                </button>
+                <button id="syncClipsWithVideoBtn" type="button" class="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center justify-center gap-1.5">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Actualizar Previews de Reels</span>
+                </button>
               </div>
             </div>
           </div>
@@ -542,8 +625,13 @@
           <div class="w-full mt-4 bg-[#0B0D14] p-3 rounded-xl border border-white/10 flex flex-col gap-2">
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-2">
-                <button id="playPauseBtn" class="w-9 h-9 rounded-lg bg-violet-600 hover:bg-violet-500 text-white flex items-center justify-center shadow">
-                  <i data-lucide="play" class="w-4 h-4"></i>
+                <button id="playPauseBtn" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow">
+                  <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                  <span id="editorPlayPauseText">Play</span>
+                </button>
+                <button id="stopClipBtn" class="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1.5" title="Detener y volver al inicio del recorte">
+                  <i data-lucide="square" class="w-3.5 h-3.5"></i>
+                  <span>Stop</span>
                 </button>
                 <button id="restartClipBtn" class="p-2 rounded-lg bg-[#141824] hover:bg-slate-800 text-slate-300" title="Reiniciar clip">
                   <i data-lucide="skip-back" class="w-4 h-4"></i>
@@ -1073,7 +1161,10 @@
       targetClipCount: 14,
       filterCategory: 'all',
       searchQuery: '',
-      isPlaying: true,
+      isPlaying: false,
+      sourceVideoDuration: 0,
+      loadedYoutubeId: null,
+      activeCardPreviewId: null,
       playheadProgress: 0,
       hasUploadedVideo: false,
       uploadedVideoUrl: null,
@@ -1172,72 +1263,106 @@
 
         return `
           <article class="glass-panel rounded-2xl overflow-hidden border border-white/10 hover:border-violet-500/50 transition-all flex flex-col group">
-            <!-- Thumbnail / Visual Simulated Preview -->
-            <div class="relative h-56 bg-gradient-to-br from-[#16192B] via-[#0F1220] to-[#1E1533] overflow-hidden flex items-center justify-center p-3">
-              <!-- Animated Studio Frame inside Card -->
-              <div class="relative rounded-xl overflow-hidden border border-white/20 bg-[#080A10] shadow-inner flex flex-col justify-between p-2.5 ${
-                clip.ratio === '9:16' ? 'w-32 h-48' : clip.ratio === '1:1' ? 'w-44 h-44' : 'w-full h-36'
+            <!-- Real Trimmed Reel Video Preview inside Card -->
+            <div class="relative h-64 bg-gradient-to-br from-[#16192B] via-[#0F1220] to-[#1E1533] overflow-hidden flex items-center justify-center p-2.5">
+              <!-- Reel Frame Container matching 9:16, 16:9 or 1:1 -->
+              <div class="relative rounded-xl overflow-hidden border-2 border-violet-500/40 bg-black shadow-2xl flex flex-col justify-between ${
+                clip.ratio === '9:16' ? 'w-36 h-56' : clip.ratio === '1:1' ? 'w-48 h-48' : 'w-full h-40'
               }">
-                <!-- Simulated Speakers inside Frame -->
-                <div class="flex-1 flex items-center justify-center gap-2 relative">
-                  ${
-                    clip.speaker === 'split'
-                      ? `
-                        <div class="w-1/2 h-full rounded-lg bg-gradient-to-b from-violet-900/60 to-slate-900 border border-emerald-400/50 flex flex-col items-center justify-center p-1">
-                          <div class="w-7 h-7 rounded-full bg-violet-500/40 border border-emerald-400 flex items-center justify-center text-[10px] font-bold">P1</div>
-                          <span class="text-[8px] text-emerald-300 mt-1">Rostro 1</span>
-                        </div>
-                        <div class="w-1/2 h-full rounded-lg bg-gradient-to-b from-fuchsia-900/60 to-slate-900 border border-amber-400/50 flex flex-col items-center justify-center p-1">
-                          <div class="w-7 h-7 rounded-full bg-fuchsia-500/40 border border-amber-400 flex items-center justify-center text-[10px] font-bold">P2</div>
-                          <span class="text-[8px] text-amber-300 mt-1">Rostro 2</span>
-                        </div>
-                      `
-                      : `
-                        <div class="w-full h-full rounded-lg bg-gradient-to-b from-violet-900/40 via-slate-900 to-black flex flex-col items-center justify-center relative">
-                          <div class="w-12 h-12 rounded-xl border-2 border-emerald-400/80 bg-violet-600/20 flex items-center justify-center shadow-lg">
-                            <span class="text-xs font-extrabold text-emerald-300">${clip.speaker === 'p2' ? 'P2' : 'P1'}</span>
-                          </div>
-                          <span class="text-[8px] text-emerald-400 font-mono mt-1">Auto-Encuadre IA</span>
-                        </div>
-                      `
-                  }
-                </div>
+                ${
+                  state.hasUploadedVideo && state.uploadedVideoUrl
+                    ? `
+                      <!-- Actual Uploaded Video Trimmed to Clip Start Time -->
+                      <video
+                        data-card-video="${clip.id}"
+                        data-start="${clip.startSec}"
+                        data-duration="${clip.durationSec}"
+                        src="${state.uploadedVideoUrl}#t=${clip.startSec},${clip.startSec + clip.durationSec}"
+                        preload="metadata"
+                        playsinline
+                        class="w-full h-full object-cover bg-black"
+                        style="transform: scale(${(clip.zoom || 100) / 100}) translate(${clip.panX || 0}%, ${clip.panY || 0}%);"
+                      ></video>
+                    `
+                    : state.loadedYoutubeId
+                    ? `
+                      <!-- Embedded YouTube Trimmed Segment Preview (Paused / Click to Play) -->
+                      <iframe
+                        src="https://www.youtube.com/embed/${state.loadedYoutubeId}?start=${clip.startSec}&end=${clip.startSec + clip.durationSec}&autoplay=0&controls=0&modestbranding=1&rel=0"
+                        class="w-full h-full object-cover pointer-events-none"
+                        allow="encrypted-media"
+                      ></iframe>
+                    `
+                    : `
+                      <!-- Dynamic Studio Visual Preview when no file/link is loaded yet -->
+                      <div class="w-full h-full flex items-center justify-center gap-1.5 p-2 bg-gradient-to-b from-violet-950/70 via-[#0B0E17] to-black">
+                        ${
+                          clip.speaker === 'split'
+                            ? `
+                              <div class="w-1/2 h-full rounded-lg bg-violet-900/40 border border-emerald-400/50 flex flex-col items-center justify-center p-1">
+                                <div class="w-7 h-7 rounded-full bg-violet-500/40 border border-emerald-400 flex items-center justify-center text-[10px] font-bold">P1</div>
+                                <span class="text-[8px] text-emerald-300 mt-1">Rostro 1</span>
+                              </div>
+                              <div class="w-1/2 h-full rounded-lg bg-fuchsia-900/40 border border-amber-400/50 flex flex-col items-center justify-center p-1">
+                                <div class="w-7 h-7 rounded-full bg-fuchsia-500/40 border border-amber-400 flex items-center justify-center text-[10px] font-bold">P2</div>
+                                <span class="text-[8px] text-amber-300 mt-1">Rostro 2</span>
+                              </div>
+                            `
+                            : `
+                              <div class="w-full h-full rounded-lg flex flex-col items-center justify-center relative">
+                                <div class="w-12 h-12 rounded-xl border-2 border-emerald-400/80 bg-violet-600/20 flex items-center justify-center shadow-lg">
+                                  <span class="text-xs font-extrabold text-emerald-300">${clip.speaker === 'p2' ? 'P2' : 'P1'}</span>
+                                </div>
+                                <span class="text-[8px] text-emerald-400 font-mono mt-1">${formatSeconds(clip.startSec)} - ${formatSeconds(clip.startSec + clip.durationSec)}</span>
+                              </div>
+                            `
+                        }
+                      </div>
+                    `
+                }
 
-                <!-- Simulated Dynamic Subtitle inside Card -->
-                <div class="${subsOn ? 'block' : 'hidden'} text-center px-1 py-1 bg-black/75 rounded border border-white/10">
-                  <p class="text-[9px] font-montserrat font-black uppercase leading-tight text-white truncate">
+                <!-- Burned-in Subtitle Preview inside Card -->
+                <div class="${subsOn ? 'block' : 'hidden'} absolute bottom-2 inset-x-1.5 text-center px-1.5 py-1 bg-black/80 rounded-md border border-white/15 pointer-events-none">
+                  <p class="text-[9px] font-montserrat font-black uppercase leading-tight text-amber-300 truncate">
                     ${clip.hookText}
                   </p>
                 </div>
               </div>
 
               <!-- Top Left Virality Score Badge -->
-              <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                <div class="px-2.5 py-1 rounded-lg bg-gradient-to-r ${scoreColor} font-extrabold text-xs shadow-lg flex items-center gap-1">
+              <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 pointer-events-none">
+                <div class="px-2 py-0.5 rounded-lg bg-gradient-to-r ${scoreColor} font-extrabold text-[11px] shadow-lg flex items-center gap-1">
                   <span>⚡ ${clip.score}</span>
-                  <span class="text-[9px] uppercase opacity-90">Viral</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-semibold text-slate-200 border border-white/10">
+                <span class="px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-[10px] font-semibold text-slate-200 border border-white/10">
                   ${clip.categoryLabel}
                 </span>
               </div>
 
               <!-- Top Right Duration & Ratio -->
-              <div class="absolute top-3 right-3 flex flex-col items-end gap-1">
-                <span class="px-2 py-0.5 rounded bg-black/80 text-white font-mono font-bold text-[11px] border border-white/10">
-                  ${formatSeconds(clip.durationSec)}
+              <div class="absolute top-2.5 right-2.5 flex flex-col items-end gap-1 pointer-events-none">
+                <span class="px-2 py-0.5 rounded bg-black/85 text-emerald-300 font-mono font-bold text-[10px] border border-emerald-500/30">
+                  ${formatSeconds(clip.startSec)} → ${formatSeconds(clip.startSec + clip.durationSec)} (${clip.durationSec}s)
                 </span>
-                <span class="px-1.5 py-0.5 rounded bg-violet-600/80 text-white font-bold text-[9px]">
+                <span class="px-1.5 py-0.5 rounded bg-violet-600/85 text-white font-bold text-[9px]">
                   ${ratioLabel}
                 </span>
               </div>
 
-              <!-- Hover Quick Play / Edit Overlay -->
-              <button data-action="edit" data-id="${clip.id}" class=" card-action-btn absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-xs font-bold text-white">
-                <span class="px-4 py-2 rounded-xl bg-violet-600 shadow-lg flex items-center gap-1.5">
-                  Editar Video, Encuadre y Subtítulos
-                </span>
-              </button>
+              <!-- Direct Play / Stop Preview Mini-Toolbar on Each Reel Card -->
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5 bg-black/85 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/15">
+                <div class="flex items-center gap-1.5">
+                  <button data-action="card-play" data-id="${clip.id}" class="card-action-btn px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-extrabold flex items-center gap-1 shadow">
+                    ▶ Play Reel
+                  </button>
+                  <button data-action="card-stop" data-id="${clip.id}" class="card-action-btn px-2 py-1 rounded-lg bg-rose-500/25 hover:bg-rose-500/40 text-rose-200 border border-rose-500/40 text-[10px] font-bold">
+                    ■ Stop
+                  </button>
+                </div>
+                <button data-action="edit" data-id="${clip.id}" class="card-action-btn px-2.5 py-1 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold">
+                  Abrir Editor
+                </button>
+              </div>
             </div>
 
             <!-- Card Body -->
@@ -1289,6 +1414,25 @@
         `;
       }).join('');
 
+      // Seek each reel card's <video> element to its exact trimmed startSec and keep it PAUSED
+      document.querySelectorAll('video[data-card-video]').forEach(vid => {
+        const startSec = parseFloat(vid.getAttribute('data-start')) || 0;
+        const durSec = parseFloat(vid.getAttribute('data-duration')) || 30;
+        vid.pause();
+        vid.addEventListener('loadedmetadata', () => {
+          const safeStart = vid.duration ? Math.min(startSec, Math.max(0, vid.duration - 2)) : startSec;
+          vid.currentTime = safeStart;
+          vid.pause();
+        }, { once: true });
+        vid.addEventListener('timeupdate', () => {
+          const safeStart = vid.duration ? Math.min(startSec, Math.max(0, vid.duration - 2)) : startSec;
+          if (vid.currentTime >= safeStart + durSec) {
+            vid.pause();
+            vid.currentTime = safeStart;
+          }
+        });
+      });
+
       // Attach listeners to card buttons
       document.querySelectorAll('.card-action-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -1307,7 +1451,37 @@
       if (clipIndex === -1) return;
       const clip = state.clips[clipIndex];
 
-      if (action === 'edit') {
+      if (action === 'card-play') {
+        // Pause all other card videos and source monitor first so audio never overlaps
+        const srcVid = document.getElementById('sourceMonitorVideo');
+        if (srcVid) srcVid.pause();
+        document.querySelectorAll('video[data-card-video]').forEach(v => {
+          if (v.getAttribute('data-card-video') !== clipId) v.pause();
+        });
+        const cardVid = document.querySelector(`video[data-card-video="${clipId}"]`);
+        if (cardVid && state.hasUploadedVideo) {
+          const safeStart = cardVid.duration ? Math.min(clip.startSec, Math.max(0, cardVid.duration - 2)) : clip.startSec;
+          if (cardVid.currentTime < safeStart || cardVid.currentTime >= safeStart + clip.durationSec) {
+            cardVid.currentTime = safeStart;
+          }
+          cardVid.play().catch(() => {});
+          showToast('Reproduciendo Reel recortado', `Reproduciendo desde ${formatSeconds(safeStart)} (${clip.durationSec}s).`);
+        } else {
+          state.selectedClipId = clipId;
+          switchMainView('editor');
+          setEditorPlaybackState(true);
+        }
+        return;
+      } else if (action === 'card-stop') {
+        const cardVid = document.querySelector(`video[data-card-video="${clipId}"]`);
+        if (cardVid && state.hasUploadedVideo) {
+          cardVid.pause();
+          const safeStart = cardVid.duration ? Math.min(clip.startSec, Math.max(0, cardVid.duration - 2)) : clip.startSec;
+          cardVid.currentTime = safeStart;
+          showToast('Reel detenido', `Recorte vuelto al inicio (${formatSeconds(safeStart)}).`, 'warn');
+        }
+        return;
+      } else if (action === 'edit') {
         state.selectedClipId = clipId;
         switchMainView('editor');
       } else if (action === 'delete') {
@@ -1342,6 +1516,12 @@
     // SWITCH BETWEEN DASHBOARD AND PRO EDITOR
     // ==========================================
     function switchMainView(view) {
+      const srcMon = document.getElementById('sourceMonitorVideo');
+      if (srcMon) srcMon.pause();
+      const edVid = document.getElementById('realHtmlVideo');
+      if (edVid) edVid.pause();
+      document.querySelectorAll('video[data-card-video]').forEach(cv => cv.pause());
+      state.isPlaying = false;
       const dash = document.getElementById('dashboardView');
       const editor = document.getElementById('editorView');
       const navDash = document.getElementById('navDashboardBtn');
@@ -1411,6 +1591,24 @@
       document.getElementById('trimLengthSlider').value = clip.durationSec;
       document.getElementById('trimLengthLabel').textContent = `${clip.durationSec}s (${Math.floor(clip.durationSec / 60)}m ${clip.durationSec % 60}s)`;
       document.getElementById('trimDurationBadge').textContent = `${clip.durationSec} seg`;
+
+      // Always pause dashboard monitor and card videos when entering editor
+      const srcMon = document.getElementById('sourceMonitorVideo');
+      if (srcMon) srcMon.pause();
+      document.querySelectorAll('video[data-card-video]').forEach(v => v.pause());
+
+      // Sync editor video element to clip's exact trimmed start time and keep PAUSED by default
+      const edVid = document.getElementById('realHtmlVideo');
+      const edCanvas = document.getElementById('studioPreviewCanvas');
+      if (state.hasUploadedVideo && state.uploadedVideoUrl && edVid) {
+        edVid.classList.remove('hidden');
+        if (edCanvas) edCanvas.classList.add('hidden');
+        const safeStart = edVid.duration ? Math.min(clip.startSec, Math.max(0, edVid.duration - 2)) : clip.startSec;
+        try { edVid.currentTime = safeStart; } catch (_) {}
+        edVid.pause();
+        applyHtmlVideoTransform(clip);
+      }
+      setEditorPlaybackState(false);
 
       renderTranscriptEditor(clip);
       updateFaceTrackingBox(clip);
@@ -2154,6 +2352,16 @@
 
       // Analyze Video / Link with AI (Generates between 10 and 20 clips)
       document.getElementById('analyzeVideoBtn').addEventListener('click', () => {
+        const rawUrl = document.getElementById('videoUrlInput').value.trim();
+        if (rawUrl) {
+          loadUrlIntoSourceMonitor();
+        }
+        // Always pause source video during AI clip generation
+        const srcMon = document.getElementById('sourceMonitorVideo');
+        if (srcMon) srcMon.pause();
+        const edVid = document.getElementById('realHtmlVideo');
+        if (edVid) edVid.pause();
+
         const progressBox = document.getElementById('aiProgressContainer');
         const bar = document.getElementById('aiProgressBar');
         const pct = document.getElementById('aiProgressPercent');
@@ -2180,23 +2388,227 @@
         }, 120);
       });
 
-      // Local Video File Upload
+      // Helper to extract YouTube ID if user pastes a YouTube URL
+      function extractYouTubeId(urlStr) {
+        if (!urlStr) return null;
+        const m = urlStr.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,15})/);
+        return m ? m[1] : null;
+      }
+
+      // Distribute clip start times proportionally across real video duration so every reel shows a real segment
+      function distributeClipsAcrossDuration(totalSeconds) {
+        if (!totalSeconds || totalSeconds < 10) return;
+        const count = state.clips.length || 1;
+        state.clips.forEach((c, idx) => {
+          const maxDur = Math.min(c.durationSec, Math.max(15, Math.floor(totalSeconds * 0.4)));
+          c.durationSec = Math.max(30, Math.min(180, maxDur));
+          const maxStart = Math.max(0, Math.floor(totalSeconds - Math.min(totalSeconds * 0.25, c.durationSec)));
+          c.startSec = Math.min(maxStart, Math.floor((idx / count) * totalSeconds * 0.85));
+        });
+      }
+
+      function updateSourceMonitorUIState(statusText, isPlayingNow) {
+        const badge = document.getElementById('sourceStateBadge');
+        const playTxt = document.getElementById('sourcePlayBtnText');
+        if (!badge) return;
+        if (isPlayingNow) {
+          badge.className = 'px-2.5 py-1 rounded-md bg-emerald-500 text-black font-extrabold text-[10px] uppercase tracking-wider shadow';
+          badge.textContent = '▶ REPRODUCIENDO EN VISOR';
+          if (playTxt) playTxt.textContent = 'Reproduciendo';
+        } else {
+          badge.className = 'px-2.5 py-1 rounded-md bg-amber-500/90 text-black font-extrabold text-[10px] uppercase tracking-wider shadow';
+          badge.textContent = statusText || '⏸ PAUSADO (LISTO PARA EDITAR)';
+          if (playTxt) playTxt.textContent = 'Play';
+        }
+      }
+
+      // Load URL into Source Monitor (Paused by default, supports direct video URLs or YouTube links)
+      function loadUrlIntoSourceMonitor() {
+        const rawUrl = document.getElementById('videoUrlInput').value.trim();
+        if (!rawUrl) {
+          showToast('Casilla de link vacía', 'Pega primero un enlace de YouTube o de un archivo de video (.mp4/.webm) o sube un archivo desde tu PC.', 'warn');
+          return;
+        }
+        const srcVid = document.getElementById('sourceMonitorVideo');
+        const srcIframe = document.getElementById('sourceMonitorIframe');
+        const placeholder = document.getElementById('sourceMonitorPlaceholder');
+        const edVid = document.getElementById('realHtmlVideo');
+        const edCanvas = document.getElementById('studioPreviewCanvas');
+        const infoLabel = document.getElementById('sourceFileInfoLabel');
+
+        // Always stop any previous playback first
+        srcVid.pause();
+        edVid.pause();
+        state.isPlaying = false;
+
+        const ytId = extractYouTubeId(rawUrl);
+        if (ytId) {
+          state.loadedYoutubeId = ytId;
+          state.hasUploadedVideo = false;
+          srcVid.classList.add('hidden');
+          placeholder.classList.add('hidden');
+          srcIframe.classList.remove('hidden');
+          // Load YouTube embed with autoplay=0 (PAUSED!) and controls=1
+          srcIframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=0&controls=1&rel=0&modestbranding=1`;
+          infoLabel.textContent = `YouTube ID: ${ytId} (En pausa)`;
+          updateSourceMonitorUIState('⏸ YOUTUBE CARGADO EN PAUSA', false);
+          renderClipsGrid();
+          showToast('Video de YouTube cargado en el visor', 'El video está en pausa. Usa el visor o genera los clips recortados abajo.');
+        } else {
+          // Treat as direct video URL (.mp4, .webm, .mov, stream)
+          state.loadedYoutubeId = null;
+          state.uploadedVideoUrl = rawUrl;
+          state.hasUploadedVideo = true;
+
+          srcIframe.classList.add('hidden');
+          srcIframe.src = '';
+          placeholder.classList.add('hidden');
+          srcVid.classList.remove('hidden');
+          srcVid.src = rawUrl;
+          srcVid.currentTime = 0;
+          srcVid.pause(); // Strictly paused!
+
+          edVid.src = rawUrl;
+          edVid.currentTime = 0;
+          edVid.pause(); // Strictly paused!
+          edVid.classList.remove('hidden');
+          edCanvas.classList.add('hidden');
+
+          infoLabel.textContent = rawUrl.slice(0, 42);
+          updateSourceMonitorUIState('⏸ ENLACE CARGADO EN PAUSA', false);
+          renderClipsGrid();
+          showToast('Enlace de video cargado en pausa', 'Presiona Play en la botonera del visor cuando quieras reproducirlo.');
+        }
+      }
+
+      document.getElementById('loadUrlIntoMonitorBtn').addEventListener('click', loadUrlIntoSourceMonitor);
+      document.getElementById('videoUrlInput').addEventListener('change', () => {
+        if (document.getElementById('videoUrlInput').value.trim() !== '') {
+          loadUrlIntoSourceMonitor();
+        }
+      });
+
+      document.getElementById('syncClipsWithVideoBtn').addEventListener('click', () => {
+        if (state.sourceVideoDuration > 0) {
+          distributeClipsAcrossDuration(state.sourceVideoDuration);
+        }
+        renderClipsGrid();
+        showToast('Previews de Reels actualizados', 'Cada tarjeta muestra el recorte de video sincronizado.');
+      });
+
+      // Local Video File Upload (Loads into visible Source Monitor PAUSED, never auto-plays audio)
       document.getElementById('localVideoInput').addEventListener('change', (e) => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
         document.getElementById('uploadedFileName').textContent = file.name;
-        const videoEl = document.getElementById('realHtmlVideo');
-        const canvasEl = document.getElementById('studioPreviewCanvas');
+        document.getElementById('sourceFileInfoLabel').textContent = file.name;
 
-        if (state.uploadedVideoUrl) URL.revokeObjectURL(state.uploadedVideoUrl);
+        const srcVid = document.getElementById('sourceMonitorVideo');
+        const srcIframe = document.getElementById('sourceMonitorIframe');
+        const placeholder = document.getElementById('sourceMonitorPlaceholder');
+        const edVid = document.getElementById('realHtmlVideo');
+        const edCanvas = document.getElementById('studioPreviewCanvas');
+
+        if (state.uploadedVideoUrl && state.uploadedVideoUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(state.uploadedVideoUrl);
+        }
         state.uploadedVideoUrl = URL.createObjectURL(file);
-        videoEl.src = state.uploadedVideoUrl;
-        videoEl.classList.remove('hidden');
-        canvasEl.classList.add('hidden');
-        videoEl.play().catch(() => {});
         state.hasUploadedVideo = true;
+        state.loadedYoutubeId = null;
+        state.isPlaying = false;
 
-        showToast('Video local cargado con éxito', `"${file.name}" listo para recortar de 30s a 3 min y subtitular sin límites.`);
+        // Show visible Source Monitor Video in Dashboard and keep it PAUSED
+        srcIframe.classList.add('hidden');
+        srcIframe.src = '';
+        placeholder.classList.add('hidden');
+        srcVid.classList.remove('hidden');
+        srcVid.src = state.uploadedVideoUrl;
+        srcVid.muted = false;
+        srcVid.pause();
+
+        // Prepare Editor Video element and keep it PAUSED (so it NEVER plays hidden audio in the background!)
+        edVid.src = state.uploadedVideoUrl;
+        edVid.pause();
+        edVid.classList.remove('hidden');
+        edCanvas.classList.add('hidden');
+
+        srcVid.addEventListener('loadedmetadata', () => {
+          state.sourceVideoDuration = srcVid.duration || 0;
+          srcVid.currentTime = 0;
+          srcVid.pause();
+          document.getElementById('sourceDurationBadge').textContent = `00:00 / ${formatSeconds(state.sourceVideoDuration)}`;
+          distributeClipsAcrossDuration(state.sourceVideoDuration);
+          renderClipsGrid();
+        }, { once: true });
+
+        updateSourceMonitorUIState('⏸ PAUSADO (LISTO PARA DAR PLAY O EDITAR)', false);
+        renderClipsGrid();
+        showToast('Video cargado en el visor (En Pausa)', `"${file.name}" se cargó en el visor sin reproducirse solo. Usa Play/Stop en el visor o edita los reels abajo.`);
+      });
+
+      // Source Monitor Play / Pause / Stop / Mute / Scrubber Controls
+      const sourceMonitorVid = document.getElementById('sourceMonitorVideo');
+      const sourceScrubber = document.getElementById('sourceMonitorScrubber');
+
+      sourceMonitorVid.addEventListener('timeupdate', () => {
+        const dur = sourceMonitorVid.duration || 0;
+        const cur = sourceMonitorVid.currentTime || 0;
+        if (dur > 0) {
+          sourceScrubber.value = ((cur / dur) * 100).toFixed(1);
+          document.getElementById('sourceDurationBadge').textContent = `${formatSeconds(cur)} / ${formatSeconds(dur)}`;
+        }
+      });
+
+      sourceMonitorVid.addEventListener('ended', () => {
+        updateSourceMonitorUIState('⏸ FINALIZADO', false);
+      });
+
+      sourceScrubber.addEventListener('input', (e) => {
+        if (!state.hasUploadedVideo || !sourceMonitorVid.duration) return;
+        const pct = parseFloat(e.target.value) || 0;
+        sourceMonitorVid.currentTime = (pct / 100) * sourceMonitorVid.duration;
+      });
+
+      document.getElementById('sourcePlayBtn').addEventListener('click', () => {
+        if (state.hasUploadedVideo && sourceMonitorVid.src) {
+          // Pause any reel card videos first
+          document.querySelectorAll('video[data-card-video]').forEach(v => v.pause());
+          document.getElementById('realHtmlVideo').pause();
+          sourceMonitorVid.play().then(() => {
+            updateSourceMonitorUIState('▶ REPRODUCIENDO', true);
+          }).catch(() => {});
+        } else if ( document.getElementById('videoUrlInput').value.trim() !== '' ) {
+          loadUrlIntoSourceMonitor();
+        } else {
+          showToast('Sube un video o pega un link primero', 'Carga un video desde tu PC o pega un enlace para darle Play en el visor.', 'warn');
+        }
+      });
+
+      document.getElementById('sourcePauseBtn').addEventListener('click', () => {
+        if (state.hasUploadedVideo && sourceMonitorVid.src) {
+          sourceMonitorVid.pause();
+          updateSourceMonitorUIState('⏸ EN PAUSA', false);
+        }
+      });
+
+      document.getElementById('sourceStopBtn').addEventListener('click', () => {
+        if (state.hasUploadedVideo && sourceMonitorVid.src) {
+          sourceMonitorVid.pause();
+          sourceMonitorVid.currentTime = 0;
+          sourceScrubber.value = 0;
+          document.getElementById('sourceDurationBadge').textContent = `00:00 / ${formatSeconds(sourceMonitorVid.duration || 0)}`;
+          updateSourceMonitorUIState('⏹ DETENIDO (00:00)', false);
+        }
+        const srcIframe = document.getElementById('sourceMonitorIframe');
+        if (state.loadedYoutubeId && srcIframe) {
+          srcIframe.src = `https://www.youtube.com/embed/${state.loadedYoutubeId}?autoplay=0&controls=1&rel=0&modestbranding=1`;
+          updateSourceMonitorUIState('⏹ DETENIDO', false);
+        }
+      });
+
+      document.getElementById('sourceMuteBtn').addEventListener('click', () => {
+        sourceMonitorVid.muted = !sourceMonitorVid.muted;
+        document.getElementById('sourceMuteBtnText').textContent = sourceMonitorVid.muted ? 'Audio MUTE' : 'Audio ON';
       });
 
       // Global Ratio Selector
@@ -2547,17 +2959,30 @@
         });
       });
 
-      // Play / Pause & Scrubber
+      // Play / Pause / Stop & Scrubber in Pro Editor
       document.getElementById('playPauseBtn').addEventListener('click', () => {
-        state.isPlaying = !state.isPlaying;
+        setEditorPlaybackState(!state.isPlaying);
+      });
+      document.getElementById('stopClipBtn').addEventListener('click', () => {
+        setEditorPlaybackState(false);
+        state.playheadProgress = 0;
+        const clip = getSelectedClip();
         const v = document.getElementById('realHtmlVideo');
-        if (state.hasUploadedVideo) {
-          if (state.isPlaying) v.play().catch(() => {});
-          else v.pause();
+        if (state.hasUploadedVideo && v && clip) {
+          const safeStart = v.duration ? Math.min(clip.startSec, Math.max(0, v.duration - 2)) : clip.startSec;
+          v.currentTime = safeStart;
         }
+        document.getElementById('playheadScrubber').value = 0;
+        updateLiveSubtitlePreview();
       });
       document.getElementById('restartClipBtn').addEventListener('click', () => {
         state.playheadProgress = 0;
+        const clip = getSelectedClip();
+        const v = document.getElementById('realHtmlVideo');
+        if (state.hasUploadedVideo && v && clip) {
+          const safeStart = v.duration ? Math.min(clip.startSec, Math.max(0, v.duration - 2)) : clip.startSec;
+          v.currentTime = safeStart;
+        }
         updateLiveSubtitlePreview();
       });
       document.getElementById('playheadScrubber').addEventListener('input', (e) => {
@@ -2574,6 +2999,32 @@
       const v = document.getElementById('realHtmlVideo');
       if (v) {
         v.style.transform = `scale(${clip.zoom / 100}) translate(${clip.panX}%, ${clip.panY}%)`;
+      }
+    }
+
+    function setEditorPlaybackState(playNow) {
+      state.isPlaying = !!playNow;
+      const v = document.getElementById('realHtmlVideo');
+      const txt = document.getElementById('editorPlayPauseText');
+      const clip = getSelectedClip();
+      if (txt) txt.textContent = state.isPlaying ? 'Pausa' : 'Play';
+
+      if (state.hasUploadedVideo && v) {
+        if (state.isPlaying) {
+          // Ensure dashboard videos are paused
+          const srcMon = document.getElementById('sourceMonitorVideo');
+          if (srcMon) srcMon.pause();
+          document.querySelectorAll('video[data-card-video]').forEach(cv => cv.pause());
+          if (clip) {
+            const safeStart = v.duration ? Math.min(clip.startSec, Math.max(0, v.duration - 2)) : clip.startSec;
+            if (v.currentTime < safeStart || v.currentTime >= safeStart + clip.durationSec) {
+              v.currentTime = safeStart;
+            }
+          }
+          v.play().catch(() => {});
+        } else {
+          v.pause();
+        }
       }
     }
 
@@ -2599,6 +3050,14 @@
         result.push(copy);
       }
 
+      if (state.sourceVideoDuration && state.sourceVideoDuration > 10) {
+        result.forEach((c, idx) => {
+          const maxDur = Math.min(c.durationSec, Math.max(15, Math.floor(state.sourceVideoDuration * 0.4)));
+          c.durationSec = Math.max(30, Math.min(180, maxDur));
+          const maxStart = Math.max(0, Math.floor(state.sourceVideoDuration - Math.min(state.sourceVideoDuration * 0.25, c.durationSec)));
+          c.startSec = Math.min(maxStart, Math.floor((idx / result.length) * state.sourceVideoDuration * 0.85));
+        });
+      }
       state.clips = result;
       state.selectedClipId = result[0].id;
       renderClipsGrid();
