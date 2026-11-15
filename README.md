@@ -1,7 +1,8 @@
 # REEL CLIP — Estudio Pro de Clips e IA Sin Límites
 
-Aplicación web autónoma en español para crear, recortar (30s a 3 min), encuadrar personajes (`9:16`, `16:9`, `1:1`), generar subtítulos automáticos en 1 clic al estilo CapCut (sin necesidad de reproducir el video ni capturar audio en vivo) y exportar en **1080p** y **2K** directo desde el navegador (`MediaRecorder` + `Canvas Stream`).
+Aplicación web autónoma en español para crear, recortar (30s a 3 min), encuadrar personajes (`9:16`, `16:9`, `1:1`), generar subtítulos automáticos reales en 1 clic al estilo CapCut y exportar en **1080p** y **2K** directo desde el navegador (`MediaRecorder` + `Canvas Stream`).
 
-## Correcciones y Mejoras de esta Versión
-1. **Generador de Subtítulos en 1 Clic Estilo CapCut (Sin Reproducir ni Micrófono)**: dentro del **Estudio de Edición Pro**, al hacer clic en **Transcribir Audio del Video (IA)** (o automáticamente al abrir un Reel), la app analiza la pista de audio en segundo plano (`OfflineAudioContext` a 16 kHz + Whisper WebAssembly / detector de actividad de voz) y genera todos los bloques de subtítulos sincronizados al instante con el video en pausa.
-2. **Botón para Generar en Todos los Reels e Importar .SRT/.TXT**: incluye opción para subtitular el lote completo en un clic o cargar un archivo `.SRT` externo.
+## Correcciones de esta Versión
+1. **Botón Directo Estilo CapCut en el Reproductor del Reel ("Generar Subtítulos Automáticos (CapCut IA)")**: ubicado directamente en la barra de controles debajo del Reel que estás editando (junto a Play y Stop) y también en el panel izquierdo.
+2. **Eliminación Total de Etiquetas Genéricas (`[Voz 02:19...]`)**: se eliminó por completo el texto genérico. El motor normaliza el volumen de la voz a 16 kHz y ejecuta el modelo neuronal Whisper IA en español para extraer únicamente las palabras reales habladas en ese Reel.
+3. **Subtítulos Visibles al Instante en el Reel**: al generarse o al hacer clic en cualquier línea de subtítulo en la lista izquierda, el subtítulo aparece inmediatamente renderizado sobre el Reel (incluso estando en pausa).

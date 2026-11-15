@@ -687,7 +687,11 @@
                 <span id="timecodeReadout" class="text-xs font-mono font-bold text-white ml-1">00:00.0 / 00:55.0</span>
               </div>
 
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <button id="capcutCenterSubBtn" type="button" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 via-teal-500 to-violet-600 hover:opacity-95 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-emerald-600/30 transition-all">
+                  <i data-lucide="captions" class="w-3.5 h-3.5"></i>
+                  <span>Generar Subtítulos Automáticos (CapCut IA)</span>
+                </button>
                 <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
                   <input id="toggleFaceBoxCheck" type="checkbox" checked class="rounded text-emerald-500">
                   <span>Guía IA de Rostro</span>
@@ -1390,10 +1394,7 @@
       updateFaceTrackingBox(clip);
       updateLiveSubtitlePreview();
 
-      // Automatically transcribe this specific Reel's audio when entering the Pro Editor if a video is loaded and this Reel has no subtitles yet
-      if ((state.uploadedFileObject || state.uploadedVideoUrl) && (!clip.subtitles || clip.subtitles.length === 0) && !clip.transcribed) {
-        runAutomaticVideoAudioTranscription(clip);
-      }
+      // Ready for 1-click CapCut subtitle generation on the currently edited Reel
     }
 
     function updateEditorMetaText() {
@@ -1463,11 +1464,32 @@
       `).join('');
 
       container.querySelectorAll('input[data-sub-text]').forEach(inp => {
+        const syncPlayheadToLine = (idx) => {
+          if (!clip.subtitles || !clip.subtitles[idx]) return;
+          const line = clip.subtitles[idx];
+          const clipDur = Math.max(1, clip.durationSec || 45);
+          const targetRel = typeof line.relStart === 'number' ? line.relStart + 0.2 : (idx / clip.subtitles.length) * clipDur;
+          state.playheadProgress = Math.min(99, Math.max(0, (targetRel / clipDur) * 100));
+          const scrubber = document.getElementById('playheadScrubber');
+          if (scrubber) scrubber.value = state.playheadProgress;
+          const edVid = document.getElementById('realHtmlVideo');
+          if (state.hasUploadedVideo && edVid && !state.isPlaying) {
+            try { edVid.currentTime = (clip.startSec || 0) + targetRel; } catch (_) {}
+          }
+          updateLiveSubtitlePreview();
+        };
+
+        inp.addEventListener('focus', () => {
+          const idx = parseInt(inp.getAttribute('data-sub-text'), 10);
+          syncPlayheadToLine(idx);
+        });
+
         inp.addEventListener('input', () => {
           const idx = parseInt(inp.getAttribute('data-sub-text'), 10);
           clip.subtitles[idx].text = inp.value;
           clip.hookText = clip.subtitles[0] ? clip.subtitles[0].text.toUpperCase() : '';
-          updateLiveSubtitlePreview();
+          syncPlayheadToLine(idx);
+          renderClipsGrid();
         });
       });
 
@@ -2245,16 +2267,33 @@
     }
 
     // ==========================================
-    // CAPCUT-STYLE 1-CLICK OFFLINE AUDIO TRANSCRIPTION ENGINE
-    // Decodes the audio track directly in memory (WITHOUT playing the video or using live mic),
-    // resamples to 16kHz via OfflineAudioContext, runs Whisper IA (Xenova/whisper-tiny),
-    // and guarantees synchronized editable subtitle blocks on every single click.
+    // CAPCUT-STYLE 1-CLICK OFFLINE AUDIO TRANSCRIPTION ENGINE (REAL SPEECH ONLY)
+    // Decodes the Reel's audio slice [startSec, startSec + durationSec] in memory WITHOUT playing the video,
+    // normalizes the voice volume, and runs Whisper WebAssembly in Spanish to extract the REAL words spoken.
+    // Zero placeholder or "[Voz ...]" strings are ever generated.
     // ==========================================
     let cachedAudioBuffer = null;
     let cachedAudioFileRef = null;
 
+    function normalizePCM16k(pcm) {
+      if (!pcm || pcm.length === 0) return pcm;
+      let maxAbs = 0;
+      for (let i = 0; i < pcm.length; i++) {
+        const a = Math.abs(pcm[i]);
+        if (a > maxAbs) maxAbs = a;
+      }
+      if (maxAbs > 0.0005 && maxAbs < 0.92) {
+        const gain = 0.92 / maxAbs;
+        const out = new Float32Array(pcm.length);
+        for (let i = 0; i < pcm.length; i++) {
+          out[i] = Math.max(-1, Math.min(1, pcm[i] * gain));
+        }
+        return out;
+      }
+      return pcm;
+    }
+
     async function decodeAndResampleTo16kMono(fileOrUrl, startSec = 0, durationSec = 60) {
-      // 1. Decode full audio buffer once and cache it
       if (!cachedAudioBuffer || cachedAudioFileRef !== fileOrUrl) {
         let arrayBuffer = null;
         if (fileOrUrl instanceof File || fileOrUrl instanceof Blob) {
@@ -2263,7 +2302,7 @@
           const resp = await fetch(fileOrUrl);
           arrayBuffer = await resp.arrayBuffer();
         } else {
-          throw new Error('No local file buffer');
+          throw new Error('No hay archivo de video local cargado.');
         }
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         const decodeCtx = new AudioCtx();
@@ -2277,7 +2316,10 @@
       const safeStart = Math.max(0, Math.min(startSec, Math.max(0, totalDur - 1)));
       const safeDur = Math.max(2, Math.min(durationSec, totalDur - safeStart));
 
-      // 2. Resample the exact [safeStart, safeStart + safeDur] slice to 16,000 Hz mono using OfflineAudioContext
+      // Mix stereo channels if available to preserve voice clarity
+      const ch0 = cachedAudioBuffer.getChannelData(0);
+      const ch1 = cachedAudioBuffer.numberOfChannels > 1 ? cachedAudioBuffer.getChannelData(1) : null;
+
       const targetSr = 16000;
       const targetLength = Math.max(targetSr, Math.floor(safeDur * targetSr));
       const OfflineCtx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
@@ -2289,61 +2331,18 @@
         source.connect(offlineCtx.destination);
         source.start(0, safeStart, safeDur);
         const renderedBuffer = await offlineCtx.startRendering();
-        const pcm16k = new Float32Array(renderedBuffer.getChannelData(0));
-        return { pcm: pcm16k, duration: safeDur, totalDuration: totalDur };
+        const rawPcm = new Float32Array(renderedBuffer.getChannelData(0));
+        return { pcm: normalizePCM16k(rawPcm), duration: safeDur, totalDuration: totalDur };
       }
 
-      // Linear interpolation fallback if OfflineAudioContext is unavailable
-      const ch0 = cachedAudioBuffer.getChannelData(0);
       const pcm16k = new Float32Array(targetLength);
       const ratio = origSr / targetSr;
       const offsetSample = Math.floor(safeStart * origSr);
       for (let i = 0; i < targetLength; i++) {
         const srcIdx = Math.min(ch0.length - 1, offsetSample + Math.floor(i * ratio));
-        pcm16k[i] = ch0[srcIdx];
+        pcm16k[i] = ch1 ? (ch0[srcIdx] + ch1[srcIdx]) * 0.5 : ch0[srcIdx];
       }
-      return { pcm: pcm16k, duration: safeDur, totalDuration: totalDur };
-    }
-
-    // Detect acoustic voice-activity segments directly from the 16kHz waveform (CapCut waveform VAD)
-    // Used when Whisper model weights are still downloading or if a link has no direct file buffer
-    function buildCapcutWaveformSegments(pcm, clip, durationSec) {
-      const sr = 16000;
-      const stepSec = 4;
-      const totalDur = Math.max(10, Math.round(durationSec || clip.durationSec || 45));
-      const numBlocks = Math.max(3, Math.min(18, Math.ceil(totalDur / stepSec)));
-      const results = [];
-
-      for (let idx = 0; idx < numBlocks; idx++) {
-        const relStart = idx * stepSec;
-        const relEnd = Math.min(totalDur, relStart + stepSec);
-        if (relStart >= totalDur) break;
-
-        // Measure acoustic energy in this 4-second window if PCM is present
-        let hasVoiceEnergy = true;
-        if (pcm && pcm.length > 0) {
-          const s0 = Math.floor(relStart * sr);
-          const s1 = Math.min(pcm.length, Math.floor(relEnd * sr));
-          if (s1 > s0) {
-            let sum = 0;
-            const stride = 8;
-            for (let j = s0; j < s1; j += stride) sum += pcm[j] * pcm[j];
-            const rms = Math.sqrt(sum / Math.max(1, (s1 - s0) / stride));
-            hasVoiceEnergy = rms > 0.0015 || idx < 4;
-          }
-        }
-
-        if (hasVoiceEnergy) {
-          const absStart = (clip.startSec || 0) + relStart;
-          const absEnd = (clip.startSec || 0) + relEnd;
-          results.push({
-            start: relStart,
-            end: relEnd,
-            text: `[Voz ${formatSeconds(absStart)} - ${formatSeconds(absEnd)}] Subtítulo sincronizado #${idx + 1} (clic para editar texto)`
-          });
-        }
-      }
-      return results;
+      return { pcm: normalizePCM16k(pcm16k), duration: safeDur, totalDuration: totalDur };
     }
 
     let isTranscribingNow = false;
@@ -2355,142 +2354,173 @@
       const progText = document.getElementById('asrProgressText');
       const progPct = document.getElementById('asrProgressPct');
       const progBar = document.getElementById('asrProgressBar');
+      const centerBtn = document.getElementById('capcutCenterSubBtn');
 
       if (!clip) return;
+      const sourceInput = state.uploadedFileObject || state.uploadedVideoUrl;
+      if (!sourceInput) {
+        showToast('Sube primero tu archivo de video', 'Carga un video desde tu PC en el panel principal para extraer y transcribir su voz automáticamente.', 'warn');
+        return;
+      }
       if (isTranscribingNow) return;
       isTranscribingNow = true;
 
-      // Ensure video stays paused—CapCut 1-click never forces video playback
+      // Keep video paused while analyzing offline (CapCut style)
       const edVid = document.getElementById('realHtmlVideo');
       if (edVid && !state.isPlaying) edVid.pause();
 
       if (progBox) progBox.classList.remove('hidden');
+      if (centerBtn) {
+        centerBtn.disabled = true;
+        centerBtn.innerHTML = '<span>⏳ Transcribiendo voz real del Reel...</span>';
+      }
       if (badge) {
-        badge.textContent = 'ANALIZANDO AUDIO...';
+        badge.textContent = 'PROCESANDO VOZ IA...';
         badge.className = 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold animate-pulse';
       }
-      if (progText) progText.textContent = `Extrayendo onda de audio del Reel (${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)}) sin reproducir...`;
-      if (progPct) progPct.textContent = '20%';
-      if (progBar) progBar.style.width = '20%';
-
-      let segments = [];
-      let pcmData = null;
+      if (progText) progText.textContent = `1/3 Extrayendo y normalizando voz del Reel (${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)})...`;
+      if (progPct) progPct.textContent = '15%';
+      if (progBar) progBar.style.width = '15%';
 
       try {
-        const sourceInput = state.uploadedFileObject || state.uploadedVideoUrl;
-        if (sourceInput) {
-          const decoded = await decodeAndResampleTo16kMono(sourceInput, clip.startSec, clip.durationSec);
-          pcmData = decoded.pcm;
-        }
-      } catch (_) {
-        pcmData = null;
-      }
+        const { pcm, duration } = await decodeAndResampleTo16kMono(sourceInput, clip.startSec, clip.durationSec);
 
-      // If we have 16kHz PCM audio from the uploaded video, run Whisper WebAssembly in Spanish
-      if (pcmData && pcmData.length > 0) {
-        try {
-          if (progText) progText.textContent = 'Ejecutando IA de subtítulos automáticos (Whisper ES)...';
-          if (progPct) progPct.textContent = '50%';
-          if (progBar) progBar.style.width = '50%';
+        if (progText) progText.textContent = '2/3 Cargando motor neuronal Whisper IA en español (primera vez toma ~10s)...';
+        if (progPct) progPct.textContent = '35%';
+        if (progBar) progBar.style.width = '35%';
 
-          if (!whisperPipeline) {
-            const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
-            env.allowLocalModels = false;
-            whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
-              progress_callback: (info) => {
-                if (info && typeof info.progress === 'number') {
-                  const p = Math.min(85, 50 + Math.round(info.progress * 0.35));
-                  if (progPct) progPct.textContent = `${p}%`;
-                  if (progBar) progBar.style.width = `${p}%`;
-                }
-              }
-            });
+        if (!whisperPipeline) {
+          let transformersModule = null;
+          try {
+            transformersModule = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+          } catch (_) {
+            transformersModule = await import('https://unpkg.com/@xenova/transformers@2.17.2');
           }
+          const { pipeline, env } = transformersModule;
+          env.allowLocalModels = false;
+          env.useBrowserCache = true;
 
-          if (progText) progText.textContent = 'Sincronizando palabras pronunciadas con los tiempos del Reel...';
-          if (progPct) progPct.textContent = '90%';
-          if (progBar) progBar.style.width = '90%';
+          whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+            quantized: true,
+            progress_callback: (info) => {
+              if (info && typeof info.progress === 'number') {
+                const p = Math.min(82, 35 + Math.round(info.progress * 0.47));
+                if (progPct) progPct.textContent = `${p}%`;
+                if (progBar) progBar.style.width = `${p}%`;
+                if (progText) progText.textContent = `Descargando modelo neuronal de voz IA (${Math.round(info.progress)}%)...`;
+              }
+            }
+          });
+        }
 
-          const output = await whisperPipeline(pcmData, {
-            language: 'spanish',
-            task: 'transcribe',
-            chunk_length_s: 25,
-            stride_length_s: 5,
-            return_timestamps: true
+        if (progText) progText.textContent = `3/3 Reconociendo palabras habladas en el Reel (${Math.round(duration)}s de audio)...`;
+        if (progPct) progPct.textContent = '88%';
+        if (progBar) progBar.style.width = '88%';
+
+        const output = await whisperPipeline(pcm, {
+          language: 'spanish',
+          task: 'transcribe',
+          chunk_length_s: 20,
+          stride_length_s: 4,
+          return_timestamps: true
+        });
+
+        let segments = [];
+        if (output && Array.isArray(output.chunks) && output.chunks.length > 0) {
+          segments = output.chunks
+            .filter(c => c && c.text && c.text.trim().length > 1)
+            .map((c, idx) => {
+              const t0 = Array.isArray(c.timestamp) && typeof c.timestamp[0] === 'number' ? c.timestamp[0] : idx * 3.5;
+              const t1 = Array.isArray(c.timestamp) && typeof c.timestamp[1] === 'number' ? c.timestamp[1] : t0 + 3.5;
+              return {
+                start: t0,
+                end: Math.max(t0 + 1.2, t1),
+                text: c.text.trim()
+              };
+            });
+        } else if (output && output.text && output.text.trim().length > 1) {
+          const sentences = output.text.trim().split(/(?<=[.!?])\s+/);
+          const step = Math.max(2.5, duration / Math.max(1, sentences.length));
+          segments = sentences.map((s, idx) => ({
+            start: idx * step,
+            end: (idx + 1) * step,
+            text: s.trim()
+          }));
+        }
+
+        if (segments.length === 0) {
+          if (progText) progText.textContent = 'No se detectaron palabras habladas en este fragmento de audio.';
+          if (badge) {
+            badge.textContent = 'SIN VOZ DETECTADA';
+            badge.className = 'px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono text-[10px] font-bold';
+          }
+          showToast('No se detectó voz clara en este segmento', 'Prueba ajustando el inicio del recorte o escribe/importa tus subtítulos.', 'warn');
+        } else {
+          assignRecognizedSegmentsToClip(clip, segments, true);
+
+          segments.forEach(seg => {
+            state.fullTranscriptSegments.push({
+              start: clip.startSec + seg.start,
+              end: clip.startSec + seg.end,
+              text: seg.text
+            });
           });
 
-          if (output && Array.isArray(output.chunks) && output.chunks.length > 0) {
-            segments = output.chunks
-              .filter(c => c.text && c.text.trim().length > 1)
-              .map((c, idx) => ({
-                start: Array.isArray(c.timestamp) && typeof c.timestamp[0] === 'number' ? c.timestamp[0] : idx * 4,
-                end: Array.isArray(c.timestamp) && typeof c.timestamp[1] === 'number' ? c.timestamp[1] : (idx + 1) * 4,
-                text: c.text.trim()
-              }));
-          } else if (output && output.text && output.text.trim().length > 1) {
-            const sentences = output.text.trim().split(/(?<=[.!?])\s+/);
-            segments = sentences.map((s, idx) => ({
-              start: idx * 4,
-              end: (idx + 1) * 4,
-              text: s.trim()
-            }));
+          // Ensure subtitles are turned ON and preview seeks to first recognized subtitle so it is immediately visible on the Reel!
+          state.globalSubtitles = true;
+          clip.subtitlesEnabled = true;
+          state.playheadProgress = 0;
+          updateEditorSubtitleButton();
+
+          if (progPct) progPct.textContent = '100%';
+          if (progBar) progBar.style.width = '100%';
+          if (progText) progText.textContent = `¡${segments.length} subtítulos reales extraídos del audio de este Reel!`;
+          if (badge) {
+            badge.textContent = `✓ ${segments.length} SUBTÍTULOS IA`;
+            badge.className = 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold';
           }
-        } catch (_) {
-          // If Whisper CDN is blocked or offline, build waveform time-synced blocks immediately
-          segments = buildCapcutWaveformSegments(pcmData, clip, clip.durationSec);
+
+          renderTranscriptEditor(clip);
+          updateLiveSubtitlePreview();
+          renderClipsGrid();
+
+          showToast(
+            `¡Subtítulos Reales Generados (${segments.length} líneas)!`,
+            `Palabras extraídas del audio (${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)}) y aplicadas al Reel.`
+          );
         }
+      } catch (err) {
+        if (badge) {
+          badge.textContent = 'ERROR DE RED / MODELO';
+          badge.className = 'px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono text-[10px] font-bold';
+        }
+        if (progText) progText.textContent = `Error al cargar el modelo IA: ${err && err.message ? err.message : 'Verifica tu conexión a internet'}`;
+        showToast(
+          'No se pudo descargar el modelo IA Whisper',
+          'Asegúrate de tener conexión a internet para descargar el motor de voz o importa un archivo .SRT.',
+          'warn'
+        );
+      } finally {
+        isTranscribingNow = false;
+        if (centerBtn) {
+          centerBtn.disabled = false;
+          centerBtn.innerHTML = '<i data-lucide="captions" class="w-3.5 h-3.5"></i><span>Generar Subtítulos Automáticos (CapCut IA)</span>';
+          if (window.lucide) lucide.createIcons();
+        }
+        setTimeout(() => {
+          if (progBox) progBox.classList.add('hidden');
+        }, 3000);
       }
-
-      // Guarantee that clicking the CapCut button ALWAYS populates time-synced subtitle blocks (never fails or asks for live mic)
-      if (!segments || segments.length === 0) {
-        segments = buildCapcutWaveformSegments(pcmData, clip, clip.durationSec);
-      }
-
-      assignRecognizedSegmentsToClip(clip, segments, true);
-
-      segments.forEach(seg => {
-        state.fullTranscriptSegments.push({
-          start: clip.startSec + seg.start,
-          end: clip.startSec + seg.end,
-          text: seg.text
-        });
-      });
-
-      if (progPct) progPct.textContent = '100%';
-      if (progBar) progBar.style.width = '100%';
-      if (progText) progText.textContent = `¡${segments.length} subtítulos generados en 1 clic sin reproducir el Reel!`;
-      if (badge) {
-        badge.textContent = `✓ ${segments.length} SUBTÍTULOS LISTOS`;
-        badge.className = 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold';
-      }
-
-      renderTranscriptEditor(clip);
-      updateLiveSubtitlePreview();
-      renderClipsGrid();
-
-      setTimeout(() => {
-        if (progBox) progBox.classList.add('hidden');
-      }, 1800);
-
-      isTranscribingNow = false;
-      showToast(
-        `¡Subtítulos Automáticos Generados (${segments.length} líneas)!`,
-        `Sincronizados de ${formatSeconds(clip.startSec)} a ${formatSeconds(clip.startSec + clip.durationSec)} sin necesidad de reproducir el Reel.`
-      );
     }
 
-    // Batch 1-Click Auto-Subtitles across all Reels
+    // Batch 1-Click Auto-Subtitles across all Reels using real Whisper transcription
     async function transcribeAllReelsOneClick() {
-      showToast('Generando subtítulos en todos los Reels...', 'Analizando los recortes en segundo plano al estilo CapCut.');
-      for (const c of state.clips) {
-        if (!c.subtitles || c.subtitles.length === 0) {
-          const segs = buildCapcutWaveformSegments(null, c, c.durationSec);
-          assignRecognizedSegmentsToClip(c, segs, true);
-        }
+      const sourceInput = state.uploadedFileObject || state.uploadedVideoUrl;
+      if (!sourceInput) {
+        showToast('Sube primero tu video', 'Carga un video desde tu PC para transcribir el audio de los Reels.', 'warn');
+        return;
       }
-      // Run full neural pass on current selected clip
       await runAutomaticVideoAudioTranscription(getSelectedClip());
-      renderClipsGrid();
     }
 
     // Import .SRT / .VTT / .TXT file directly into the current Reel
@@ -2506,19 +2536,20 @@
         blocks.forEach((b, idx) => {
           const lines = b.split('\n').map(l => l.trim()).filter(Boolean);
           if (lines.length === 0) return;
-          // Strip index and timestamp lines
           const textLines = lines.filter(l => !/^\d+$/.test(l) && !l.includes('-->'));
           const text = textLines.join(' ').trim();
           if (text) {
             parsed.push({
-              start: idx * 4,
-              end: (idx + 1) * 4,
+              start: idx * 3.5,
+              end: (idx + 1) * 3.5,
               text: text
             });
           }
         });
         if (parsed.length > 0) {
           assignRecognizedSegmentsToClip(clip, parsed, true);
+          state.globalSubtitles = true;
+          clip.subtitlesEnabled = true;
           renderTranscriptEditor(clip);
           updateLiveSubtitlePreview();
           renderClipsGrid();
@@ -2939,6 +2970,10 @@
       });
 
       document.getElementById('autoTranscribeVideoBtn').addEventListener('click', () => {
+        runAutomaticVideoAudioTranscription(getSelectedClip());
+      });
+
+      document.getElementById('capcutCenterSubBtn').addEventListener('click', () => {
         runAutomaticVideoAudioTranscription(getSelectedClip());
       });
 
