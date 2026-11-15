@@ -1,8 +1,9 @@
-# REEL CLIP — Estudio Pro de Clips e IA Sin Límites
+# REEL CLIP — Estudio Pro de Clips e IA (Versión Web + App Instalable en PC)
 
-Aplicación web autónoma en español para crear, recortar (30s a 3 min), encuadrar personajes (`9:16`, `16:9`, `1:1`), subtitular y exportar reels en **1080p** y **2K** directo desde el navegador (`MediaRecorder` + `Canvas Stream`).
+## 1. Cómo usarla instalada directamente en tu PC (Windows)
+1. Descomprime este archivo `.zip` en una carpeta de tu computadora.
+2. Haz doble clic en **`Instalar_y_Abrir_REEL_CLIP_PC.bat`**. Se abrirá como una ventana de programa independiente en tu PC sin límites de memoria ni restricciones.
+3. También puedes hacer clic en el botón **"Instalar App en PC"** arriba a la derecha para anclarla a tu Escritorio y Barra de Tareas.
 
-## Novedades de esta versión
-- **Visor de Video Fuente en Pausa**: al cargar un archivo de video desde la PC o pegar un enlace de YouTube/video, se muestra inmediatamente en el visor principal en estado **Pausado** (sin reproducir audio en segundo plano) con botonera integrada de **Play**, **Pausa**, **Stop** y **Audio**.
-- **Previews de Reels Recortados**: cada tarjeta de clip generado muestra el fragmento de video recortado correspondiente a su tiempo de inicio y duración, con botones **▶ Play Reel** y **■ Stop** propios.
-- **Casilla de enlace limpia**: lista para pegar cualquier URL directamente.
+## 2. Cómo actualizarla en GitHub y Vercel
+1. Sube y reemplaza `index.html`, `manifest.json` y `vercel.json` en tu repositorio de GitHub y pulsa **Commit changes**.
